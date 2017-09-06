@@ -19,11 +19,12 @@ export default class ZBnumberLabel extends React.Component {
         // style: PropTypes.any,
         // labelText: PropTypes.string,
         // labelStyle: PropTypes.any,
-        // textInputStyle: PropTypes.any
+      // textInputStyle: PropTypes.any,
+      // type: PropTypes.string, // "message" or "money"
     }
 
     render() {
-        let { style, labelStyle, labelText, textInputStyle, placeholder} = this.props;
+        let { style, labelStyle, labelText, textInputStyle, placeholder, type, unit} = this.props;
 
         return (
             <View
@@ -48,8 +49,11 @@ export default class ZBnumberLabel extends React.Component {
                         textInputStyle
                     ]}
                   underlineColorAndroid="transparent"
-                  placeholder={ placeholder }
-                />
+                  />
+                {
+                  type === 'message' ? (<Text>{ unit }</Text>) : null
+                }
+
             </View>
         );
     }
@@ -64,13 +68,15 @@ const styles = StyleSheet.create({
   },
   label: {
     width: 90,
-    textAlign: 'right',
-    fontSize: FontSize.Content,
+    textAlign: 'left',
+    fontSize: FontSize.Annotation,
     paddingHorizontal: 10,
     color: Color.Black
   },
   textInput: {
     flex: 1,
-    fontSize: FontSize.Content
+    fontSize: FontSize.Content,
+    textAlign: 'right',
+    paddingRight: 6
   }
 });

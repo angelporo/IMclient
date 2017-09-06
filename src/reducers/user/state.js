@@ -55,15 +55,6 @@ const inintUserState = {
              name: 'liyuan',
              from: '23455553', // 消息来源id
              to: '233564'  // 消息发送id
-         }, {
-             msg: {
-               content: '一会就吃饭了, 想想今天吃什么!',
-               type: 'text'
-             },
-             avatar: "https://avatars1.githubusercontent.com/u/16830481?v=4&s=40",
-             name: 'liyuan',
-             from: '223455553', // 消息来源id
-             to: '233564'  // 消息发送id
          }, {// 集体聊天记录
              msg: {
                content: 'haha',
@@ -111,30 +102,13 @@ const inintUserState = {
              to: '233564'  // 消息发送id
          }, {
              msg: {
-               content: '一会就吃饭了, 想想今天吃什么!',
-               type: 'text'
-             },
-             avatar: "https://avatars1.githubusercontent.com/u/16830481?v=4&s=40",
-             name: 'liyuan',
-             from: '223455553', // 消息来源id
-             to: '233564'  // 消息发送id
-         }, {// 集体聊天记录
-             msg: {
-               content: 'haha',
-               type: 'text'
+               content: '',
+               type: 'redPackage',
+               redPackageData: [2, 3, 4, 5, 4]
              },
              avatar: "https://avatars1.githubusercontent.com/u/16830481?v=4&s=40",
              name: 'liyuan',
              from: '23455553', // 消息来源id
-             to: '233564'  // 消息发送id
-         }, {
-             msg: {
-               content: '一会就吃饭了, 想想今天吃什么!',
-               type: 'text'
-             },
-             avatar: "https://avatars1.githubusercontent.com/u/16830481?v=4&s=40",
-             name: 'liyuan',
-             from: '223455553', // 消息来源id
              to: '233564'  // 消息发送id
          }]
        }

@@ -15,6 +15,7 @@ import {
   Image,
   Text,
   TextInput,
+  ScrollView,
   Platform,
   View,
   Modal,
@@ -27,7 +28,8 @@ import { compose } from 'redux';
 import {
   FontSize,
   Color,
-  Button
+  Button,
+  ListItem,
 } from '../UiLibrary/';
 import { changeKeyHeight } from '../reducers/user/userAction';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -38,7 +40,6 @@ import Ficon from 'react-native-vector-icons/FontAwesome';
 import * as Animatable from 'react-native-animatable';
 import HandSendRedMoneyModal from './HandOutMoney';
 const { height, width } = Dimensions.get('window');
-
 
 const SelectSendContent = (<Micon name="add-circle" size={ 30 } color={Color.Grey} />);
 const VoiceIcon = (<Micon name="keyboard-voice" size={30} color={Color.Grey} />);
@@ -122,7 +123,7 @@ class ChatRoom extends Component {
         y: offsetY > 0 ? offsetY  : 0,
         animated: this._userHasBeenInputed
       });
-    }, this._userHasBeenInputed ? 0 : 134);
+    }, this._userHasBeenInputed ? 0 : 200);
   }
 
   _onSubmitEditing = () => {
@@ -161,7 +162,7 @@ class ChatRoom extends Component {
     this.currentMaxRowId = +rowId;
     console.log(row);
     return (
-      <MessageCell
+      <ListItem.MessageCell
         key={`cell-${ rowId }`}
         currentUser={ userid }
         message={ row }
@@ -411,7 +412,8 @@ class ChatRoom extends Component {
       transparent={ false }
       visible={this.state.modalVisible}
         >
-        <HandSendRedMoneyModal closeModal={this.closeModal.bind(this)}/>
+        {/*// NOTE: 发送红type选项(群发和单发) */}
+        <HandSendRedMoneyModal type={ "group" } closeModal={this.closeModal.bind(this)}/>
         </Modal>
         </View>
         </View>
@@ -451,44 +453,6 @@ function SeletTypeItem ({onPress, Icon, text, height}) {
   );
 }
 
-class MessageCell extends Component {
-  render() {
-    let { currentUser, message } = this.props;
-
-    let differentStyle = {};
-    //判断消息来源id号和用户id号
-    if (message.from === currentUser) {
-      differentStyle = {
-        flexDirection: 'row-reverse',
-        backgroundColor: '#92E649'
-      };
-    } else {
-      differentStyle = {
-        flexDirection: 'row',
-        backgroundColor: '#FFFFFF'
-      };
-    }
-
-    return (
-      <View
-        style={[styles.messageCell, {flexDirection: differentStyle.flexDirection}]}
-        >
-        <Image
-          source={{
-            uri: message.avatar
-          }}
-          style={styles.avatar}
-          />
-        <View
-          style={[styles.contentView, {backgroundColor: differentStyle.backgroundColor}]}
-          >
-          <Text style={styles.messageCellText}>{message.msg.content}</Text>
-        </View>
-        <View style={styles.endBlankBlock} />
-      </View>
-    );
-  }
-}
 
 const styles = StyleSheet.create({
   container: {
@@ -554,20 +518,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     marginLeft: 5
-  },
-  contentView: {
-    borderRadius: 4,
-    padding: 4,
-    paddingHorizontal: 8,
-    overflow: 'hidden',
-    flexShrink: 1,
-    margin: 5,
-    justifyContent: 'center'
-  },
-  endBlankBlock: {
-    margin: 5,
-    width: 50,
-    height: 40
   },
   seleteType: {
     overflow: 'hidden',

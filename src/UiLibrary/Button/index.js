@@ -1,9 +1,4 @@
 /**
- * <plusmancn@gmail.com> created at 2017
- *
- *
- * @flow
- *
  * 按钮组件
  */
 
@@ -37,7 +32,7 @@ class Button extends React.Component {
         disabled: false
     }
 
-    constructor(props: Object) {
+    constructor(props) {
         super(props);
     }
 
