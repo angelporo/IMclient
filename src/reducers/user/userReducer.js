@@ -7,7 +7,10 @@ export default function user(state = inintUserState, action) {
       return { ...state, isShowMune: action.menuState };
     case types.CHANGE_LOGGIN_STATE:
     return { ...state, isLogged: action.isLogged, userId: action.userid };
+  case types.CHANGE_KEY_HEIGHT:
+    return {...state, keyBoardHeight: action.keyHeight };
     default:
-      return state;
+    return state;
+
   }
 }

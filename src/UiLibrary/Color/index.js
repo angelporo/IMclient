@@ -1,9 +1,4 @@
 /**
- * <plusmancn@gmail.com> created at 2017
- *
- *
- * @flow
- *
  * 色彩定义文件
  */
 
@@ -17,5 +12,5 @@ export default {
     White: '#ffffff',
     iPhoneBlue: '#0A60FE',
     WechatGreen: '#0099CC',
-    red: '#FF3366'
+    Red: 'red'
 };

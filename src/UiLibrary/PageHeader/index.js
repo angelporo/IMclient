@@ -45,15 +45,18 @@ class PageHeader extends Component {
   }
 
   render () {
-    let { LeftComponent, RightComponent, text } = this.props;
+    let { LeftComponent,
+          RightComponent,
+          TextComponent,
+          style } = this.props;
     return (
-      <View style={styles.html}>
+      <View style={[styles.html, style]}>
         <View style={ styles.Box }>
           <View style={ styles.leftBox}>
             { LeftComponent }
           </View>
           <View style={styles.textBox}>
-            <Text style={ styles.text }>{text}</Text>
+            { TextComponent }
           </View>
           <View style={ styles.rightBox }>
             { RightComponent }
@@ -76,11 +79,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     position: 'relative',
     height: 50
-  },
-  text: {
-    color: Color.back,
-    fontWeight: 'bold',
-    fontSize: FontSize.White.Super
   },
   textBox: {
     paddingHorizontal: 8,

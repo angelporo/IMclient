@@ -1,7 +1,7 @@
 /**
- * label表单
+ * 发红包输入金额表单
  * Param: param
- * Return: {undefined}
+ * Return: { undefined }
  **/
 import React, { PropTypes } from 'react';
 import {
@@ -14,16 +14,16 @@ import {
 import FontSize from '../FontSize';
 import Color from '../Color';
 
-export default class TextInputLabel extends React.Component {
+export default class ZBnumberLabel extends React.Component {
     static propTypes = {
-        style: PropTypes.any,
-        labelText: PropTypes.string,
-        labelStyle: PropTypes.any,
-        textInputStyle: PropTypes.any
+        // style: PropTypes.any,
+        // labelText: PropTypes.string,
+        // labelStyle: PropTypes.any,
+        // textInputStyle: PropTypes.any
     }
 
     render() {
-        let { style, labelStyle, labelText, textInputStyle} = this.props;
+        let { style, labelStyle, labelText, textInputStyle, placeholder} = this.props;
 
         return (
             <View
@@ -47,7 +47,8 @@ export default class TextInputLabel extends React.Component {
                         styles.textInput,
                         textInputStyle
                     ]}
-                    underlineColorAndroid="transparent"
+                  underlineColorAndroid="transparent"
+                  placeholder={ placeholder }
                 />
             </View>
         );
@@ -55,23 +56,21 @@ export default class TextInputLabel extends React.Component {
 }
 
 const styles = StyleSheet.create({
-    labelInput: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        borderBottomWidth: 1,
-        borderColor: Color.LittleGrey,
-        backgroundColor: Color.White,
-        height: 45
-    },
-    label: {
-        width: 80,
-        textAlign: 'right',
-        fontSize: FontSize.Content,
-        paddingHorizontal: 10,
-        color: Color.Black
-    },
-    textInput: {
-        flex: 1,
-        fontSize: FontSize.Content
-    }
+  labelInput: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    padding: 16,
+    backgroundColor: Color.White
+  },
+  label: {
+    width: 90,
+    textAlign: 'right',
+    fontSize: FontSize.Content,
+    paddingHorizontal: 10,
+    color: Color.Black
+  },
+  textInput: {
+    flex: 1,
+    fontSize: FontSize.Content
+  }
 });

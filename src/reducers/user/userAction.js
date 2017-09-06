@@ -1,4 +1,4 @@
-import { CLOSE_MUNE, CHANGE_LOGGIN_STATE } from './userType';
+import * as types from './userType';
 
 /**
  * 更改登录注册时显示的菜单状态
@@ -7,14 +7,21 @@ import { CLOSE_MUNE, CHANGE_LOGGIN_STATE } from './userType';
  **/
 export function switchMenuState ({menuState}) {
   return {
-    type: CLOSE_MUNE,
+    type: types.CLOSE_MUNE,
     menuState
   };
 }
 
 export function changeLogginState ({userid, isLoggin}) {
   return {
-    type: CHANGE_LOGGIN_STATE,
+    type: types.CHANGE_LOGGIN_STATE,
     userid,
   };
+}
+
+export function changeKeyHeight ({keyHeight}) {
+  return {
+    type:types.CHANGE_KEY_HEIGHT,
+    keyHeight
+  }
 }
