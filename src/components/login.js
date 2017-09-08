@@ -18,17 +18,19 @@ import {
   Button,
   Color,
   TextInput,
-  AlertMuneBox
+  AlertBox
 } from '../UiLibrary/';
 
 import Icon from 'react-native-vector-icons/FontAwesome';
+import WebIM from '../Lib/WebIM.js';
+console.log('测试环信', WebIM);
+
 
 class Login extends Component {
   static navigationOptions = ({navigation}) => {
     // FIXME: 修改导航中组件中传递事件bug
-    console.log(navigation);
   const headerRight = (<Icon.Button
-                       onPress={ () => navigation.state.params.loginSwitchMenu }
+                       onPress={ () => navigation.state.params.loginSwitchMenu() }
                        backgroundColor={Color.Black}
                        name="ellipsis-h"
                        size={ 26 }
@@ -61,7 +63,7 @@ class Login extends Component {
 
   }
   componentWillMount() {
-    this.props.navigation.setParams({loginSwitchMenu:this._switchMenu});
+    this.props.navigation.setParams({ loginSwitchMenu:this._switchMenu.bind(this)});
     }
   _goRegister () {
     this.props.navigation.dispatch({type: 'Logined'});
@@ -76,7 +78,7 @@ class Login extends Component {
         >
           <TextInput.Label
             labelText="手机号"
-            labelStyle={styles.labelStyle}
+            labelStyle={ styles.labelStyle }
             autoCapitalize="none"
             placeholder="请填写11位手机号"
             onChangeText={(phone) =>
@@ -112,7 +114,7 @@ class Login extends Component {
               >
               注册
             </Button>
-            <AlertMuneBox
+            <AlertBox.AlertMenuBox
               onClosePress={ () => this.setState({isShowMenu: false}) }
               data={this.menuData}
               visible={this.state.isShowMenu}

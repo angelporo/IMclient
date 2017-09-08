@@ -23,6 +23,7 @@
 		0BC624651F58F0A3005BDEB8 /* Octicons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 0BC6245B1F58F0A3005BDEB8 /* Octicons.ttf */; };
 		0BC624661F58F0A3005BDEB8 /* SimpleLineIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 0BC6245C1F58F0A3005BDEB8 /* SimpleLineIcons.ttf */; };
 		0BC624671F58F0A3005BDEB8 /* Zocial.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 0BC6245D1F58F0A3005BDEB8 /* Zocial.ttf */; };
+		0BEB1D191F5FEB5400946785 /* bundle in Resources */ = {isa = PBXBuildFile; fileRef = 0BEB1D181F5FEB5400946785 /* bundle */; };
 		133E29F31AD74F7200F7D852 /* libRCTLinking.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 78C398B91ACF4ADC00677621 /* libRCTLinking.a */; };
 		139105C61AF99C1200B5F7CC /* libRCTSettings.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 139105C11AF99BAD00B5F7CC /* libRCTSettings.a */; };
 		139FDEF61B0652A700C62182 /* libRCTWebSocket.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 139FDEF41B06529B00C62182 /* libRCTWebSocket.a */; };
@@ -287,6 +288,7 @@
 		0BC6245B1F58F0A3005BDEB8 /* Octicons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Octicons.ttf; sourceTree = "<group>"; };
 		0BC6245C1F58F0A3005BDEB8 /* SimpleLineIcons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = SimpleLineIcons.ttf; sourceTree = "<group>"; };
 		0BC6245D1F58F0A3005BDEB8 /* Zocial.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Zocial.ttf; sourceTree = "<group>"; };
+		0BEB1D181F5FEB5400946785 /* bundle */ = {isa = PBXFileReference; lastKnownFileType = folder; path = bundle; sourceTree = "<group>"; };
 		139105B61AF99BAD00B5F7CC /* RCTSettings.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTSettings.xcodeproj; path = "../node_modules/react-native/Libraries/Settings/RCTSettings.xcodeproj"; sourceTree = "<group>"; };
 		139FDEE61B06529A00C62182 /* RCTWebSocket.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTWebSocket.xcodeproj; path = "../node_modules/react-native/Libraries/WebSocket/RCTWebSocket.xcodeproj"; sourceTree = "<group>"; };
 		13B07F961A680F5B00A75B9A /* ImClient.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ImClient.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -577,6 +579,7 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
+				0BEB1D181F5FEB5400946785 /* bundle */,
 				0BC624531F58F0A3005BDEB8 /* Fonts */,
 				13B07FAE1A68108700A75B9A /* ImClient */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
@@ -688,7 +691,8 @@
 						TestTargetID = 13B07F861A680F5B00A75B9A;
 					};
 					13B07F861A680F5B00A75B9A = {
-						DevelopmentTeam = 557Y69MBLH;
+						DevelopmentTeam = UK667467H7;
+						ProvisioningStyle = Automatic;
 					};
 					2D02E47A1E0B4A5D006451C7 = {
 						CreatedOnToolsVersion = 8.2.1;
@@ -989,6 +993,7 @@
 				0BC624621F58F0A3005BDEB8 /* Ionicons.ttf in Resources */,
 				0BC624611F58F0A3005BDEB8 /* Foundation.ttf in Resources */,
 				0BC624641F58F0A3005BDEB8 /* MaterialIcons.ttf in Resources */,
+				0BEB1D191F5FEB5400946785 /* bundle in Resources */,
 				0BC6245E1F58F0A3005BDEB8 /* Entypo.ttf in Resources */,
 				0BC624631F58F0A3005BDEB8 /* MaterialCommunityIcons.ttf in Resources */,
 				13B07FBD1A68108700A75B9A /* LaunchScreen.xib in Resources */,
@@ -1177,9 +1182,10 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = NO;
-				DEVELOPMENT_TEAM = 557Y69MBLH;
+				DEVELOPMENT_TEAM = UK667467H7;
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-image-picker/ios",
@@ -1193,7 +1199,9 @@
 					"-ObjC",
 					"-lc++",
 				);
+				PRODUCT_BUNDLE_IDENTIFIER = org.reactjs.native.example.xinxin;
 				PRODUCT_NAME = ImClient;
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Debug;
@@ -1202,8 +1210,9 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 557Y69MBLH;
+				DEVELOPMENT_TEAM = UK667467H7;
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-image-picker/ios",
@@ -1217,7 +1226,9 @@
 					"-ObjC",
 					"-lc++",
 				);
+				PRODUCT_BUNDLE_IDENTIFIER = org.reactjs.native.example.xinxin;
 				PRODUCT_NAME = ImClient;
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Release;

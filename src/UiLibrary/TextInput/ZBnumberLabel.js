@@ -63,6 +63,7 @@ const styles = StyleSheet.create({
   labelInput: {
     flexDirection: 'row',
     justifyContent: 'space-between',
+    alignItems: 'center',
     padding: 16,
     backgroundColor: Color.White
   },

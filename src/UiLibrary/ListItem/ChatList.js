@@ -25,7 +25,7 @@ export default class MessageCell extends Component {
     super(props);
   }
   render() {
-    const { currentUser, message } = this.props;
+    const { currentUser, message, onPreddRedPackage } = this.props;
     const { type } = message.msg;
     let differentStyle = {};
     //判断消息来源id号和用户id号
@@ -62,7 +62,10 @@ export default class MessageCell extends Component {
     if (type === "text") {
       return ChatMessage(textMsg);
     }else if (type === 'redPackage') {
-      return ChatMessage(redPackageMsg({packageData: '', style: [styles.contentView]}));
+      return ChatMessage(redPackageMsg({packageData: '',
+                                        style: [styles.contentView],
+                                        onPress: onPreddRedPackage
+                                       }));
     }
   }
 }
@@ -72,7 +75,9 @@ export default class MessageCell extends Component {
  * Param: param
  * Return: {undefined}
  **/
-const redPackageMsg = ({packageData, style, onPress}) => {
+const redPackageMsg = ({packageData,
+                        style,
+                       onPress}) => {
   return (
     <TouchableOpacity
       onPress={ onPress }

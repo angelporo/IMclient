@@ -1,8 +1,4 @@
 /**
- * <plusmancn@gmail.com> created at 2017
- *
- *
- * @flow
  *
  * 底部弹出菜单
  */
@@ -22,7 +18,7 @@ import FontSize from '../FontSize';
 import Color from '../Color';
 import EStyleSheet from 'react-native-extended-stylesheet';
 
-export default class AlertMuneBox extends Component {
+export default class AlertMenuBox extends Component {
   static propTypes = {
     style: PropTypes.any,
     data: PropTypes.Object
@@ -119,5 +115,4 @@ const styles = EStyleSheet.create({
     bottom: 0,
     left: 0,
   },
-
 });

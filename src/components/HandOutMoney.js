@@ -20,7 +20,7 @@ import {
   Color,
   TextInput,
   PageHeader,
-  AlertMuneBox
+  AlertBox,
 } from '../UiLibrary/';
 import PropTypes from 'prop-types';
 import Eicon from 'react-native-vector-icons/Entypo';
@@ -31,9 +31,9 @@ const openMuneIcon = (<Eicon name="dots-three-horizontal" size={ 28 } color={Col
 /**
  * 发红红包
  * Param: param
- * Return: {undefined}
+ * Return: { undefined }
  **/
-class HandSendRedMoneyModal extends Component {
+class HandleSendRedPackage extends Component {
   static propTypes = {
     closeModal: PropTypes.func,
     type: PropTypes.string,  // "group" or "single"
@@ -98,6 +98,7 @@ class HandSendRedMoneyModal extends Component {
         <StatusBar
           barStyle="light-content"
           backgroundColor={ "#E95F38" }
+          StatusBarAnimation="fade"
           />
         <PageHeader
           style={{backgroundColor: Color.Red }}
@@ -154,7 +155,7 @@ class HandSendRedMoneyModal extends Component {
             </Button>
           </View>
         </ScrollView>
-          <AlertMuneBox
+          <AlertBox.AlertMenuBox
             visible={ this.state.isShowMune }
             onClosePress={ () => this.setState({isShowMune: false })}
             data={[{text: '红包记录', onPress: () => alert('ok')}]}/>
@@ -185,10 +186,9 @@ const styles = StyleSheet.create({
   },
   mstHint: {
     height: 100,
-    justifyContent: 'center'
   },
   msgInput: {
-    margin: 16
+    margin: 16,
   },
   numberInput: {
     marginHorizontal: 16,
@@ -211,4 +211,4 @@ const styles = StyleSheet.create({
   }
 });
 
-export default HandSendRedMoneyModal;
+export default HandleSendRedPackage;

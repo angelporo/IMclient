@@ -141,6 +141,8 @@ class ConversationCell extends React.Component {
     let { avatar, unReadMessageCount, name, latestTime, latestMessage, onPress } = this.props;
     return (
       <TouchableHighlight
+        delayPressIn={ 0 }
+        delayPressOut={ 130 }
         onPress={ onPress }
         >
         <View

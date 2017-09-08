@@ -1,10 +1,4 @@
 /**
- * <plusmancn@gmail.com> created at 2017
- *
- * Copyright (c) 2017 Souche.com, all rights
- * reserved.
- *
- * @flow
  *
  * 组件库入口文件
  */
@@ -18,4 +12,4 @@ export { default as Button } from './Button';
 export { default as Color } from './Color';
 export { default as FontSize } from './FontSize';
 export { default as PageHeader } from './PageHeader';
-export { default as AlertMuneBox } from './AlertMuneBox';
+export { default as AlertBox } from './AlertBox';
