@@ -16,3 +16,5 @@
     ├── userReducer.js
     └── userType.js
 ```
+
+## 用户`store`中字段介绍

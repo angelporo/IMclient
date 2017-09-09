@@ -21,6 +21,7 @@ import * as Animatable from 'react-native-animatable';
 import Micon from 'react-native-vector-icons/MaterialIcons';
 import MMicon from 'react-native-vector-icons/MaterialCommunityIcons';
 import Eicon from 'react-native-vector-icons/Entypo';
+
 export default class AlertRedPackage extends Component {
   static propTypes = {
     onCloseRedPackagedata: PropTypes.func,

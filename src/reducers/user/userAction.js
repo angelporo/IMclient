@@ -12,6 +12,11 @@ export function switchMenuState ({menuState}) {
   };
 }
 
+/**
+ * 修改登录状态
+ * Param: param
+ * Return: {undefined}
+ **/
 export function changeLogginState ({userid, isLoggin}) {
   return {
     type: types.CHANGE_LOGGIN_STATE,
@@ -19,9 +24,33 @@ export function changeLogginState ({userid, isLoggin}) {
   };
 }
 
+/**
+ * 修改app中键盘高度
+ * Param: param
+ * Return: {undefined}
+ **/
 export function changeKeyHeight ({keyHeight}) {
   return {
     type:types.CHANGE_KEY_HEIGHT,
     keyHeight
-  }
+  };
+}
+
+
+/**
+ * 获取用户好友列表
+ * Param: { rosterListData: Array }
+ * Return: {undefined}
+ **/
+export function getRoster(rosterListData) {
+  let roster = [];
+  rosterListData.map( (n) => {
+    if ( n.subscription === 'both' || n.subscription === 'to' ) {
+      roster.push(n);
+    }
+  });
+  return {
+    type: types.GET_ROSTER,
+    roster
+  };
 }

@@ -66,27 +66,27 @@ class ChatList extends Component {
 
   _renderRow = ({item}) => {
     return (
-      <Swipeout
+        <Swipeout
         key={item.key}
         rightButtons={[{
-          title: '删除',
-          type: 'Delete',
-          onPress: () => {
+            title: '删除',
+            type: 'Delete',
+            onPress: () => {
 
-          }
+            }
         }]}
         >
         <ConversationCell
-          avatar={ item.avatar }
-          unReadMessageCount={ item.unReadMessageCount }
-          name={item.name}
-          latestTime={ item.latestTime }
-          latestMessage={ item.latestMessage }
-          onPress={ () => {
+        avatar={ item.avatar }
+        unReadMessageCount={ item.unReadMessageCount }
+        name={item.name}
+        latestTime={ item.latestTime }
+        latestMessage={ item.latestMessage }
+        onPress={ () => {
             this.props.navigation.navigate('ChatRoom',{ info: item});
-          }}
-          />
-      </Swipeout>
+        }}
+        />
+        </Swipeout>
     );
   }
 

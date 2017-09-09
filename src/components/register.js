@@ -17,6 +17,7 @@ import {
   TextInput
 } from '../UiLibrary/';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import api from '../Lib/WebIM';
 const myIcon = (<Icon name="rocket" size={30} color="#900" />);
 
 class Register extends Component {
@@ -36,6 +37,22 @@ class Register extends Component {
   }
   _register () {
     alert('ok');
+    let options = {
+      username: 'angelporo',
+      password: 'angel0112',
+      nickname: 'angel'
+    };
+    // 环信注册
+    // FIXME: 目前为 开放注册 , 上线需要授权注册
+    // TODO: 登录逻辑和注册逻辑
+    // api.register(options)
+    // .then(({data}) => {
+    //     if(data.error) {
+    //         console.log('注册失败', data.error)
+    //     }
+    //     Alert.alert('Success')
+    //     console.log(JSON.stringify(data));
+    // }).catch(e => console.log('注册时发生错误', e));
   }
 
   render() {

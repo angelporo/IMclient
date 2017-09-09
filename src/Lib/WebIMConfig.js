@@ -1,4 +1,4 @@
-'use strict';
+'use strict'
 
 /**
  * git do not control webim.config.js
@@ -29,7 +29,7 @@ let config = {
   /*
    * Application AppKey
    */
-  appkey: '1132170823115353#feibao',
+  appkey: '1132170823115353#xinxin-imclient',
   /*
    * Whether to use HTTPS
    * @parameter {Boolean} true or false
