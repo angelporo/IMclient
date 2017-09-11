@@ -23,6 +23,7 @@ import {
   ListItem
 } from '../UiLibrary/';
 import EStyleSheet from 'react-native-extended-stylesheet';
+import * as Animatable from 'react-native-animatable';
 import FIcon from 'react-native-vector-icons/FontAwesome';
 import EIcon from 'react-native-vector-icons/Entypo';
 import EEcon from 'react-native-vector-icons/EvilIcons';
@@ -37,12 +38,13 @@ const ChatIcon = (<EIcon iconStyle={ {} } name="chat" size={ 80 } color={ Color.
  * Return: {undefined}
  **/
 class ChatList extends Component {
-  static navigationOptions = props  => {
-    const headerRight = (<Icon.Button
-                         onPress={ () => _this._switchMenu.bind(_this)() }
+  static navigationOptions = ({navigation})  => {
+    const headerRight = (<FIcon.Button
+                         onPress={ () => navigation.state.params.chatListSwitchMenu() }
                          backgroundColor={Color.Black}
-                         name="ios-person-add"
-                         size={ 24 }
+                         name="plus"
+                         size={ 20 }
+                         iconStyle={{marginRight: 10}}
                          color={ Color.White }
                          /> );
     return {
@@ -57,11 +59,32 @@ class ChatList extends Component {
     };
   };
   _switchMenu () {
-    alert('change state');
+    this.setState({menuIsShow: !this.state.menuIsShow});
   }
 
   constructor () {
     super();
+    this.menuData = [{
+      icon: (<Icon name="ios-person-add" size={ 24 } color={ Color.White } />),
+      text: '发起群聊',
+      onPress: this._openGroupChat.bind(this)
+    }, {
+      icon: (<Icon name="ios-person-add" size={ 24 } color={ Color.White } />),
+      text: '添加好友',
+      onPress: this._openGroupChat.bind(this)
+    }];
+    this.state = {
+      menuAnimation: 'fadeInDownBig',
+      menuIsShow: false
+    };
+  }
+  componentWillMount () {
+    this.props.navigation.setParams({ chatListSwitchMenu:this._switchMenu.bind(this)});
+  }
+  _openGroupChat () {
+    // 进入群聊页面
+    alert('进入群聊页面');
+    // this.props.navigation.navigate('ChatRoom',{data: 'hah'});
   }
 
   _renderRow = ({item}) => {
@@ -104,6 +127,10 @@ class ChatList extends Component {
     if (true) {
       return (
         <View style={styles.container}>
+          <MenuBox
+            animation={ this.state.menuAnimation }
+            isShow={ this.state.menuIsShow }
+            data={this.menuData}/>
           <FlatList
              data={ RecentChatData }
             renderItem={ this._renderRow.bind(this) }
@@ -190,8 +217,79 @@ class ConversationCell extends React.Component {
   }
 }
 
+function MenuBox ({data, animation, duration, isShow}) {
+  if(!isShow) return null;
+  return (
+    <Animatable.View
+      animation={ animation }
+      duration={ duration || 600 }
+      style={[styles.menuContent]}>
+      <View style={styles.upIcon}>
+        <EIcon name="triangle-up"
+               size={ 22 }
+               color={ Color.LightBlack } />
+          </View>
+      {
+        data.map( (n, i) => (
+          <TouchableHighlight
+            key={i}
+            onPress={n.onPress}
+            style={styles.menuBox}
+            >
+            <View style={styles.menuItem}
+>
+            { n.icon }
+            <Text style={{color: Color.White,
+                          textAlign: 'center',
+                          marginLeft: 12,
+                          fontSize: 16
+                  }}>{ n.text }</Text>
+            </View>
+          </TouchableHighlight>
+        ))
+      }
+    </Animatable.View>
+  )
+}
+
+MenuBox.propTypes = {
+  data: PropTypes.array,
+  animation: PropTypes.string,
+  duration: PropTypes.number,
+  isShow: PropTypes.bool
+}
+
 const styles = EStyleSheet.create({
+  menuContent: {
+    opacity: 0,
+      width: 120,
+      borderRadius: 5,
+      backgroundColor: Color.LightBlack,
+      alignItems: 'flex-start',
+      justifyContent: 'center',
+      position: 'absolute',
+      right: 10,
+      top: 14,
+      zIndex: 20
+    },
+  upIcon: {
+    backgroundColor: 'transparent',
+    position: 'absolute',
+    right: 12,
+    top: -16
+  },
+  menuBox: {
+    paddingVertical: 6,
+    width: '100%'
+  },
+  menuItem: {
+    marginLeft: 16,
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    alignItems: 'center'
+  },
   container: {
+    position: 'relative',
     flex: 1,
     justifyContent: 'flex-start',
     alignItems: 'stretch',

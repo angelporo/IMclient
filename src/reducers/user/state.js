@@ -11,6 +11,8 @@ const inintUserState = {
     isLogged: false,
     isShowMune: false,
     userid: '23455553',
+    isFetch: false,
+    currentChatRoomPage: 1, // 当前获取聊天列表页码
     userRecentChat:[// 用户最近联系人
         { latestMessage: '最后的消息',
             latestTime: '2017-05-23',
@@ -113,7 +115,7 @@ const inintUserState = {
             }]
         }
     ],
-    friendList: friendList
+    friendList: []
 };
 
 /* frindListDemo: {

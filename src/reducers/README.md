@@ -18,3 +18,7 @@
 ```
 
 ## 用户`store`中字段介绍
+
+
+## `action`介绍:
+    用户`action`和环信`action`

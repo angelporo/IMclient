@@ -2,7 +2,9 @@ import  inintUserState from './state';
 import * as types from './userType';
 
 export default function user(state = inintUserState, action) {
-    switch (action.type) {
+  switch (action.type) {
+  case types.CHANGE_LOGGIN_STATE:
+    return { ...state, isFetch: action.isFetch};
     case types.CLOSE_MUNE:
         return { ...state, isShowMune: action.menuState };
     case types.CHANGE_LOGGIN_STATE:
@@ -10,9 +12,9 @@ export default function user(state = inintUserState, action) {
     case types.CHANGE_KEY_HEIGHT:
         return {...state, keyBoardHeight: action.keyHeight };
     case types.GET_ROSTER:
-      console.log(action);
-      return {...state};
-    default:
+      return Object.assign({}, state, { friendList: action.roster });
+  default:
+    console.log(state);
         return state;
     }
 }

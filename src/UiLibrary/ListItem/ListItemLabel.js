@@ -1,16 +1,11 @@
 /**
- * <plusmancn@gmail.com> created at 2017
- *
- * Copyright (c) 2017 plusmancn, all rights
- * reserved.
- *
- * @flow
  *
  * 标签样式 Item
  */
 import React, { PropTypes } from 'react';
 import {
     TouchableHighlight,
+    TouchableWithoutFeedback,
     StyleSheet,
     Image,
     Text,
@@ -31,7 +26,8 @@ export default class Label extends React.Component {
         rightComponent: PropTypes.any,
         // rightComponent 为文本时候生效
         textStyle: PropTypes.any,
-        onPress: PropTypes.func
+        onPress: PropTypes.func,
+        iconPress: PropTypes.func
     };
 
     constructor(props) {
@@ -39,8 +35,23 @@ export default class Label extends React.Component {
     }
 
     _renderIcon = () => {
-        let { icon, iconStyle } = this.props;
+        let { icon, iconStyle, iconPress } = this.props;
         if (icon) {
+            if(iconPress) {
+                return (
+                    <TouchableWithoutFeedback onPress={ iconPress }>
+                    <Image
+                    source={{
+                        uri: icon
+                    }}
+                    style={[
+                        styles.iconStyle,
+                        iconStyle
+                    ]}
+                    />
+                    </TouchableWithoutFeedback>
+                );
+            }
             return (
                 <Image
                     source={{
@@ -124,6 +135,8 @@ export default class Label extends React.Component {
         if (onPress) {
             return (
                 <TouchableHighlight
+                delayPressOut={ 200 }
+                delayPressIn={ 0 }
                     onPress={onPress}
                 >
                     {displayView}
@@ -135,7 +148,6 @@ export default class Label extends React.Component {
     }
 }
 
-
 const styles = StyleSheet.create({
     labelContainer: {
         flexDirection: 'row',
@@ -143,11 +155,11 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'space-between',
         paddingHorizontal: 15,
-        paddingVertical: 10
+        paddingVertical: 10,
     },
     iconStyle: {
-        height: 25,
-        width: 25,
+        height: 40,
+        width: 40,
         marginRight: 15
     },
     labelLeftComponent: {

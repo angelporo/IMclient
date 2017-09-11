@@ -11,7 +11,6 @@ import {
   Color,
 } from '../UiLibrary/';
 
-
 class MyNotificationsScreen extends React.Component {
   static navigationOptions = {
     tabBarLabel: 'Notifications',
@@ -81,14 +80,15 @@ const MyApp = TabNavigator({
     borderColor: Color.LittleGrey
   },
     labelStyle: {
-      margin:0,
+      margin:0
     },
     tabStyle: {
     }
   },
   animationEnabled: false,
   tabBarPosition: 'bottom',
-  TabBarBottom: true
+  TabBarBottom: true,
+  lazy: true, // 开启tabNavigation中惰性加载
 });
 
 export default MyApp;

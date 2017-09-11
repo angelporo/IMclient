@@ -28,7 +28,6 @@ import WebIM, { api } from '../Lib/WebIM.js';
 console.log('测试环信', WebIM);
 
 class Login extends Component {
-
     static navigationOptions = ({navigation}) => {
         // FIXME: 修改导航中组件中传递事件bug
         const headerRight = (<Icon.Button
@@ -59,7 +58,6 @@ class Login extends Component {
             isCanLogin: false,
             isShowMenu: false
         };
-
 
         WebIM.conn.open({
             apiUrl: WebIM.config.apiURL,

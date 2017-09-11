@@ -18,14 +18,15 @@
 {
   NSURL *jsCodeLocation;
 // 测试引用
-  
+
 jsCodeLocation = [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@"index.ios" fallbackResource:nil];
 
-  
-  // 离线引用
-  /**
+
+  /*
   jsCodeLocation = [[NSBundle mainBundle] URLForResource:@"bundle/index.ios" withExtension:@"jsbundle"];
-   **/
+*/
+  
+  
   RCTRootView *rootView = [[RCTRootView alloc] initWithBundleURL:jsCodeLocation
                                                       moduleName:@"ImClient"
                                                initialProperties:nil

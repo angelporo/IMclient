@@ -403,7 +403,9 @@ class ChatRoom extends Component {
             openRedPackageAnimation={this.state.openRedPackageAnimation}
             redPackageBackground={ this.state.redPackageBackground }
             redPackageOpacity={this.state.redPackageOpacity}
-            onCloseRedPackage={this._onCloseRedPackage.bind(this)}
+              onCloseRedPackage={this._onCloseRedPackage.bind(this)}
+              icon="https://avatars1.githubusercontent.com/u/16830481?v=4&s=40"
+              userName="李渊"
             />
             <View style={[styles.container]}>
             <View style={{flex: 1, position: 'relative'}}>
