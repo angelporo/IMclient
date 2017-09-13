@@ -19,25 +19,28 @@ EStyleSheet.build(styleConfig);
 class ReduxExampleApp extends React.Component {
     constructor(props){
         super(props);
-
+      this.state = {
+        realm: null
+      };
         // NOTE: 监听环信用户事件
         WebIM.conn.listen({
             onOpened: msg => {
                 console.log('链接成功');
                 // 获取用户好友列表
                 store.dispatch(userAction.changeFetch(true)); // 链接成功之后打开请求状态
-                store.dispatch(userAction.getChatRooms()); // 获取聊天室
+                // store.dispatch(userAction.getChatRooms()); // 获取聊天室
                 store.dispatch(userAction.getRosterByIM()); // 获取好友列表
+                store.dispatch( userAction.getGroupsRooms() );// 获取用户群组列表
             },
             onError: error => {
                 console.log('链接失败', error);
             },
         });
     }
-    render() {
+  render() {
         return (
-            <Provider store={ store }>
-            <AppWithNavigationState />
+          <Provider store={ store }>
+              <AppWithNavigationState />
             </Provider>
         );
     }

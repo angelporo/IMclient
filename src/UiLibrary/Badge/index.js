@@ -1,18 +1,13 @@
 /**
- * <plusmancn@gmail.com> created at 2017
- *
- * Copyright (c) 2017 Souche.com, all rights
- * reserved.
- *
  * 徽章计数组件
  *
- * @flow
  */
 import React, { Component, PropTypes } from 'react';
 import {
     StyleSheet,
     Text
 } from 'react-native';
+import Color from '../Color';
 
 export default class Badge extends Component {
     static propTypes = {
@@ -30,8 +25,8 @@ export default class Badge extends Component {
     }
 
     // width + right = 35，保证左边起始点一致，最多支持 99+
-    _computeWidthAndRight(number: number) {
-        let { anchorWidth, height, autoMarginRight } = this.props
+    _computeWidthAndRight(number) {
+      let { anchorWidth, height, autoMarginRight } = this.props;
 
         if (!number) {
             return {
@@ -95,7 +90,7 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         fontWeight: '500',
         color: '#FFF',
-        backgroundColor: '#ff0000',
+        backgroundColor: Color.WechatGreen,
         overflow: 'hidden',
         right: 0
     }

@@ -22,3 +22,8 @@
 
 ## `action`介绍:
     用户`action`和环信`action`
+
+
+
+## 导航reducer
+    首次加载为`Login`页面, 页面初次跳转在`login`页面中

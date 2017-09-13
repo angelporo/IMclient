@@ -66,21 +66,22 @@ class Login extends Component {
             //  accessToken: password,
             appKey: WebIM.config.appkey
         })
+
     }
 
     _login = async () => {
 
     }
-    componentWillMount() {
-        this.props.navigation.setParams({ loginSwitchMenu:this._switchMenu.bind(this)});
-    }
+  componentWillMount() {
+  this.props.navigation.setParams({ loginSwitchMenu:this._switchMenu.bind(this)});
+  }
     _goRegister () {
         this.props.navigation.dispatch({type: 'Logined'});
         // this.props.navigation.dispatch({type: 'Register'});
     }
 
     render() {
-        const { isLogged, switchMenuState, changeLogginState } = this.props;
+        const { switchMenuState, changeLogginState } = this.props;
         return (
             <View
             style={ styles.container }

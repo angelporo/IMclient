@@ -118,7 +118,7 @@ export default class Label extends React.Component {
                             labelStyle
                         ]}
                     >
-                        {labelText}
+                        { labelText }
                     </Text>
                 </View>
 

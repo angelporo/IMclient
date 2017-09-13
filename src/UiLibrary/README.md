@@ -12,6 +12,7 @@
 * [TextInput](./TextInput) - 输入框组
 * [ListItem](./ListItem) - ListItem 样式组
 * [Swipeout](./Swipeout) - 侧滑按钮组件
+* [AlertBox]('./AlertBox') - 弹出层组件
 
 ## 主题设置
 * [Color](./Color) - 颜色定义文件

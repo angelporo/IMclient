@@ -4,5 +4,5 @@ export const CHANGE_KEY_HEIGHT = 'CHANGE_KEY_HEIGHT';
 export const GET_ROSTER = 'GET_ROSTER';
 export const CHANGE_FETCH_STATE = 'CHANGE_FETCH_STATE';
 export const CAHNGE_CHAT = 'CAHNGE_CHAT';
-export const CAHNGE_GROUP = 'CAHNGE_GROUP';
-export const CHANGE_CHAT_ROOMS = 'CHANGE_CHAT_ROOMS';
+export const CAHNGE_GROUP = 'CAHNGE_GROUP'; // 群聊
+export const CHANGE_CHAT_ROOMS = 'CHANGE_CHAT_ROOMS'; // 用户个人聊天, 非群组
