@@ -7,6 +7,7 @@ import Login from '../components/login';
 import Register from '../components/register';
 import { switchMenuState } from '../reducers/user/userAction';
 import ChatRoom from '../components/ChatRoom';
+import AddFriendComponent from '../components/AddFriend';
 import {
   Color,
 } from '../UiLibrary/';
@@ -17,7 +18,8 @@ export const AppNavigator = StackNavigator({
   Login: { screen: Login },
   Register: { screen: Register },
   MyApp: {screen: MyApp },
-  ChatRoom: {screen: ChatRoom }
+  ChatRoom: {screen: ChatRoom },
+  AddFriend: { screen: AddFriendComponent},
 }, {
   // 全局配置导航
   navigationOptions: {

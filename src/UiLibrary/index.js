@@ -13,3 +13,4 @@ export { default as Color } from './Color';
 export { default as FontSize } from './FontSize';
 export { default as PageHeader } from './PageHeader';
 export { default as AlertBox } from './AlertBox';
+export { default as CheckBoxItem } from './CheckedBox';

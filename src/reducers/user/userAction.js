@@ -64,7 +64,8 @@ export const updateRoster = (roster) => {
                 userId: n.jid,
                 vibration: true,
                 phone: '13190172734',
-                status: 'offline'
+              status: 'offline',
+              ischeck: false
             });
         }
     });
@@ -216,9 +217,9 @@ export function getChatRoomOthorInfoByGoupId  (resp) {
 /**
  * 根据群聊id查询群聊成员
  * Param: param
- * Return: {undefined}
+ * Return: { undefined }
  **/
-export getGroupMemberByGroupID = id => (dispatch, getState) => {
+export const getGroupMemberByGroupID = (id, page) => (dispatch, getState) => {
     const pageNum = 1,
     pageSize = 1000;
     const options = {
@@ -226,13 +227,12 @@ export getGroupMemberByGroupID = id => (dispatch, getState) => {
         pageSize: pageSize,
         groupId: 'yourGroupId',
         success: function (resp) {
-            console.log("Response: ", resp)
+            console.log("Response: ", resp);
         },
         error: function(e){}
     };
     WebIM.conn.listGroupMember(options);
 }
-
 
 /**
  * 更新用户参与聊天列表
@@ -257,4 +257,3 @@ export const updataChatGroups = ({groups}) => {
         groups,
     };
 }
-

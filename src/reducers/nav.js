@@ -34,6 +34,11 @@ function nav(state = initialNavState, action) {
       state
     );
     break;
+  case "AddFriend":
+    nextState = AppNavigator.router.getStateForAction(
+      NavigationActions.navigate({ routeName: 'AddFriend' }),
+      state
+    );
   default:
     nextState = AppNavigator.router.getStateForAction(action, state);
     break;

@@ -101,7 +101,7 @@ class HandleSendRedPackage extends Component {
           StatusBarAnimation="fade"
           />
         <PageHeader
-          style={{backgroundColor: Color.Red }}
+          style={{ backgroundColor: Color.Red }}
           LeftComponent={ CloseButton }
           RightComponent={ openMune }
           TextComponent={ Textcomponent }

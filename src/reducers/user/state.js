@@ -10,6 +10,7 @@ const inintUserState = {
   isLogged: true,
   isShowMune: false,
   userid: '23455553',
+  userName: '李渊的信信',
   isFetch: false,
   isError: null, // 提示错误消息, null ? closeAlert : openAlert
   currentChatRoomPage: 1, // 当前获取聊天列表页码
@@ -21,6 +22,7 @@ const inintUserState = {
       key: '234534534',
       unReadMessageCount: '56',// 消息数量
       groupPageNum: 1,  // 查询群组成员页码
+      members: [],
       avatar: 'https://avatars1.githubusercontent.com/u/16830481?v=4&s=40',
       chatInfo: {
         name: '王宇飞',
@@ -120,6 +122,13 @@ const inintUserState = {
 };
 
 /* frindListDemo: {
-   1: [{"userId":363,"avatar":"http://image-2.plusman.cn/app/im-client/avatar/tuzki_17.png","name":"11","phone":"12222222222","socketId":"1nGKBy0Cdpol9MToABvw","status":"offline","vibration":true}]
+   1: [{"userId":363,"
+   avatar":"http://image-2.plusman.cn/app/im-client/avatar/tuzki_17.png",
+   "name":"11",
+   "phone":"12222222222",
+   "socketId":"1nGKBy0Cdpol9MToABvw",
+   "status":"offline",
+   "vibration":true
+   }]
    }*/
 export default inintUserState;

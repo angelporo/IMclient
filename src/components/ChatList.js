@@ -11,7 +11,9 @@ import {
   ListView,
   FlatList,
   Text,
-  View
+  View,
+  StatusBar,
+  Modal
 } from 'react-native';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
@@ -29,6 +31,7 @@ import EIcon from 'react-native-vector-icons/Entypo';
 import EEcon from 'react-native-vector-icons/EvilIcons';
 import FFIcon from 'react-native-vector-icons/Foundation';
 import Icon from 'react-native-vector-icons/Ionicons';
+import NewGroupChatRoom from './NewGroupModal';
 const AddPerson = ({hintColor}) => (<Icon name="ios-chatbubbles" size={26} color={ hintColor } />);
 const ChatIcon = (<EIcon iconStyle={ {} } name="chat" size={ 80 } color={ Color.LightGrey } />);
 
@@ -71,20 +74,28 @@ class ChatList extends Component {
     }, {
       icon: (<Icon name="ios-person-add" size={ 24 } color={ Color.White } />),
       text: '添加好友',
-      onPress: this._openGroupChat.bind(this)
+      onPress: this._openAddFriend.bind(this)
     }];
     this.state = {
       menuAnimation: 'fadeInDownBig',
-      menuIsShow: false
+      menuIsShow: false,
+      openGroupChatRoom: false
     };
   }
   componentWillMount () {
     this.props.navigation.setParams({ chatListSwitchMenu:this._switchMenu.bind(this)});
   }
   _openGroupChat () {
-    // 进入群聊页面
-    alert('进入群聊页面');
-    // this.props.navigation.navigate('ChatRoom',{data: 'hah'});
+    this.setState({
+      openGroupChatRoom: true,
+      menuIsShow: false
+    });
+  }
+  _openAddFriend () {
+    this.setState({
+      menuIsShow: false
+    });
+    this.props.navigation.navigate('AddFriend',{data: 'hah'});
   }
 
   _renderRow = ({item}) => {
@@ -127,25 +138,50 @@ class ChatList extends Component {
     if (true) {
       return (
         <View style={styles.container}>
+          <StatusBar
+            barStyle="light-content"
+            backgroundColor={ "#E95F38" }
+            StatusBarAnimation="fade"
+            />
           <MenuBox
             animation={ this.state.menuAnimation }
             isShow={ this.state.menuIsShow }
             data={this.menuData}/>
           <FlatList
-             data={ RecentChatData }
+            data={ RecentChatData }
             renderItem={ this._renderRow.bind(this) }
             />
+          <Modal
+            animationType={"slide"}
+            transparent={ false }
+            visible={this.state.openGroupChatRoom}>
+            {/*// NOTE: 发送红type选项(群发和单发) */}
+            <NewGroupChatRoom
+            closeModal={() => this.setState({ openGroupChatRoom: false})}
+            />
+            </Modal>
         </View>
       );
     } else {
       return (
-        <View
-          style={styles.emptyMessage}
-          >
-          { ChatIcon }
-          <Text
-            style={styles.emptyMessageText}
-            >暂无消息</Text>
+        <View>
+          <View
+            style={styles.emptyMessage}
+            >
+            { ChatIcon }
+            <Text
+              style={styles.emptyMessageText}
+              >暂无消息</Text>
+          </View>
+          <Modal
+            animationType={"slide"}
+            transparent={ false }
+            visible={this.state.openGroupChatRoom}>
+            {/*// NOTE: 发送红type选项(群发和单发) */}
+            <NewGroupChatRoom
+            closeModal={() => this.setState({ openGroupChatRoom: false})}
+            />
+            </Modal>
         </View>
       );
     }
@@ -228,7 +264,7 @@ function MenuBox ({data, animation, duration, isShow}) {
         <EIcon name="triangle-up"
                size={ 22 }
                color={ Color.LightBlack } />
-          </View>
+      </View>
       {
         data.map( (n, i) => (
           <TouchableHighlight
@@ -237,13 +273,13 @@ function MenuBox ({data, animation, duration, isShow}) {
             style={styles.menuBox}
             >
             <View style={styles.menuItem}
->
-            { n.icon }
-            <Text style={{color: Color.White,
-                          textAlign: 'center',
-                          marginLeft: 12,
-                          fontSize: 16
-                  }}>{ n.text }</Text>
+                  >
+              { n.icon }
+              <Text style={{color: Color.White,
+                            textAlign: 'center',
+                            marginLeft: 12,
+                            fontSize: 16
+                    }}>{ n.text }</Text>
             </View>
           </TouchableHighlight>
         ))
@@ -262,16 +298,16 @@ MenuBox.propTypes = {
 const styles = EStyleSheet.create({
   menuContent: {
     opacity: 0,
-      width: 120,
-      borderRadius: 5,
-      backgroundColor: Color.LightBlack,
-      alignItems: 'flex-start',
-      justifyContent: 'center',
-      position: 'absolute',
-      right: 10,
-      top: 14,
-      zIndex: 20
-    },
+    width: 120,
+    borderRadius: 5,
+    backgroundColor: Color.LightBlack,
+    alignItems: 'flex-start',
+    justifyContent: 'center',
+    position: 'absolute',
+    right: 10,
+    top: 14,
+    zIndex: 20
+  },
   upIcon: {
     backgroundColor: 'transparent',
     position: 'absolute',

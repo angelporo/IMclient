@@ -139,7 +139,7 @@ export default class Label extends React.Component {
                 delayPressIn={ 0 }
                     onPress={onPress}
                 >
-                    {displayView}
+                    { displayView }
                 </TouchableHighlight>
             );
         } else {

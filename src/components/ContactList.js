@@ -30,14 +30,13 @@ import {
 } from '../UiLibrary/';
 const AddPerson = ({hintColor}) => (<Icon name="ios-chatbubbles" size={26} color={ hintColor } />);
 
-
 class UserContackList extends Component {
   static navigationOptions = ({navigation})  => {
     const headerRight = (<Icon.Button
                          onPress={ () => navigation.state.params.chatListSwitchMenu() }
                          backgroundColor={Color.Black}
-                         name="ios-person-add"
-                         size={ 24 }
+                         name="md-person-add"
+                         size={ 20 }
                          color={ Color.White }
                          /> );
     return {
@@ -51,8 +50,9 @@ class UserContackList extends Component {
       gesturesEnabled: false
     };
   };
+
   _switchMenu () {
-    alert('open add roster page');
+    this.props.navigation.navigate('AddFriend',{data: 'hah'});
   }
 
   constructor(props) {
