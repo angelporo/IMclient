@@ -431,7 +431,7 @@ class ChatRoom extends Component {
               >
               <TouchableOpacity
                 onPress={ () => this.setState({sendVoice: !this.state.sendVoice, selectTypeOpacity: 0, seleteSendTypeHeight: 0,selectZindex: 0})}
-                style={ styles.selectSendContentButton }>
+                style={styles.selectSendContentButton}>
                 {
                   !this.state.sendVoice ? VoiceIcon : TextIcon
                 }
@@ -555,7 +555,7 @@ class ChatRoom extends Component {
   }
 }
 
-function SeletTypeItem ({ onPress, Icon, text, height}) {
+function SeletTypeItem ({onPress, Icon, text, height}) {
   return (
     <TouchableOpacity
       style={{width: '25%',
@@ -564,7 +564,7 @@ function SeletTypeItem ({ onPress, Icon, text, height}) {
               height: height,
               marginTop: 10
       }}
-      onPress={ onPress }
+      onPress={ onPress}
       >
       <View style={styles.selectItemIcon}>
         { Icon }

@@ -177,7 +177,7 @@ class ChatList extends Component {
             animationType={"slide"}
             transparent={ false }
             visible={this.state.openGroupChatRoom}>
-            {/*// NOTE: 发送红type选项(群发和单发) */}
+            {/*// NOTE: 发送红包type选项(群发和单发) */}
             <NewGroupChatRoom
             closeModal={() => this.setState({ openGroupChatRoom: false})}
             />
@@ -202,7 +202,12 @@ class ConversationCell extends React.Component {
   }
 
   render() {
-    let { avatar, unReadMessageCount, name, latestTime, latestMessage, onPress } = this.props;
+    let { avatar,
+          unReadMessageCount,
+          name,
+          latestTime,
+          latestMessage,
+          onPress } = this.props;
     return (
       <TouchableHighlight
         delayPressIn={ 0 }
@@ -270,6 +275,8 @@ function MenuBox ({data, animation, duration, isShow}) {
           <TouchableHighlight
             key={i}
             onPress={n.onPress}
+            delayPressIn={0}
+            delayPressOut={ 200 }
             style={styles.menuBox}
             >
             <View style={styles.menuItem}

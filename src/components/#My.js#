@@ -1,7 +1,7 @@
 /**
  * 用户个人中心(我的)页面
  * Param: param
- * Return: {undefined}
+ * Return: { Component }
  **/
 import React, {Component} from 'react';
 import { connect } from 'react-redux';
@@ -51,7 +51,7 @@ class UserCenter extends Component {
   render() {
     return (
       <View
-        style={styles.container}
+        style={ styles.container }
         >
       </View>
     );
