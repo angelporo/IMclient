@@ -146,8 +146,6 @@ class NewGroupChatRoom extends Component {
   _separator () {
     return <View style={{height: '100%',backgroundColor:Color.White, width: 4}}/>;
   }
-  // TODO: 添加搜索定位功能
-  // TODO : 添加选中列表组件
   render() {
     const { closeModal } = this.props;
     const CloseButton = (<TouchableOpacity
