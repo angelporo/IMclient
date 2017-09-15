@@ -36,7 +36,6 @@ class Register extends Component {
     });
   }
   _register () {
-    alert('ok');
     let options = {
       username: 'angelporo',
       password: 'angel0112',

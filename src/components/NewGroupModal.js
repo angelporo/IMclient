@@ -13,8 +13,12 @@ import {
   Modal,
   StatusBar,
   FlatList,
-  Image
+  Image,
+  Dimensions,
+  ScrollView,
+  PixelRatio
 } from 'react-native';
+import * as Animatable from 'react-native-animatable';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import FIcon from 'react-native-vector-icons/FontAwesome';
 import EIcon from 'react-native-vector-icons/Entypo';
@@ -34,14 +38,14 @@ import {
 class NewGroupChatRoom extends Component {
   constructor(props) {
     super(props);
-    console.log('haoyou', props.friendList);
     this.state = {
       touchDisabled: true,
       friendList: props.friendList,
       checkBoxIconName: "ios-checkmark-circle-outline",
       checkedFriend: [],  // 选中好友发起群聊
       searchValue: '',
-      checkState: false
+      checkState: false,
+      displaySelectBoxWidth: 0,
     };
   }
   componentDidMount() {
@@ -56,60 +60,76 @@ class NewGroupChatRoom extends Component {
 
   switchCheckedBox(item) {
     let list = this.state.friendList;
-    const IndexFromItem = list.findIndex( e => e.userId === item.userId );
-    const ischeck = !item.ischeck;
-    list[ IndexFromItem ].ischeck = ischeck;
-    console.log(list);
-    console.log(Array.from( list ) === list);
+    let IndexFromItem = list.findIndex( e => e.userId === item.userId );
+    list[IndexFromItem].ischeck = !list[IndexFromItem].ischeck;
+    const newList = list.filter(n => n.ischeck);
     if ( item.ischeck ) {
       // 添加列表
       this.setState({
-        friendList: Array.from(list)
+        friendList: Array.from(list),
+        checkedFriend: Array.from(newList),
+        displaySelectBoxWidth: newList.length  * 44 > Dimensions.get('window').width * 7 ? this.state.displaySelectBoxWidth : newList.length * PixelRatio.get() * 44
+      }, () => {
+        if (newList.length > 1) {
+          this._displayFlatList.scrollToEnd();
+        }
       });
     }else {
       // 删除列表
-      this.deleteItemFriendList(item);
+      this.deleteItemFriendList.bind(this)(item);
     }
   }
+
   deleteItemFriendList (item) {
-      const list = this.state.checkedFriend;
-      const IndexFromItem = list.findIndex( e => e.userId === item.userId);
-      this.setState({
-        checkedFriend: list.slice(0,
-                                  IndexFromItem).
-          concat(list.slice(IndexFromItem,
-                            list.length - 1))
-      });
+    const list = this.state.checkedFriend;
+    let friendList = this.state.friendList;
+    const IndexFromItem = list.findIndex( e => e.userId === item.userId);
+    let friendIndex = this.state.friendList.findIndex( e => e.userId === item.userId);
+    friendList[friendIndex].ischeck = false;
+    const newSelecetFriendList = friendList.filter(n => n.ischeck);
+    this.setState({
+      friendList: Array.from( friendList ),
+      checkedFriend: Array.from( newSelecetFriendList ),
+      displaySelectBoxWidth: newSelecetFriendList.length * PixelRatio.get() * 44
+    });
   }
-  handleDeleteSelectItem(item) {
-    this.deleteItemFriendList.bind(this)(item);
-  }
-  _seletFriendRow ({ item }) {
+  _keyExtractor = (item, index) => item.key
+  _seletFriendRow ({ item, index }) {
     return (
+      <View>
       <TouchableOpacity
-        onPress={() => this.deleteItemFriendList.bind(this)(item)}
-        style={styles.selectListBox}>
+        delayPressIn={ 200 }
+        delayPressOut={ 200 }
+        onPress={ () => this.deleteItemFriendList.bind(this)(item) }
+        style={ styles.selectListBox }>
         <Image
-          source={{uri: item.avatar}}
+          source={{uri: item.avatar }}
           style={ styles.selectFriendFace }
           resizeMode={ Image.resizeMode.content }
           />
       </TouchableOpacity>
+      </View>
     );
   }
-  _renderRow ({item}) {
+  _renderRow ({item, index}) {
     return (
-      <TouchableHighlight style={styles.itemsBox}>
+      <TouchableHighlight
+        underlayColor={Color.LightGrey}
+        delayPressIn={0}
+        delayPressOut={100}
+        onPress={() => this.switchCheckedBox.bind(this)(item)}
+        style={styles.itemsBox}>
         <View style={styles.items}>
           <View
             style={ styles.checkboxIcon }>
             <CheckBoxItem
               checked={ item.ischeck }
+              onPress={() => this.switchCheckedBox.bind(this)(item)}
               style={ styles.checkBoxIcon }
-              onChange={ () => this.switchCheckedBox.bind(this)(item)}/>
+              />
           </View>
           <Image
-            source={{ uri: item.avatar}}
+            source={{ uri: item.avatar }}
             style={styles.avatar}
             />
           <Text> {item.name}{ item.ischeck } </Text>
@@ -121,11 +141,11 @@ class NewGroupChatRoom extends Component {
   onChangSearchValue (text) {
     this.setState({
       searchValue: text
-    })
+    });
   }
-  _separator = () => {
+  _separator () {
     return <View style={{height: '100%',backgroundColor:Color.White, width: 4}}/>;
-    }
+  }
   // TODO: 添加搜索定位功能
   // TODO : 添加选中列表组件
   render() {
@@ -160,27 +180,53 @@ class NewGroupChatRoom extends Component {
           RightComponent={ openMune }
           TextComponent={ Textcomponent }
           />
+        { /* 选中好友展示列表 */}
+        <View style={ styles.selectFriendBox }>
+          {
+              /*
+          <Animatable.View
+            transition={["width"]}
+            style={{width: this.state.displaySelectBoxWidth} }>
+            <ScrollView
+              contentContainerStyle={ styles.selectedFriendContainer}
+              horizontal={ true }
+              showsHorizontalScrollIndicator={true}
+              ref={ ref => this.dispalyItem = ref}
+                >
+                */
+                }
+              <FlatList
+                data={ this.state.checkedFriend }
+                horizontal={true}
+                style={[styles.selectedFriendContainer, { width: this.state.displaySelectBoxWidth }]}
+                renderItem={ this._seletFriendRow.bind(this) }
+                ref={(flatList) => this._displayFlatList = flatList }
+                keyExtractor={ this._keyExtractor }
+                scrollToEnd={ () => {}}
+                getItemLayout={(data, index) => ( {length: 44, offset: 44 * index, index} )}
+                ItemSeparatorComponent={this._separator}
+                />
+                {/*
+
+              </ScrollView>
+              </Animatable.View>
+            */}
+
           <TextInput.Search
-            placeholder="输入对方手机号"
+            placeholder="搜索手机号"
             style={ styles.searchBox }
+            isShowIcon={this.state.checkedFriend.length === 0}
             value={ this.state.searchValue }
             onChangeValue={ this.onChangSearchValue.bind(this) }
             />
-        { /* 选中好友展示列表 */}
-          <FlatList
-            data={ this.state.checkedFriend }
-            style={ styles.selectedFriendContainer }
-            horizontal={true}
-            renderItem={ this._seletFriendRow.bind(this) }
-            getItemLayout={(data, index) => ( {length: 50, offset: 50 * index, index} )}
-            ItemSeparatorComponent={this._separator}
-            />
+        </View>
         <View style={styles.friendListTitl}>
           <Text style={{color: Color.Grey}}>选择加入的好友</Text>
         </View>
         <FlatList
           data={ this.state.friendList }
           style={styles.flatlist}
+          keyExtractor={this._keyExtractor}
           renderItem={ this._renderRow.bind(this) }
           />
       </View>
@@ -192,7 +238,13 @@ const styles = EStyleSheet.create({
   container: {
     paddingLeft: FontSize.White
   },
+  selectFriendBox: {
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+  },
   selectedFriendContainer: {
+
   },
   seachContainer: {
     flexDirection: 'row',
@@ -200,8 +252,8 @@ const styles = EStyleSheet.create({
     alignItems: 'center'
   },
   selectListBox: {
-    width: 50,
-    height: 50,
+    width: 40,
+    height: 40,
   },
   selectFriendFace: {
     width: 40,
@@ -228,11 +280,11 @@ const styles = EStyleSheet.create({
     borderColor: Color.BackgroundGrey,
     borderBottomWidth: 1,
     borderStyle: 'solid',
-    flexShrink: 1,
+    flexShrink: 1
   },
   flatlist: {
-    height: '100%',
-    backgroundColor: Color.BackgroundGrey
+    backgroundColor: Color.BackgroundGrey,
+    height: '70%'
   },
   itemsBox: {
     backgroundColor: Color.White,
@@ -263,8 +315,10 @@ const styles = EStyleSheet.create({
 
 const mapStateToProps = state => ({
   isFetch: state.userReducer.isFetch,
-
-  friendList: state.userReducer.friendList
+  friendList: state.userReducer.friendList.map((n, i) => {
+    n.ischeck = false;
+    n.key = i;
+    return n;})
 });
 
 const mapDispatchToProps = dispatch => ({

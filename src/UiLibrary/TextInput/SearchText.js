@@ -21,6 +21,7 @@ export default class SearchText extends React.Component {
       onSubMitEditing: React.PropTypes.func,
       value:  React.PropTypes.string,
       style:  React.PropTypes.string,
+      isShowIcon: React.PropTypes.Boolean
     }
   constructor(props){
     super(props);
@@ -30,12 +31,17 @@ export default class SearchText extends React.Component {
   }
 
   render() {
-    const { placeholder, value, onSubMitEditing, style, onChangeValue } = this.props;
+    const { placeholder, value, isShowIcon,  onSubMitEditing, style, onChangeValue } = this.props;
       return (
         <View style={[styles.searchBox, style]}>
-          <View style={styles.searchIcon}>
+          {
+            isShowIcon ? (
+          <View style={styles.searchIcon }>
             <EEcon iconStyle={ styles.searchIcon } name="search" size={ 30 } color="#4F8EF7" />
           </View>
+            ): null
+          }
+
           <TextInput
             placeholder={ placeholder }
             style={ styles.textInput }
@@ -50,7 +56,7 @@ export default class SearchText extends React.Component {
 
 const styles = StyleSheet.create({
   searchBox: {
-    paddingVertical: 10,
+    paddingVertical: 14,
     flexDirection: 'row',
     justifyContent: 'flex-start',
     alignItems: 'center',
@@ -58,10 +64,12 @@ const styles = StyleSheet.create({
     backgroundColor: Color.White
   },
   textInput: {
-    flex: 1
+    flex: 1,
+    height: 26
   },
   searchIcon: {
-    paddingHorizontal: 10,
+    flexDirection: 'row',
+    alignItems: 'center',
     justifyContent: 'center'
   },
   hintInfo: {

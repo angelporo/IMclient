@@ -32,12 +32,12 @@ export default class CheckBox extends Component {
 
   toggle(){
     this.setState({checked:!this.state.checked}, () => {
-      this.props.onChange(this.state.checked);
+      this.props.onPress(this.state.checked);
     });
   }
   render () {
     let IconName ="ios-checkmark-circle-outline";
-    const { checked, style, onChange } = this.props;
+    const { checked, style, onPress } = this.props;
     if( checked ){
       IconName =  "ios-checkmark-circle";
     }
@@ -48,7 +48,7 @@ export default class CheckBox extends Component {
                       />);
     return(
       <TouchableOpacity
-        onPress={onChange}
+        onPress={ onPress }
         style={[style,
         styles.checkboxIcon]}
         >
