@@ -26,7 +26,6 @@ jsCodeLocation = [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot
   jsCodeLocation = [[NSBundle mainBundle] URLForResource:@"bundle/index.ios" withExtension:@"jsbundle"];
 
   
-  
   RCTRootView *rootView = [[RCTRootView alloc] initWithBundleURL:jsCodeLocation
                                                       moduleName:@"ImClient"
                                                initialProperties:nil

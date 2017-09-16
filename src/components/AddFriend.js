@@ -49,7 +49,8 @@ class AddFriendComponent extends Component {
 
   }
 
-  onSubMitEditing() {
+    onSubMitEditing() {
+
   }
 
   onChangSearchValue (text) {

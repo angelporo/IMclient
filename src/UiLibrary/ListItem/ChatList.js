@@ -47,7 +47,7 @@ export default class MessageCell extends Component {
                     );
     const ChatMessage = mgsComponent => (
       <View
-        style={[styles.messageCell, {flexDirection: differentStyle.flexDirection}]}
+        style={[ styles.messageCell, {flexDirection: differentStyle.flexDirection }]}
         >
         <Image
           source={{
@@ -73,7 +73,7 @@ export default class MessageCell extends Component {
 /**
  * 红包类型提示消息
  * Param: param
- * Return: {undefined}
+ * Return: { undefined }
  **/
 const redPackageMsg = ({packageData,
                         style,

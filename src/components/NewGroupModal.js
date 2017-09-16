@@ -10,7 +10,6 @@ import {
   TouchableOpacity,
   TouchableHighlight,
   Text,
-  Modal,
   StatusBar,
   FlatList,
   Image,

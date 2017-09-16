@@ -2,7 +2,6 @@ import * as types from './userType';
 import WebIM from '../../Lib/WebIM';
 
 export function changeFetch (isFetch) {
-    console.log('请求开始');
     return {
         type: types.CHANGE_FETCH_STATE,
         isFetch
@@ -37,7 +36,7 @@ export function changeLogginState ({userid, isLoggin}) {
 /**
  * 修改app中键盘高度
  * Param: param
- * Return: {undefined}
+ * Return: { undefined }
  **/
 export function changeKeyHeight ({keyHeight}) {
     return {
@@ -72,7 +71,7 @@ export const updateRoster = (roster) => {
     return {
         type: types.GET_ROSTER,
         roster: ros
-    }
+    };
 }
 
 
@@ -134,6 +133,63 @@ export const getGroupsRooms = () => ( dispatch, getState ) => {
         }
     };
     WebIM.conn.listRooms(options);
+}
+
+/**
+ * 发送群聊txt信息
+ * Param: { msg: String,roomId: String }
+ * Return: { undefined }
+ **/
+export const sendChatTxtMeg = ({ chatData , roomID, message }) => (dispatch, getState) => {
+    const msgId = WebIM.conn.getUniqueId();            // 生成本地消息id
+    let msg = new WebIM.message('txt', msgId); // 创建文本消息
+    console.log('msgid', msgId);
+    const option = {
+        msg: message,             // 消息内容
+        to: roomID,                     // 接收消息对象(群组id)
+        roomType: false,
+        chatType: 'chatRoom',
+        success: function () {
+            // 发送群聊成功
+            console.log('群聊信息发送成功');
+            const msgData = {
+                msg: {
+                    content: message,
+                    type: 'text'
+                },
+                msgID: msgId,
+                avatar: 'https://avatars1.githubusercontent.com/u/16830481?v=4&s=40',
+                name: 'liyuan',
+                from: '234432',
+                to: '234543'
+            };
+            // 获取当前群组在联系人列表中索引
+            const index = getState()
+            .userReducer
+            .userRecentChat
+            .findIndex(n => n.id === roomID);
+            dispatch( updateStoreGroupInfo({ msgData, index }));
+        },
+        fail: function () {
+            console.log('failed');
+        }
+    };
+    msg.set(option);
+    msg.setGroup('groupchat');
+    WebIM.conn.send(msg.body);
+}
+
+/**
+ * 发送群聊成功信息 更新store中群聊信息
+ * Param: { chatDataFormCurrentRoom : Array( 当前群组聊天数据 ), msg: String }
+ * Return: { undefined }
+ **/
+export const updateStoreGroupInfo = ({ msgData, index }) => {
+    return {
+        type: types.SEND_GROUP_CHAT_INFO,
+        msgData,
+        index
+    }
 }
 
 
@@ -243,17 +299,5 @@ export const updataChatRooms = ({chatRooms}) => {
     return {
         type: types.CHANGE_CHAT_ROOMS,
         chatRooms
-    };
-}
-
-/**
- * 更新用户参与群组聊天
- * Param: param
- * Return: {undefined}
- **/
-export const updataChatGroups = ({groups}) => {
-    return {
-        type: types.CAHNGE_GROUP,
-        groups,
     };
 }

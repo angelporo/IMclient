@@ -3,7 +3,8 @@
  * Param: param
  * Return: {undefined}
  **/
-import { AsyncStoreage } from 'react-native';
+
+// import Realm from 'realm';
 
 const inintUserState = {
   keyBoardHeight: 220,// 手机接盘高度

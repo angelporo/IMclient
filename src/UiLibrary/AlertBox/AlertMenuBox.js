@@ -33,6 +33,7 @@ export default class AlertMenuBox extends Component {
     return (
       <Modal
         animationType="slide"
+        onRequestClose={ () => onClosePress() }
         transparent={ true }
         style={ styles.contentBox }
         visible={ visible }

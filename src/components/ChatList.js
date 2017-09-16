@@ -152,6 +152,7 @@ class ChatList extends Component {
             renderItem={ this._renderRow.bind(this) }
             />
           <Modal
+            onRequestClose={() => this.setState({ openGroupChatRoom: false})}
             animationType={"slide"}
             transparent={ false }
             visible={this.state.openGroupChatRoom}>
@@ -176,6 +177,7 @@ class ChatList extends Component {
           <Modal
             animationType={"slide"}
             transparent={ false }
+            onRequestClose={() => this.setState({ openGroupChatRoom: false})}
             visible={this.state.openGroupChatRoom}>
             {/*// NOTE: 发送红包type选项(群发和单发) */}
             <NewGroupChatRoom

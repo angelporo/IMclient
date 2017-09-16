@@ -7,7 +7,6 @@ import React, { Component } from 'react';
 
 import {
   KeyboardAvoidingView,
-  RefreshControl,
   TouchableOpacity,
   TouchableWithoutFeedback,
   findNodeHandle,
@@ -22,6 +21,7 @@ import {
   Dimensions,
   Keyboard,
   StatusBar,
+  FlatList
 } from 'react-native';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
@@ -34,7 +34,7 @@ import {
 } from '../UiLibrary/';
 import WebIM from '../Lib/WebIM.js';
 import EStyleSheet from 'react-native-extended-stylesheet';
-import { changeKeyHeight } from '../reducers/user/userAction';
+import { changeKeyHeight, sendChatTxtMeg } from '../reducers/user/userAction';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Micon from 'react-native-vector-icons/MaterialIcons';
 import MMicon from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -68,15 +68,16 @@ class ChatRoom extends Component {
   _userReachEnd = true;
   constructor(props) {
     super(props);
-    console.log(props.navigation.state);
     this.toInfo = props.navigation.state.params.info.chatInfo;
     this.moveDistance = 130;
     this.firstEnter = 0;
     this.textInput = null;
-    this.ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
+    this.ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1.msgId !== r2.msgId});
+    this.roomID = this.props.navigation.state.params.info.id;
+    this.roomChatIndex = props.store.userRecentChat.findIndex(n => n.id === this.roomID);
     this.state = {
       textInputHeight: 40,
-      dataSource: this.ds.cloneWithRows(props.navigation.state.params.info.chatData),
+      // 消息数据获取渠道只能在store中拿
       inputValue: '',
       refreshing: false,
       sendVoice: false,
@@ -119,8 +120,7 @@ class ChatRoom extends Component {
     });
   }
   _scrollToBottom () {
-    let scrollProperties = this.chatListView.scrollProperties;
-
+    let scrollProperties = this.chatListView._listRef._scrollMetrics;
     // 如果组件没有挂载完全，则不进行内容偏移
     if (!scrollProperties.visibleLength) { return; }
 
@@ -139,43 +139,33 @@ class ChatRoom extends Component {
     // 这里设置了 130ms 的延时
     setTimeout(() => {
       let offsetY = scrollProperties.contentLength - scrollProperties.visibleLength;
-      this.chatListView.scrollTo({
-        y: offsetY > 0 ? offsetY  : 0,
+      this.chatListView.scrollToOffset({
+        offset: offsetY > 0 ? offsetY  : 0,
         animated: this._userHasBeenInputed
       });
-    }, this._userHasBeenInputed ? 0 : 200);
+    }, this._userHasBeenInputed ? 0 : 123);
   }
 
   _onSubmitEditing = () => {
-    this._userHasBeenInputed = true;
-    // 数据组装
-    let { userInfo } = profileStore;
-    let payload = {
-      from: userInfo.userId,
-      to: this.toInfo.userId,
-      uuid: uuid.v4(),
-      msg: {
-        type: 'txt',
-        content: this.state.inputValue
-      },
-      ext: {
-        avatar: userInfo.avatar,
-        name: userInfo.name
-      }
+    const { sendChatTxtMeg } = this.props;
+    const sendMsgOption = {
+      chatData: this.props.navigation.state.params.info.chatData,
+      roomID: this.props.navigation.state.params.info.id,
+      message: this.state.inputValue
     };
-
-    this.setState({ inputValue: '' });
+    // 发送群聊文本消息
+    sendChatTxtMeg( sendMsgOption );
+    this.setState({inputValue: ''});
   }
 
-  _renderRow = (row, sectionID, rowId) => {
+  _renderRow = ({ item }) => {
     const { userid } = this.props;
-    this.currentMaxRowId = +rowId;
+    // this.currentMaxRowId = +rowId;
     return (
       <ListItem.MessageCell
         onPreddRedPackage={this._onOpenReadPackage.bind(this)}
-        key={`cell-${ rowId }`}
         currentUser={ userid }
-        message={ row }
+        message={ item }
         />
     );
   }
@@ -282,7 +272,7 @@ class ChatRoom extends Component {
           selectTypeOpacity: 1,
           seleteSendTypeHeight: this.props.keyBoardHeight || 180,
           selectZindex: 1,
-          closeToolsButton: 1,
+          closeToolsButton: 1
         }, () =>  this.textInput && this.textInput.blur());
       }else if (this.state.currentToolType === 'input') {
         // 打开input
@@ -317,15 +307,15 @@ class ChatRoom extends Component {
     this.setState({modalVisible: false});
     StatusBar.setBarStyle("light-content");
   }
-  _onPressListView () {
-    return this.setState({
-      seleteSendTypeHeight: 0,
-      selectTypeOpacity: 0,
-      selectZindex: 0,
-      currentToolType: 'null',
-      closeToolsButton: -1
-    }, () => this.textInputTimer = setTimeout(() => this.textInput && this.textInput.blur(),  0));
-  }
+    _onPressListView () {
+        return this.setState({
+            seleteSendTypeHeight: 0,
+            selectTypeOpacity: 0,
+            selectZindex: 0,
+            currentToolType: 'null',
+            closeToolsButton: -1
+        }, () => this.textInputTimer = setTimeout(() => this.textInput && this.textInput.blur(),  0));
+    }
   _onOpenReadPackage () {
     this.setState({
       openRedPackageAnimation: 'zoomIn'
@@ -367,19 +357,12 @@ class ChatRoom extends Component {
 
   render() {
     const ChatListView = (
-      <ListView
-        refreshControl={
-            <RefreshControl
-                refreshing={this.state.refreshing}
-                onRefresh={this._onPullMessage}
-                />
-            }
-            onEndReached={() => {
-              this._userReachEnd = true;
-        }}
-        onEndReachedThreshold={10}
+      <FlatList
+        data={this.props.store.userRecentChat[this.roomChatIndex].chatData}
+        keyExtractor={(item, index) => item.msgId}
+        onRefresh={this._onPullMessage}
+        refreshing={this.state.refreshing}
         ref={(reference) => { this.chatListView = reference; }}
-        enableEmptySections={ true }
         onLayout={
           (event) => {
             this._scrollToBottom();
@@ -390,10 +373,9 @@ class ChatRoom extends Component {
             this._scrollToBottom();
           }
         }
-        renderRow={this._renderRow.bind(this)}
-        dataSource={ this.state.dataSource }
+        renderItem={ this._renderRow.bind(this)}
         />
-    )
+    );
 
     let content = (
       <View
@@ -431,7 +413,7 @@ class ChatRoom extends Component {
               >
               <TouchableOpacity
                 onPress={ () => this.setState({sendVoice: !this.state.sendVoice, selectTypeOpacity: 0, seleteSendTypeHeight: 0,selectZindex: 0})}
-                style={ styles.selectSendContentButton }>
+                style={styles.selectSendContentButton}>
                 {
                   !this.state.sendVoice ? VoiceIcon : TextIcon
                 }
@@ -499,7 +481,7 @@ class ChatRoom extends Component {
       style={styles.sendButton}
       textStyle={ styles.sendButtonText }
       disabled={ !this.state.inputValue }
-      onPress={ this._onSubmitEditing }>
+      onPress={ this._onSubmitEditing.bind(this) }>
         发送
       </Button>
         </View>
@@ -529,6 +511,7 @@ class ChatRoom extends Component {
         </Animatable.View>
         <Modal
       animationType={"slide"}
+      onRequestClose={() => this.setState({modalVisible: false}) }
       transparent={ false }
       visible={this.state.modalVisible}>
         {/*// NOTE: 发送红type选项(群发和单发) */}
@@ -555,7 +538,7 @@ class ChatRoom extends Component {
   }
 }
 
-function SeletTypeItem ({ onPress, Icon, text, height}) {
+function SeletTypeItem ({onPress, Icon, text, height}) {
   return (
     <TouchableOpacity
       style={{width: '25%',
@@ -564,7 +547,7 @@ function SeletTypeItem ({ onPress, Icon, text, height}) {
               height: height,
               marginTop: 10
       }}
-      onPress={ onPress }
+      onPress={ onPress}
       >
       <View style={styles.selectItemIcon}>
         { Icon }
@@ -704,11 +687,13 @@ const styles = EStyleSheet.create({
 
 const mapStateToProps = state => ({
   userid: state.userReducer.userid,
-  keyBoardHeight: state.userReducer.keyBoardHeight
+  keyBoardHeight: state.userReducer.keyBoardHeight,
+  store: state.userReducer,
 });
 
 const mapDispatchToProps = dispatch => ({
-  changeGlobelKeyHeight: compose( dispatch,  changeKeyHeight)
+  changeGlobelKeyHeight: compose( dispatch,  changeKeyHeight),
+  sendChatTxtMeg: compose( dispatch, sendChatTxtMeg)
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(ChatRoom);

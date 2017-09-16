@@ -22,6 +22,7 @@ import {
   TextInput
 } from '../UiLibrary/';
 
+
 class UserCenter extends Component {
   static navigationOptions = props => {
     const headerRight = (<Icon.Button
