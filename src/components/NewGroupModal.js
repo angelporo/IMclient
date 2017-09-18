@@ -220,12 +220,14 @@ class NewGroupChatRoom extends Component {
         <View style={styles.friendListTitl}>
           <Text style={{color: Color.Grey}}>选择加入的好友</Text>
         </View>
+        <View>
         <FlatList
           data={ this.state.friendList }
           style={styles.flatlist}
           keyExtractor={this._keyExtractor}
           renderItem={ this._renderRow.bind(this) }
           />
+        </View>
       </View>
     );
   }
@@ -280,8 +282,7 @@ const styles = EStyleSheet.create({
     flexShrink: 1
   },
   flatlist: {
-    backgroundColor: Color.BackgroundGrey,
-    height: '70%'
+    backgroundColor: Color.BackgroundGrey
   },
   itemsBox: {
     backgroundColor: Color.White,

@@ -7,3 +7,4 @@ export const CAHNGE_CHAT = 'CAHNGE_CHAT';
 export const CAHNGE_GROUP = 'CAHNGE_GROUP'; // 群聊
 export const SEND_GROUP_CHAT_INFO = 'SEND_GROUP_CHAT_INFO'; // 发送群聊信息成功
 export const CHANGE_CHAT_ROOMS = 'CHANGE_CHAT_ROOMS'; // 用户个人聊天, 非群组
+export const SAVE_USERID = 'SAVE_USERID'; // 登录成功保存用户id

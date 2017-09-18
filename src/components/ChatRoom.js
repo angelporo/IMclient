@@ -11,7 +11,6 @@ import {
   TouchableWithoutFeedback,
   findNodeHandle,
   UIManager,
-  ListView,
   Image,
   Text,
   TextInput,
@@ -72,7 +71,6 @@ class ChatRoom extends Component {
     this.moveDistance = 130;
     this.firstEnter = 0;
     this.textInput = null;
-    this.ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1.msgId !== r2.msgId});
     this.roomID = this.props.navigation.state.params.info.id;
     this.roomChatIndex = props.store.userRecentChat.findIndex(n => n.id === this.roomID);
     this.state = {
@@ -361,7 +359,7 @@ class ChatRoom extends Component {
         data={this.props.store.userRecentChat[this.roomChatIndex].chatData}
         keyExtractor={(item, index) => item.msgId}
         onRefresh={this._onPullMessage}
-        refreshing={this.state.refreshing}
+        refreshing={this.state.refreshing }
         ref={(reference) => { this.chatListView = reference; }}
         onLayout={
           (event) => {

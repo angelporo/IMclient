@@ -3377,6 +3377,10 @@ react-native-animatable@^1.2.3:
   dependencies:
     prop-types "^15.5.10"
 
+react-native-bottom-sheet@^1.0.2:
+  version "1.0.2"
+  resolved "http://registry.npm.taobao.org/react-native-bottom-sheet/download/react-native-bottom-sheet-1.0.2.tgz#11a9b68b950c4ca4ccc1dab4ca4f5770002855c8"
+
 react-native-bottomsheet@^1.6.3:
   version "1.6.3"
   resolved "http://registry.npm.taobao.org/react-native-bottomsheet/download/react-native-bottomsheet-1.6.3.tgz#10da263e479f1067de97ca65368e997fffa592c0"
@@ -3404,9 +3408,9 @@ react-native-extended-stylesheet@^0.6.0:
     css-mediaquery "^0.1.2"
     object-resolve-path "^1.1.0"
 
-react-native-image-picker@^0.26.4:
-  version "0.26.4"
-  resolved "http://registry.npm.taobao.org/react-native-image-picker/download/react-native-image-picker-0.26.4.tgz#e53b0564bef44cb3c96ff81594e1e874daa1f0b3"
+react-native-image-picker@^0.26.7:
+  version "0.26.7"
+  resolved "http://registry.npm.taobao.org/react-native-image-picker/download/react-native-image-picker-0.26.7.tgz#ad2ee957f7f6cc01396893ea03d84cb2adb2e376"
 
 react-native-tab-view@^0.0.65:
   version "0.0.65"

@@ -5,16 +5,18 @@
 	"scripts": {
 		"start": "node node_modules/react-native/local-cli/cli.js start",
 		"test": "jest",
-		"bundle-ios": "node node_modules/react-native/local-cli/cli.js bundle --entry-file index.ios.js  --platform ios --dev false --bundle-output ./ios/bundle/index.ios.jsbundle --assets-dest ./ios/bundle"
+	  "bundle-ios": "node node_modules/react-native/local-cli/cli.js bundle --entry-file index.ios.js  --platform ios --dev false --bundle-output ./ios/bundle/index.ios.jsbundle --assets-dest ./ios/bundle",
+          "bundle-android": "node node_modules/react-native/local-cli/cli.js bundle --platform android --dev false --entry-file index.android.js --bundle-output android/app/src/main/assets/index.android.bundle --assets-dest android/app/src/main/res/"
 	},
 	"dependencies": {
 		"immutable": "^3.8.1",
 		"react": "16.0.0-alpha.6",
 		"react-native": "0.44.3",
 		"react-native-animatable": "^1.2.3",
+		"react-native-bottom-sheet": "^1.0.2",
 		"react-native-bottomsheet": "^1.6.3",
 		"react-native-extended-stylesheet": "^0.6.0",
-		"react-native-image-picker": "^0.26.4",
+		"react-native-image-picker": "^0.26.7",
 		"react-native-vector-icons": "^4.3.0",
 		"react-navigation": "^1.0.0-beta.11",
 		"react-redux": "^5.0.6",

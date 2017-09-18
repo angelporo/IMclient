@@ -76,6 +76,57 @@ export const updateRoster = (roster) => {
 
 
 /**
+ * 注册用户
+ * Param: param
+ * Return: {undefined}
+ **/
+export const register = ({userName, psd, nickName, phone}) => (dispatch , getState) => {
+    const options = {
+        username: userName,
+        password: pad,
+        nickname: nickName,
+        appKey: WebIM.config.appkey,
+        success: function () {
+            alert('注册成功');
+        },
+        error: function () { },
+        apiUrl: WebIM.config.apxoiURL
+    };
+    WebIM.conn.registerUser(options);
+}
+
+/**
+ * 用户登录
+ * Param: param
+ * Return: {undefined}
+ **/
+export const loggin = ({phone, psd}) => (dispatch, getState) => {
+    if (WebIM.conn.isOpened()) {
+        WebIM.conn.close('logout');
+    }
+    const options = {
+        apiUrl: WebIM.config.apiURL,
+        user: phone,
+        pwd: psd,
+        appKey: WebIM.config.appkey,
+    };
+    WebIM.conn.open( options );
+}
+
+
+/**
+ * 保存用户id
+ * Param: param
+ * Return: {undefined}
+ **/
+export const saveUserId  = (userid) => {
+    return {
+        type: types.SAVE_USERID,
+        userId: userid
+    }
+}
+
+/**
  * 获取用户好友列表
  * Param: { rosterListData: Array }
  * Return: {undefined}
@@ -121,7 +172,6 @@ export const getChatRooms = () => ( dispatch, getState ) => {
  **/
 export const getGroupsRooms = () => ( dispatch, getState ) => {
     // FIXME: 对接环信用户聊天列表数据
-    console.log('hahaha');
     let options = {
         success: (resp) => {
             console.log("获取群聊列表", resp);

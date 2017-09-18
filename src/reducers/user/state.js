@@ -4,13 +4,13 @@
  * Return: {undefined}
  **/
 
-// import Realm from 'realm';
+import Realm from 'realm';
 
 const inintUserState = {
   keyBoardHeight: 220,// 手机接盘高度
-  isLogged: true,
+  isLogged: false,
   isShowMune: false,
-  userid: '23455553',
+  userid: '',
   userName: '李渊的信信',
   isFetch: false,
   isError: null, // 提示错误消息, null ? closeAlert : openAlert

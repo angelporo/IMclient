@@ -8,11 +8,7 @@ import { connect } from 'react-redux';
 import { compose } from 'redux';
 import {
   View,
-  ListView,
   FlatList,
-  RefreshControl,
-  TouchableHighlight,
-  Text
 } from 'react-native';
 import * as userAction from '../reducers/user/userAction';
 import EStyleSheet from 'react-native-extended-stylesheet';
@@ -45,8 +41,8 @@ class UserContackList extends Component {
         <AddPerson hintColor={ tintColor } />
       ),
       headerRight: headerRight,
-      title: '信信',
-      headerLeft: null,
+      title: '好友',
+      headerLeft: (<View/>),
       gesturesEnabled: false
     };
   };

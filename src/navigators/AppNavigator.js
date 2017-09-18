@@ -2,7 +2,10 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
-import { addNavigationHelpers, StackNavigator } from 'react-navigation';
+import { addNavigationHelpers,
+         StackNavigator,
+         NavigationActions
+          } from 'react-navigation';
 import Login from '../components/login';
 import Register from '../components/register';
 import { switchMenuState } from '../reducers/user/userAction';
@@ -13,34 +16,36 @@ import {
 } from '../UiLibrary/';
 
 import MyApp from '../components/Tabindex';
+
 // 生成路由关系 绑定导航路由
 export const AppNavigator = StackNavigator({
   Login: { screen: Login },
   Register: { screen: Register },
-  MyApp: {screen: MyApp },
-  ChatRoom: {screen: ChatRoom },
-  AddFriend: { screen: AddFriendComponent},
+  MyApp: {screen: MyApp},
+  AddFriend: { screen: AddFriendComponent },
+  ChatRoom: { screen: ChatRoom }
 }, {
-  // 全局配置导航
-  navigationOptions: {
-    headerStyle: { backgroundColor: Color.Black },
-    headerTitleStyle: {color: Color.White},
-    headerBackTitleStyle: {color: Color.White},
-    // headerTruncatedBackTitle: '返回',
-    headerTitleStyle: {color: Color.White},
-    headerTintColor: Color.White,
-    headerBackTitleStyle: {color: Color.White}
-  },
+    // 全局配置导航
+    headerMode: "float",
+    navigationOptions: {
+        headerStyle: { backgroundColor: Color.Black },
+        headerTitleStyle: { color: Color.White,
+            alignSelf: 'center'
+        },
+        headerBackTitleStyle: {color: Color.White},
+        headerTintColor: Color.White,
+    },
   mode:'card'
 });
 
 // 在store中绑定state到component props
 const mapStateToProps = state => ({
-  nav: state.nav
+  nav: state.nav,
+  isLogged: state.userReducer.isLogged
 });
 
 // 在navigator中绑定dispatch, state
-const AppWithNavigationState = ({ dispatch , nav }) => {
+const AppWithNavigationState = ({ dispatch , nav, isLogged }) => {
     return (
       <AppNavigator
         navigation={ addNavigationHelpers({ dispatch, state: nav })} />
@@ -60,4 +65,4 @@ const mapDispatchToProps = dispatch => {
 // };
 
 // 导出链接好dispatch, state, 我navigator的组件
-export default connect(mapStateToProps )(AppWithNavigationState);
+export default connect( mapStateToProps )(AppWithNavigationState);

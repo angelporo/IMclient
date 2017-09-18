@@ -49,7 +49,7 @@ class AddFriendComponent extends Component {
 
   }
 
-    onSubMitEditing() {
+  onSubMitEditing() {
 
   }
 
@@ -63,6 +63,7 @@ class AddFriendComponent extends Component {
     return (
       <ScrollView
         style={styles.container}
+        endFillColor={Color.Grey}
         >
         <TextInput.Search
           placeholder="输入对方手机号"
@@ -91,7 +92,7 @@ const styles = EStyleSheet.create({
   hintInfo: {
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: 10
+    marginTop: 10,
   }
 });
 

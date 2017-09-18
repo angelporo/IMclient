@@ -17,6 +17,9 @@ export default function user(state = inintUserState, action) {
     case types.SEND_GROUP_CHAT_INFO:
         state.userRecentChat[action.index].chatData.push(action.msgData);
         return Object.assign(state);
+    case types.SAVE_USERID:
+        console.log('deng', action);
+        return Object.assign({}, state, { userid: action.userId, isLogged: true })
     default:
         console.log(state);
         return state;

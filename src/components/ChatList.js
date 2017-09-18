@@ -8,7 +8,6 @@ import {
   TouchableHighlight,
   TouchableOpacity,
   Image,
-  ListView,
   FlatList,
   Text,
   View,
@@ -33,7 +32,9 @@ import FFIcon from 'react-native-vector-icons/Foundation';
 import Icon from 'react-native-vector-icons/Ionicons';
 import NewGroupChatRoom from './NewGroupModal';
 const AddPerson = ({hintColor}) => (<Icon name="ios-chatbubbles" size={26} color={ hintColor } />);
-const ChatIcon = (<EIcon iconStyle={ {} } name="chat" size={ 80 } color={ Color.LightGrey } />);
+const ChatIcon = (<EIcon iconStyle={ {} }
+    name="chat" size={ 80 }
+    color={ Color.LightGrey } />);
 
 /**
  * 聊天记录组件
@@ -42,32 +43,37 @@ const ChatIcon = (<EIcon iconStyle={ {} } name="chat" size={ 80 } color={ Color.
  **/
 class ChatList extends Component {
   static navigationOptions = ({navigation})  => {
-    const headerRight = (<FIcon.Button
-                         onPress={ () => navigation.state.params.chatListSwitchMenu() }
-                         backgroundColor={Color.Black}
-                         name="plus"
-                         size={ 20 }
-                         iconStyle={{marginRight: 10}}
-                         color={ Color.White }
-                         /> );
-    return {
-      tabBarLabel: '信信',
-      tabBarIcon: ({ tintColor }) => (
-        <AddPerson hintColor={ tintColor } />
-      ),
-      headerRight: headerRight,
-      title: '信信',
-      headerLeft: null,
-      gesturesEnabled: false
-    };
+      const headerRight = (<FIcon.Button
+          onPress={ () => navigation.state.params.chatListSwitchMenu() }
+          backgroundColor={Color.Black}
+          name="plus"
+          size={ 20 }
+          iconStyle={{ marginRight: 10 }}
+          color={ Color.White }
+          /> );
+      return {
+          tabBarLabel: '信信',
+          tabBarIcon: ({ tintColor }) => (
+              <AddPerson hintColor={ tintColor } />
+          ),
+          headerRight: headerRight ,
+          headerTitle: "信信",
+          headerLeft: (<View/>),
+          gesturesEnabled: false
+      };
   };
-  _switchMenu () {
-    this.setState({menuIsShow: !this.state.menuIsShow});
+    _switchMenu () {
+      this.setState({menuIsShow:
+                     !this.state.menuIsShow});
   }
 
-  constructor () {
-    super();
-    this.menuData = [{
+  constructor (props) {
+    super(props);
+    this.state = {
+      menuAnimation: 'fadeInDownBig',
+      menuIsShow: false,
+      openGroupChatRoom: false,
+      menuData: [{
       icon: (<Icon name="ios-person-add" size={ 24 } color={ Color.White } />),
       text: '发起群聊',
       onPress: this._openGroupChat.bind(this)
@@ -75,15 +81,11 @@ class ChatList extends Component {
       icon: (<Icon name="ios-person-add" size={ 24 } color={ Color.White } />),
       text: '添加好友',
       onPress: this._openAddFriend.bind(this)
-    }];
-    this.state = {
-      menuAnimation: 'fadeInDownBig',
-      menuIsShow: false,
-      openGroupChatRoom: false
+    }]
     };
   }
   componentWillMount () {
-    this.props.navigation.setParams({ chatListSwitchMenu:this._switchMenu.bind(this)});
+    this.props.navigation.setParams({ chatListSwitchMenu: this._switchMenu.bind(this)});
   }
   _openGroupChat () {
     this.setState({
@@ -106,7 +108,6 @@ class ChatList extends Component {
           title: '删除',
           type: 'Delete',
           onPress: () => {
-
           }
         }]}
         >
@@ -135,30 +136,31 @@ class ChatList extends Component {
 
   render() {
     let { RecentChatData } = this.props;
+    console.log('falsehahha', RecentChatData);
     if (true) {
       return (
         <View style={styles.container}>
           <StatusBar
             barStyle="light-content"
-            backgroundColor={ "#E95F38" }
+            backgroundColor={ Color.Black }
             StatusBarAnimation="fade"
             />
           <MenuBox
             animation={ this.state.menuAnimation }
             isShow={ this.state.menuIsShow }
-            data={this.menuData}/>
+            data={this.state.menuData}/>
           <FlatList
             data={ RecentChatData }
-            renderItem={ this._renderRow.bind(this) }
+            renderItem={ this._renderRow.bind( this ) }
             />
           <Modal
             onRequestClose={() => this.setState({ openGroupChatRoom: false})}
             animationType={"slide"}
             transparent={ false }
             visible={this.state.openGroupChatRoom}>
-            {/*// NOTE: 发送红type选项(群发和单发) */}
+            {/*// NOTE: 发送红包type选项(群发和单发) */}
             <NewGroupChatRoom
-            closeModal={() => this.setState({ openGroupChatRoom: false})}
+            closeModal={() => this.setState({ openGroupChatRoom: false })}
             />
             </Modal>
         </View>
@@ -166,8 +168,13 @@ class ChatList extends Component {
     } else {
       return (
         <View>
+          <StatusBar
+            barStyle="light-content"
+            backgroundColor={ Color.Black }
+            StatusBarAnimation="fade"
+            />
           <View
-            style={styles.emptyMessage}
+            style={ styles.emptyMessage }
             >
             { ChatIcon }
             <Text
@@ -260,41 +267,46 @@ class ConversationCell extends React.Component {
   }
 }
 
-function MenuBox ({data, animation, duration, isShow}) {
-  if(!isShow) return null;
-  return (
-    <Animatable.View
-      animation={ animation }
-      duration={ duration || 600 }
-      style={[styles.menuContent]}>
-      <View style={styles.upIcon}>
-        <EIcon name="triangle-up"
-               size={ 22 }
-               color={ Color.LightBlack } />
-      </View>
-      {
-        data.map( (n, i) => (
-          <TouchableHighlight
-            key={i}
-            onPress={n.onPress}
-            delayPressIn={0}
-            delayPressOut={ 200 }
-            style={styles.menuBox}
-            >
-            <View style={styles.menuItem}
-                  >
-              { n.icon }
-              <Text style={{color: Color.White,
-                            textAlign: 'center',
-                            marginLeft: 12,
-                            fontSize: 16
-                    }}>{ n.text }</Text>
-            </View>
-          </TouchableHighlight>
-        ))
-      }
-    </Animatable.View>
-  )
+class MenuBox extends Component {
+  constructor(props){
+    super(props);
+  }
+  render () {
+    const { isShow, data, animation, duration } = this.props;
+    if(!isShow){ return null;}
+    return (
+      <Animatable.View
+        animation={ animation }
+        duration={ duration || 600 }
+        style={[styles.menuContent]}>
+        <View style={styles.upIcon}>
+          <EIcon name="triangle-up"
+                 size={ 22 }
+                 color={ Color.LightBlack } />
+        </View>
+        {
+          data.map( (n, i) => (
+            <TouchableHighlight
+              key={i}
+              onPress={ n.onPress }
+              delayPressIn={0}
+              delayPressOut={ 200 }
+              style={styles.menuBox}
+              >
+              <View style={styles.menuItem}>
+                { n.icon }
+                <Text style={{color: Color.White,
+                              textAlign: 'center',
+                              marginLeft: 12,
+                              fontSize: 16
+                      }}>{ n.text }</Text>
+              </View>
+            </TouchableHighlight>
+          ))
+        }
+      </Animatable.View>
+    )
+  }
 }
 
 MenuBox.propTypes = {
@@ -336,6 +348,7 @@ const styles = EStyleSheet.create({
   container: {
     position: 'relative',
     flex: 1,
+    height: '100%',
     justifyContent: 'flex-start',
     alignItems: 'stretch',
     backgroundColor: Color.BackgroundGrey

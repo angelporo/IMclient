@@ -1,6 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Image,Text,  TouchableOpacity, StyleSheet } from 'react-native';
+import {Text,
+        TouchableOpacity,
+        StyleSheet,
+        View
+       } from 'react-native';
 import { addNavigationHelpers, StackNavigator, TabNavigator } from 'react-navigation';
 import Icon from 'react-native-vector-icons/Ionicons';
 import UserContackList from './ContactList';
@@ -34,7 +38,7 @@ const styles = StyleSheet.create({
   icon: {
     width: 26,
     height: 26
-  },
+  }
 });
 
 const MyApp = TabNavigator({
@@ -42,23 +46,20 @@ const MyApp = TabNavigator({
     screen: ChatList,
     navigationOptions: {
       tabBarLabel:'信信',
-      headerLeft: null
     }
   },
   userContactList: {
     screen: UserContackList,
     navigationOptions: {
       tabBarLabel:'通讯录',
-      headerLeft: null
     }
   },
   userCenter: {
     screen: UserContackList,
     navigationOptions: {
       tabBarLabel:'我的',
-      headerLeft: null
     }
-  },
+  }
 }, {
   tabBarOptions: {
     activeTintColor: '#e91e63',
@@ -80,7 +81,7 @@ const MyApp = TabNavigator({
     borderColor: Color.LittleGrey
   },
     labelStyle: {
-      margin:0
+      margin: 0
     },
     tabStyle: {
     }

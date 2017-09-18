@@ -8,7 +8,6 @@ import {
   StyleSheet,
   View,
   TouchableOpacity,
-  Modal,
   Text,
   StatusBar,
   ScrollView
@@ -106,7 +105,9 @@ class HandleSendRedPackage extends Component {
           RightComponent={ openMune }
           TextComponent={ Textcomponent }
           />
-        <ScrollView>
+        <ScrollView
+          endFillColor={ Color.Grey }
+          >
         <TextInput.number
           labelText="单个金额"
           style={styles.msgInput}
