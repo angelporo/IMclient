@@ -1,7 +1,7 @@
 /**
- * 用户个人中心(我的)页面
+ * 用户钱包组件页面
  * Param: param
- * Return: { Component }
+ * Return: {undefined}
  **/
 import React, {Component} from 'react';
 import { connect } from 'react-redux';
@@ -22,8 +22,8 @@ import {
   TextInput
 } from '../UiLibrary/';
 
-class UserCenter extends Component {
-  static navigationOptions = props => {j
+class UserWalletComponent extends Component {
+  static navigationOptions = props => {
     const headerRight = (<Icon.Button
                          onPress={ () => _this._switchMenu.bind(_this)() }
                          backgroundColor={Color.Black}
@@ -32,9 +32,8 @@ class UserCenter extends Component {
                          color={ Color.White }
                          /> );
     return {
-      title: '登录',
-      headerRight: headerRight,
-      headerLeft: null
+      title: '钱包',
+      // headerRight: headerRight
     };
   }
 
@@ -51,7 +50,7 @@ class UserCenter extends Component {
   render() {
     return (
       <View
-        style={ styles.container }
+        style={styles.container}
         >
       </View>
     );
@@ -68,11 +67,11 @@ const styles = EStyleSheet.create({
 });
 
 const mapStateToProps = state => ({
-
+  isFetch: state.userReducer.isFetch
 });
 
 const mapDispatchToProps = dispatch => ({
 
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(UserCenter );
+export default connect(mapStateToProps, mapDispatchToProps)( UserWalletComponent );

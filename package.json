@@ -5,10 +5,13 @@
 	"scripts": {
 		"start": "node node_modules/react-native/local-cli/cli.js start",
 		"test": "jest",
-	  "bundle-ios": "node node_modules/react-native/local-cli/cli.js bundle --entry-file index.ios.js  --platform ios --dev false --bundle-output ./ios/bundle/index.ios.jsbundle --assets-dest ./ios/bundle",
-          "bundle-android": "node node_modules/react-native/local-cli/cli.js bundle --platform android --dev false --entry-file index.android.js --bundle-output android/app/src/main/assets/index.android.bundle --assets-dest android/app/src/main/res/"
+		"bundle-ios": "node node_modules/react-native/local-cli/cli.js bundle --entry-file index.ios.js  --platform ios --dev false --bundle-output ./ios/bundle/index.ios.jsbundle --assets-dest ./ios/bundle",
+	  "bundle-android": "cd android && ./gradlew installRelease",
+          "dev": "cross-env NODE_ENV=development react-native run-android",
+          "build": "cross-env NODE_ENV=production"
 	},
 	"dependencies": {
+		"cross-env": "^5.0.5",
 		"immutable": "^3.8.1",
 		"react": "16.0.0-alpha.6",
 		"react-native": "0.44.3",
@@ -17,6 +20,7 @@
 		"react-native-bottomsheet": "^1.6.3",
 		"react-native-extended-stylesheet": "^0.6.0",
 		"react-native-image-picker": "^0.26.7",
+		"react-native-photo-upload": "^1.0.3",
 		"react-native-vector-icons": "^4.3.0",
 		"react-navigation": "^1.0.0-beta.11",
 		"react-redux": "^5.0.6",

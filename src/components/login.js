@@ -62,15 +62,6 @@ class Login extends Component {
             isCanLogin: false,
             isShowMenu: false
         };
-
-        // WebIM.conn.open({
-        //     apiUrl: WebIM.config.apiURL,
-        //     user: 'test',
-        //     pwd: 'angel0112',
-        //     //  accessToken: password,
-        //     appKey: WebIM.config.appkey
-        // });
-
     }
 
   _login = async () => {

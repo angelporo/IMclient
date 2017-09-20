@@ -11,7 +11,7 @@ import {
     Text,
     View
 } from 'react-native';
-
+import EIcon from 'react-native-vector-icons/Entypo';
 import Color from '../Color';
 import FontSize from '../FontSize';
 import ListItemArrow from './ListItemArrow.js';
@@ -19,7 +19,7 @@ import ListItemArrow from './ListItemArrow.js';
 export default class Label extends React.Component {
     static propTypes = {
         style: PropTypes.any,
-        icon: PropTypes.string,
+        icon: PropTypes.element,
         iconStyle: PropTypes.any,
         labelText: PropTypes.string,
         labelStyle: PropTypes.any,
@@ -35,33 +35,22 @@ export default class Label extends React.Component {
     }
 
     _renderIcon = () => {
-        let { icon, iconStyle, iconPress } = this.props;
-        if (icon) {
+        let { icon, iconStyle, iconPress, } = this.props;
+        if ( icon ) {
             if(iconPress) {
                 return (
                     <TouchableWithoutFeedback onPress={ iconPress }>
-                    <Image
-                    source={{
-                        uri: icon
-                    }}
-                    style={[
-                        styles.iconStyle,
-                        iconStyle
-                    ]}
-                    />
+                      <View style={[styles.iconStyle,
+                            iconStyle]}>
+                          { icon }
+                    </View>
                     </TouchableWithoutFeedback>
                 );
             }
-            return (
-                <Image
-                    source={{
-                        uri: icon
-                    }}
-                    style={[
-                        styles.iconStyle,
-                        iconStyle
-                    ]}
-                />
+          return (
+            <View style={[styles.iconStyle, iconStyle]}>
+              { icon }
+            </View>
             );
         } else {
             return null;
@@ -70,7 +59,6 @@ export default class Label extends React.Component {
 
     _renderRightCompoent = () => {
         let { rightComponent, textStyle } = this.props;
-
         if (typeof rightComponent === 'string' || typeof rightComponent === 'number') {
             return (
                 <Text
@@ -90,8 +78,8 @@ export default class Label extends React.Component {
     _renderRightArrow() {
         let { onPress } = this.props;
         if (onPress) {
-            return (
-                <ListItemArrow/>
+          return (
+            <EIcon name="chevron-thin-right" color={Color.Grey} />
             );
         }
 
@@ -121,7 +109,6 @@ export default class Label extends React.Component {
                         { labelText }
                     </Text>
                 </View>
-
                 <View
                     style={styles.labelRightComponent}
                 >
@@ -155,12 +142,12 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'space-between',
         paddingHorizontal: 15,
-        paddingVertical: 10,
+        paddingVertical: 6
     },
-    iconStyle: {
-        height: 40,
-        width: 40,
-        marginRight: 15
+  iconStyle: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 15,
     },
     labelLeftComponent: {
         flexDirection: 'row',

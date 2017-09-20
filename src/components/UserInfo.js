@@ -1,14 +1,13 @@
 /**
- * 添加好友列表
+ * 展示用户基本信息
  * Param: param
  * Return: {undefined}
  **/
 import React, {Component} from 'react';
 import { connect } from 'react-redux';
 import {
-  ScrollView,
   View,
-  Text
+  Image
 } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import FIcon from 'react-native-vector-icons/FontAwesome';
@@ -16,13 +15,18 @@ import EIcon from 'react-native-vector-icons/Entypo';
 import EEcon from 'react-native-vector-icons/EvilIcons';
 import FFIcon from 'react-native-vector-icons/Foundation';
 import Icon from 'react-native-vector-icons/Ionicons';
+import PhotoUpload from 'react-native-photo-upload';
+
+const MyIcon = (<Icon name="ios-person" size={30} color="#4F8EF7" />);
+
 import {
   FontSize,
+  Button,
   Color,
   TextInput
 } from '../UiLibrary/';
 
-class AddFriendComponent extends Component {
+class UserInfoComponent extends Component {
   static navigationOptions = props => {
     const headerRight = (<Icon.Button
                          onPress={ () => _this._switchMenu.bind(_this)() }
@@ -32,7 +36,7 @@ class AddFriendComponent extends Component {
                          color={ Color.White }
                          /> );
     return {
-      title: '添加好友'
+      title: '个人信息',
       // headerRight: headerRight
     };
   }
@@ -40,70 +44,55 @@ class AddFriendComponent extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      searchText: ''
-    };
-    this.SerchIcon = (<EEcon iconStyle={ styles.searchIcon } name="search" size={ 30 } color="#4F8EF7" />);
 
+    };
   }
   componentDidMount() {
-
+    _this = this;
   }
 
-  onSubMitEditing() {
-
-  }
-
-  onChangSearchValue (text) {
-    this.setState({
-      searchText: text
-    });
-  }
   render() {
-    const { name } = this.props;
     return (
-      <ScrollView
-        style={styles.container}
-        endFillColor={Color.Grey}
+      <PhotoUpload
+        onPhotoSelect={avatar => {
+          if (avatar) {
+            console.log('Image base64 string: ', avatar)
+          }
+        }}
         >
-        <TextInput.Search
-          placeholder="输入对方手机号"
-          isShowIcon={ false }
-          style={ styles.searchBox }
-          value={ this.state.searchText }
-          onChangeValue={ this.onChangSearchValue.bind(this) }
-          />
-        <View style={styles.hintInfo}>
-          <Text style={{fontSize: FontSize.Annotation}}>
-            {`我的信信号:  ${ name }`}
-          </Text>
-        </View>
-      </ScrollView>
+        <Image
+      style={{
+        paddingVertical: 30,
+        width: 150,
+        height: 150,
+        borderRadius: 75
+      }}
+      resizeMode='cover'
+      source={{
+        uri: 'https://www.sparklabs.com/forum/styles/comboot/theme/images/default_avatar.jpg'
+      }}
+        />
+        </PhotoUpload>
     );
+
   }
 }
 
 const styles = EStyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Color.backgroundGrey
+    backgroundColor: '#FFF',
+    paddingTop: 70,
+    paddingHorizontal: 20
   },
-  searchBox: {
-    marginTop: 10
-  },
-  hintInfo: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginTop: 10,
-  }
 });
 
 const mapStateToProps = state => ({
-  isFetch: state.userReducer.isFetch,
-  name: state.userReducer.userName
+  isFetch: state.userReducer.isFetch
 });
 
 const mapDispatchToProps = dispatch => ({
 
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(AddFriendComponent);
+export default connect(mapStateToProps, mapDispatchToProps)( UserInfoComponent );

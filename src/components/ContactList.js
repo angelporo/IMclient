@@ -7,8 +7,10 @@ import React, {Component} from 'react';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
 import {
-  View,
-  FlatList,
+    View,
+    FlatList,
+    ScrollView,
+    Image
 } from 'react-native';
 import * as userAction from '../reducers/user/userAction';
 import EStyleSheet from 'react-native-extended-stylesheet';
@@ -69,14 +71,20 @@ class UserContackList extends Component {
     this.setState({ refreshing: false });
   }
   _renderRow ({item}) {
+    const avatar = (
+        <Image
+        source={{uri: item.avatar}}
+        style={styles.avatar}
+        />
+    );
     return (
       <ListItem.Label
-        icon={ item.avatar }
+        icon={avatar}
         labelText={ item.name }
         labelStyle={ item.status === 'online' ? styles.online : '' }
         iconPress={ () => alert('avatar perssed') }
         onPress={()=>{
-          this.props.navigation.navigate('ChatRoom',{ info: item });
+          this.props.navigation.navigate('ChatRoom',{ info : item });
         }}
         />
     );
@@ -99,7 +107,6 @@ class UserContackList extends Component {
   }
   render() {
     return (
-      <View style={styles.pageContainer}>
         <FlatList
           style={ styles.container }
           initialNumToRender={ 10 }
@@ -109,7 +116,6 @@ class UserContackList extends Component {
           onRefresh={ this._onRefresh.bind(this) }
           ItemSeparatorComponent={ this._renderSeparator }
           />
-      </View>
     );
   }
 }
@@ -121,6 +127,11 @@ const styles = EStyleSheet.create({
   container: {
     height: '100%'
   },
+  avatar: {
+    borderRadius: 4,
+    width: 45,
+    height: 45
+    }, 
   online: {
     color: Color.WechatGreen
   }

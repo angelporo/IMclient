@@ -38,7 +38,6 @@ export default class ListItemDemo extends React.Component {
                 />
 
                 <ListItem.Label
-                    icon="http://image-2.plusman.cn/app/im-client/pictures-256.png!icon3x"
                     labelText="相册"
                     onPress={() => {}}
                 />
@@ -46,7 +45,6 @@ export default class ListItemDemo extends React.Component {
                 <ListItem.Separator/>
 
                 <ListItem.Label
-                    icon="http://image-2.plusman.cn/app/im-client/wallet-256.png!icon3x"
                     labelText="钱包"
                     rightComponent="100,938"
                     onPress={() => {}}

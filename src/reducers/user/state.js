@@ -8,7 +8,7 @@ import Realm from 'realm';
 
 const inintUserState = {
   keyBoardHeight: 220,// 手机接盘高度
-  isLogged: false,
+  isLogged: true,
   isShowMune: false,
   userid: '',
   userName: '李渊的信信',

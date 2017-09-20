@@ -9,6 +9,7 @@ import { addNavigationHelpers, StackNavigator, TabNavigator } from 'react-naviga
 import Icon from 'react-native-vector-icons/Ionicons';
 import UserContackList from './ContactList';
 import ChatList from './ChatList';
+import UserCenter from './My';
 const MyIcon = (<Icon name="ios-person" size={30} color="#4F8EF7" />);
 import {
   FontSize,
@@ -46,16 +47,18 @@ const MyApp = TabNavigator({
     screen: ChatList,
     navigationOptions: {
       tabBarLabel:'信信',
+      lazy: true
     }
   },
   userContactList: {
     screen: UserContackList,
     navigationOptions: {
       tabBarLabel:'通讯录',
+      lazy: true
     }
   },
   userCenter: {
-    screen: UserContackList,
+    screen: UserCenter,
     navigationOptions: {
       tabBarLabel:'我的',
     }
@@ -84,12 +87,14 @@ const MyApp = TabNavigator({
       margin: 0
     },
     tabStyle: {
+      paddingVertical: 3
     }
   },
   animationEnabled: false,
   tabBarPosition: 'bottom',
   TabBarBottom: true,
-  lazy: true, // 开启tabNavigation中惰性加载
+  swipeEnabled: false,
+  lazy: true
 });
 
 export default MyApp;

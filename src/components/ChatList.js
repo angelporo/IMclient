@@ -12,7 +12,8 @@ import {
   Text,
   View,
   StatusBar,
-  Modal
+  Modal,
+  ScrollView
 } from 'react-native';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
@@ -45,6 +46,7 @@ class ChatList extends Component {
   static navigationOptions = ({navigation})  => {
       const headerRight = (<FIcon.Button
           onPress={ () => navigation.state.params.chatListSwitchMenu() }
+          iconStyle={{zIndex: 1000}}
           backgroundColor={Color.Black}
           name="plus"
           size={ 20 }
@@ -57,21 +59,15 @@ class ChatList extends Component {
               <AddPerson hintColor={ tintColor } />
           ),
           headerRight: headerRight ,
-          headerTitle: "信信",
-          headerLeft: (<View/>),
-          gesturesEnabled: false
+        headerTitle: "信信",
+        lazy: true,
+        headerLeft: (<View/>),
+        gesturesEnabled: false
       };
   };
-    _switchMenu () {
-      this.setState({menuIsShow:
-                     !this.state.menuIsShow});
-  }
-
   constructor (props) {
     super(props);
     this.state = {
-      menuAnimation: 'fadeInDownBig',
-      menuIsShow: false,
       openGroupChatRoom: false,
       menuData: [{
       icon: (<Icon name="ios-person-add" size={ 24 } color={ Color.White } />),
@@ -81,22 +77,27 @@ class ChatList extends Component {
       icon: (<Icon name="ios-person-add" size={ 24 } color={ Color.White } />),
       text: '添加好友',
       onPress: this._openAddFriend.bind(this)
-    }]
+    }],
+      isMenuShow: false
     };
   }
+
+  _switchMenu () {
+    this.setState({
+      isMenuShow: !this.state.isMenuShow
+    });
+
+  }
+
   componentWillMount () {
     this.props.navigation.setParams({ chatListSwitchMenu: this._switchMenu.bind(this)});
   }
   _openGroupChat () {
     this.setState({
-      openGroupChatRoom: true,
-      menuIsShow: false
+      openGroupChatRoom: true
     });
   }
   _openAddFriend () {
-    this.setState({
-      menuIsShow: false
-    });
     this.props.navigation.navigate('AddFriend',{data: 'hah'});
   }
 
@@ -136,8 +137,7 @@ class ChatList extends Component {
 
   render() {
     let { RecentChatData } = this.props;
-    console.log('falsehahha', RecentChatData);
-    if (true) {
+    if (RecentChatData.length) {
       return (
         <View style={styles.container}>
           <StatusBar
@@ -145,24 +145,24 @@ class ChatList extends Component {
             backgroundColor={ Color.Black }
             StatusBarAnimation="fade"
             />
-          <MenuBox
-            animation={ this.state.menuAnimation }
-            isShow={ this.state.menuIsShow }
-            data={this.state.menuData}/>
-          <FlatList
-            data={ RecentChatData }
-            renderItem={ this._renderRow.bind( this ) }
-            />
+            <MenuBox
+              isShow={ this.state.isMenuShow }
+              data={this.state.menuData }
+              flatListData={RecentChatData}
+              renderItem={ this._renderRow.bind( this ) }
+              />
           <Modal
-            onRequestClose={() => this.setState({ openGroupChatRoom: false})}
-            animationType={"slide"}
-            transparent={ false }
-            visible={this.state.openGroupChatRoom}>
+          onRequestClose={ () =>
+              this.setState({ openGroupChatRoom: !this.state.openGroupChatRoom})}
+            animationType={ "slide" }
+              transparent={ false }
+              onShow={() => this.setState({ isMenuShow: false })}
+            visible={ this.state.openGroupChatRoom }>
             {/*// NOTE: 发送红包type选项(群发和单发) */}
             <NewGroupChatRoom
-            closeModal={() => this.setState({ openGroupChatRoom: false })}
-            />
-            </Modal>
+          closeModal={() => this.setState({ openGroupChatRoom: !this.state.openGroupChatRoom })}
+              />
+          </Modal>
         </View>
       );
     } else {
@@ -188,7 +188,7 @@ class ChatList extends Component {
             visible={this.state.openGroupChatRoom}>
             {/*// NOTE: 发送红包type选项(群发和单发) */}
             <NewGroupChatRoom
-            closeModal={() => this.setState({ openGroupChatRoom: false})}
+          closeModal={() => this.setState({ openGroupChatRoom: false})}
             />
             </Modal>
         </View>
@@ -272,18 +272,20 @@ class MenuBox extends Component {
     super(props);
   }
   render () {
-    const { isShow, data, animation, duration } = this.props;
-    if(!isShow){ return null;}
-    return (
-      <Animatable.View
-        animation={ animation }
-        duration={ duration || 600 }
-        style={[styles.menuContent]}>
-        <View style={styles.upIcon}>
+    const { data,
+            isShow,
+            flatListData,
+            renderItem
+          } = this.props;
+    const menubox = (
+      <View style={{position: 'relative',
+                    width: '100%',
+            height: '100%'}}>
+        <View style={ styles.upIcon } >
           <EIcon name="triangle-up"
                  size={ 22 }
                  color={ Color.LightBlack } />
-        </View>
+        </View >
         {
           data.map( (n, i) => (
             <TouchableHighlight
@@ -304,32 +306,43 @@ class MenuBox extends Component {
             </TouchableHighlight>
           ))
         }
-      </Animatable.View>
-    )
+      </View>
+    );
+    return (
+      <View style={{position: 'relative',
+                    width: '100%',
+                    height: '100%',
+                    backgroundColor: 'transparent'
+            }}>
+        <View
+          style={[ styles.menuContent , { zIndex: 10, position: 'absolute', right: 10, top: 14 } ]}>
+          {
+            isShow ? menubox : (<View/>)
+          }
+        </View>
+        <FlatList
+          data={ flatListData }
+          renderItem={ renderItem }
+          />
+      </View>
+    );
   }
 }
 
 MenuBox.propTypes = {
   data: PropTypes.array,
-  animation: PropTypes.string,
-  duration: PropTypes.number,
-  isShow: PropTypes.bool
 }
 
 const styles = EStyleSheet.create({
   menuContent: {
-    opacity: 0,
     width: 120,
     borderRadius: 5,
     backgroundColor: Color.LightBlack,
     alignItems: 'flex-start',
     justifyContent: 'center',
-    position: 'absolute',
-    right: 10,
-    top: 14,
-    zIndex: 20
   },
-  upIcon: {
+    upIcon: {
+        zIndex: 800,
     backgroundColor: 'transparent',
     position: 'absolute',
     right: 12,

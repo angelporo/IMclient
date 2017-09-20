@@ -26,6 +26,15 @@ class ReduxExampleApp extends React.Component {
     this.state = {
       realm: null
     };
+    // 模拟登录:
+    WebIM.conn.open({
+      apiUrl: WebIM.config.apiURL,
+      user: 'test',
+      pwd: 'angel0112',
+      //  accessToken: password,
+      appKey: WebIM.config.appkey
+    });
+
     // NOTE: 监听环信用户事件
     WebIM.conn.listen({
       onOpened: msg => {
