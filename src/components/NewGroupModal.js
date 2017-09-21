@@ -47,7 +47,7 @@ class NewGroupChatRoom extends Component {
       searchValue: '',
       checkState: false,
         displaySelectBoxWidth: 0,
-        friendListHeight: '50%',
+        friendListHeight: '100%',
     };
   }
     componentDidMount() {
