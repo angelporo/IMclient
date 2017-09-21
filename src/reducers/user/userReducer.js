@@ -1,5 +1,8 @@
 import  inintUserState from './state';
 import * as types from './userType';
+import { DeviceStorage } from '../../utils.js';
+
+
 export default function user(state = inintUserState, action) {
     switch (action.type) {
     case types.CHANGE_LOGGIN_STATE:
@@ -9,6 +12,7 @@ export default function user(state = inintUserState, action) {
     case types.CHANGE_LOGGIN_STATE:
         return { ...state, isLogged: action.isLogged, userId: action.userid };
     case types.CHANGE_KEY_HEIGHT:
+        DeviceStorage.save("keyBoardHeight", action.keyHeight); // 保存keyBoardHeight到数据库
         return {...state, keyBoardHeight: action.keyHeight };
     case types.GET_ROSTER:
         return Object.assign({}, state, { friendList: action.roster });
@@ -18,7 +22,6 @@ export default function user(state = inintUserState, action) {
         state.userRecentChat[action.index].chatData.push(action.msgData);
         return Object.assign(state);
     case types.SAVE_USERID:
-        console.log('deng', action);
         return Object.assign({}, state, { userid: action.userId, isLogged: true })
     default:
         console.log(state);

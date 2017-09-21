@@ -8,7 +8,9 @@ import { connect } from 'react-redux';
 import {
   View,
   TouchableOpacity,
-  TouchableHighlight,
+    TouchableHighlight,
+    findNodeHandle,
+    UIManager,
   Text,
   StatusBar,
   FlatList,
@@ -44,12 +46,16 @@ class NewGroupChatRoom extends Component {
       checkedFriend: [],  // 选中好友发起群聊
       searchValue: '',
       checkState: false,
-      displaySelectBoxWidth: 0,
+        displaySelectBoxWidth: 0,
+        friendListHeight: '50%',
     };
   }
-  componentDidMount() {
-
-  }
+    componentDidMount() {
+        console.log(this.flatListHeight);
+        // this.layout(this.flatListHeight).then( res => {
+        //     console.log(res);
+        // })
+    }
   onSubmitGroupChatRooms () {
     alert('submit');
   }
@@ -145,6 +151,15 @@ class NewGroupChatRoom extends Component {
   _separator () {
     return <View style={{height: '100%',backgroundColor:Color.White, width: 4}}/>;
   }
+
+    getFliatFriendHeight (event) {
+        const currentFlistFriendHeight = event.nativeEvent.layout.y;
+        const friendListHeight = Dimensions.get('window').height - currentFlistFriendHeight;
+        this.setState({
+            friendListHeight: friendListHeight
+        });
+
+    }
   render() {
     const { closeModal } = this.props;
     const CloseButton = (<TouchableOpacity
@@ -220,13 +235,16 @@ class NewGroupChatRoom extends Component {
         <View style={styles.friendListTitl}>
           <Text style={{color: Color.Grey}}>选择加入的好友</Text>
         </View>
-        <View>
+        <View
+        onLayout={this.getFliatFriendHeight.bind(this)}
+        style={{ height: this.state.friendListHeight }}
+        >
         <FlatList
-          data={ this.state.friendList }
-          style={styles.flatlist}
-          keyExtractor={this._keyExtractor}
-          renderItem={ this._renderRow.bind(this) }
-          />
+        data={ this.state.friendList }
+        style={[styles.flatlist, {height: '100%'}]}
+        keyExtractor={this._keyExtractor}
+        renderItem={ this._renderRow.bind(this) }
+        />
         </View>
       </View>
     );
@@ -243,7 +261,7 @@ const styles = EStyleSheet.create({
     alignItems: 'center',
   },
   selectedFriendContainer: {
-
+      paddingVertical: 8
   },
   seachContainer: {
     flexDirection: 'row',
@@ -282,7 +300,7 @@ const styles = EStyleSheet.create({
     flexShrink: 1
   },
   flatlist: {
-    backgroundColor: Color.BackgroundGrey
+      backgroundColor: Color.BackgroundGrey,
   },
   itemsBox: {
     backgroundColor: Color.White,

@@ -17,7 +17,7 @@ import EStyleSheet from 'react-native-extended-stylesheet';
 import { switchMenuState,
          changeLogginState,
          loggin
-       } from '../reducers/user/userAction';
+       } from '../reducers/user/userActions';
 import {
     FontSize,
     Button,

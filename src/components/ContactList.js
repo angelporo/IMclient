@@ -12,7 +12,7 @@ import {
     ScrollView,
     Image
 } from 'react-native';
-import * as userAction from '../reducers/user/userAction';
+import * as userAction from '../reducers/user/userActions';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import FIcon from 'react-native-vector-icons/FontAwesome';
 import EIcon from 'react-native-vector-icons/Entypo';

@@ -214,7 +214,7 @@ class ChatRoom extends Component {
   componentDidMount() {
     // 获取取消语音滑动距离
     this.layout(this.voiceContent)
-      .then(tootInfo => {
+      .then( tootInfo => {
         const ToolBoxTopDistance = tootInfo.y;
         this.layout(this.voiceCancelButton)
           .then(data => {

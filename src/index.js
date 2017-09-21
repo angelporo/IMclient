@@ -7,12 +7,11 @@ import { NavigationActions } from 'react-navigation';
 import { AppNavigator } from './navigators/AppNavigator';
 import thunkMiddleware from 'redux-thunk';
 import AppReducer from './reducers/index';
-import * as userAction from './reducers/user/userAction';
+import * as userAction from './reducers/user/userActions';
 import AppWithNavigationState from './navigators/AppNavigator';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import styleConfig from './theme';
 import WebIM from './Lib/WebIM';
-// import Realm from 'realm';
 
 let store = createStore( AppReducer, applyMiddleware(
   thunkMiddleware
@@ -23,9 +22,6 @@ EStyleSheet.build(styleConfig);
 class ReduxExampleApp extends React.Component {
   constructor(props){
     super(props);
-    this.state = {
-      realm: null
-    };
     // 模拟登录:
     WebIM.conn.open({
       apiUrl: WebIM.config.apiURL,
@@ -82,7 +78,7 @@ class ReduxExampleApp extends React.Component {
       // 断开连接
       onClosed: msg => {
         console.log('onClosed');
-      }, 
+      },
       onError: error => {
         console.log('链接失败', error);
       },
@@ -98,18 +94,11 @@ class ReduxExampleApp extends React.Component {
       }
     });
   }
-  // componentWillMount() {
-  //     Realm.open({
-  //       schema: [{name: 'Dog', properties: {name: 'string'}}]
-  //     }).then(realm => {
-  //       realm.write(() => {
-  //         realm.create('Dog', {name: 'Rex'});
-  //       });
-  //       this.setState({ realm });
-  //     });
-  //   }
+  componentWillMount() {
+
+  }
+
   render() {
-    // console.log('relam', this.state.realm);
     return (
       <Provider store={ store }>
         <AppWithNavigationState />

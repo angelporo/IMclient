@@ -8,7 +8,7 @@ import { addNavigationHelpers,
 } from 'react-navigation';
 import Login from '../components/login';
 import Register from '../components/register';
-import { switchMenuState } from '../reducers/user/userAction';
+import { switchMenuState } from '../reducers/user/userActions';
 import ChatRoom from '../components/ChatRoom';
 import AddFriendComponent from '../components/AddFriend';
 import {

@@ -2,7 +2,6 @@ import { NavigationActions } from 'react-navigation';
 import { AppNavigator } from '../navigators/AppNavigator';
 import initUserState from '../reducers/user/state';
 // import nav from './navReducer'; // 路由reducer
-
 const initAction = initUserState.isLogged ? "MyApp" : "Login";
 const firstAction = AppNavigator.router.getActionForPathAndParams('Login');
 const tempNavState = AppNavigator.router.getStateForAction(firstAction);

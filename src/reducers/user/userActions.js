@@ -1,13 +1,32 @@
+/**
+ * 用户所有actions
+ * Param: param
+ * Return: {undefined}
+ **/
 import * as types from './userType';
 import WebIM from '../../Lib/WebIM';
+import { DeviceStorage } from '../../utils.js';
+// import * as userUiAction from './userStateAction';
 
+
+// // 之后重构action样板
+// export default {
+//   changeFetch: userUiAction.changeFetch, // 改变用户当时请求状态
+//   switchMenuState: userUiAction.switchMenuState // 更改登录注册时显示的菜单状态
+
+// }
+
+/**
+ * 改变当前请求状态
+ * Param: {isFetch: Boolean}
+ * Return: {undefined}
+ **/
 export function changeFetch (isFetch) {
     return {
         type: types.CHANGE_FETCH_STATE,
         isFetch
     };
 }
-
 
 /**
  * 更改登录注册时显示的菜单状态
@@ -21,12 +40,13 @@ export function switchMenuState ({menuState}) {
     };
 }
 
+
 /**
  * 修改登录状态
  * Param: param
  * Return: {undefined}
  **/
-export function changeLogginState ({userid, isLoggin}) {
+export function changeLogginState ({ userid, isLoggin }) {
     return {
         type: types.CHANGE_LOGGIN_STATE,
         userid
@@ -40,7 +60,7 @@ export function changeLogginState ({userid, isLoggin}) {
  **/
 export function changeKeyHeight ({keyHeight}) {
     return {
-        type:types.CHANGE_KEY_HEIGHT,
+        type: types.CHANGE_KEY_HEIGHT,
         keyHeight
     };
 }
@@ -345,7 +365,7 @@ export const getGroupMemberByGroupID = (id, page) => (dispatch, getState) => {
  * Param: param
  * Return: { Object }
  **/
-export const updataChatRooms = ({chatRooms}) => {
+export const updataChatRooms = ({ chatRooms }) => {
     return {
         type: types.CHANGE_CHAT_ROOMS,
         chatRooms
