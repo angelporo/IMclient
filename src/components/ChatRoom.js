@@ -39,6 +39,7 @@ import Micon from 'react-native-vector-icons/MaterialIcons';
 import MMicon from 'react-native-vector-icons/MaterialCommunityIcons';
 import Eicon from 'react-native-vector-icons/Entypo';
 import Ficon from 'react-native-vector-icons/FontAwesome';
+import OIcon from 'react-native-vector-icons/Octicons';
 import * as Animatable from 'react-native-animatable';
 import HandleSendRedPackage from './HandOutMoney';
 const { height, width } = Dimensions.get('window');
@@ -52,19 +53,37 @@ const selectPhoto = (<Ficon name="picture-o" size={ 38 } color={Color.Grey} />);
 const selectCamera=(<Eicon name="camera" size={ 40 } color={Color.Grey} />);
 
 class ChatRoom extends Component {
-  // 接收者 ID
-  toInfo: {};
-  firstEnter: 0;
-  ds: Object;
-  rows: [];
-  state: {};
-  currentMaxRowId:  0;
-  chatListView: {};
+    // 接收者 ID
+    toInfo: {};
+    firstEnter: 0;
+    ds: Object;
+    rows: [];
+    state: {};
+    currentMaxRowId:  0;
+    chatListView: {};
 
-  // 判断用户是否输入过
-  _userHasBeenInputed: false;
-  _userAtPage = 0;
-  _userReachEnd = true;
+    // 判断用户是否输入过
+    _userHasBeenInputed: false;
+    _userAtPage = 0;
+    _userReachEnd = true;
+
+    static navigationOptions = ({navigation})  => {
+        const IconName = navigation.state.params.isPersons === "group" ? "ios-people" : "ios-person"
+        const headerRight = (<Icon.Button
+            onPress={ () => navigation.state.params.chatListSwitchMenu() }
+            name={ IconName }
+            backgroundColor={Color.Black}
+            size={ 24 }
+            iconStyle={{ marginRight: 10 }}
+            color={Color.White}/>)
+        return {
+            headerRight: headerRight ,
+            headerTitle: navigation.state.params.roomName,
+            lazy: true,
+            gesturesEnabled: false
+        };
+    };
+
   constructor(props) {
     super(props);
     this.toInfo = props.navigation.state.params.info.chatInfo;
@@ -84,7 +103,7 @@ class ChatRoom extends Component {
       selectTypeOpacity: 0,
       voiceValue: '按住说话',
       modalVisible: false,
-      keyBoardHeight: null, // TODO: 这个的键盘高度应该放在store中,  全局读取
+      keyBoardHeight: this.props.keyBoardHeight, // TODO: 这个的键盘高度应该放在store中,  全局读取
       selectZindex: 0,
       closeToolsButton: -1,
       voiceButtonColor: Color.White,
@@ -156,7 +175,7 @@ class ChatRoom extends Component {
     this.setState({inputValue: ''});
   }
 
-  _renderRow = ({ item }) => {
+    _renderRow = ({ item }) => {
     const { userid } = this.props;
     // this.currentMaxRowId = +rowId;
     return (
@@ -182,23 +201,38 @@ class ChatRoom extends Component {
       refreshing: false
     });
   }
-  _onLongPressVoice() {
-    this.setState({voiceValue: "松开发送",
-                   voiceTextColor: Color.White,
-                   isShowVoiceCancelButton: true,
-                   voiceButtonColor: Color.Red});
-  }
-  _onMoveVoiceButton (e) {
-    if(parseInt(e.nativeEvent.locationY) <= parseInt(this.moveDistance)){
-      this.setState({
-        currentVoiceSelecetType: 'cancel'
-      });
-    }else{
-      this.setState({
-        currentVoiceSelecetType: 'send'
-      });
+    _onLongPressVoice() {
+        this.setState({
+            voiceValue: "松开发送",
+            voiceTextColor: Color.White,
+            isShowVoiceCancelButton: true,
+            voiceButtonColor: Color.Red
+        });
     }
-  }
+    _onMoveVoiceButton (e) {
+        if(parseInt(e.nativeEvent.locationY) <= parseInt(this.moveDistance)){
+            this.setState({
+                currentVoiceSelecetType: 'cancel'
+            });
+        }else{
+            this.setState({
+                currentVoiceSelecetType: 'send'
+            });
+        }
+    }
+    lookChatRoomInfo () {
+        this.props.navigation.navigate('SectChatRoomInfoAndDisplayGroupMember',{
+            info: this.props.navigation.state.params.info,
+        });
+    }
+    componentWillMount () {
+        this.props.navigation.setParams({
+            chatListSwitchMenu: this.lookChatRoomInfo.bind(this),
+            isPersons: this.props.navigation.state.params.info.type,
+            roomName: this.props.navigation.state.params.info.name
+        });
+    }
+
   _onResponderRelease(e) {
     // 发送语音松开手指事件
     this.setState({ voiceValue: "按住说话",
@@ -214,7 +248,7 @@ class ChatRoom extends Component {
   componentDidMount() {
     // 获取取消语音滑动距离
     this.layout(this.voiceContent)
-      .then(tootInfo => {
+      .then( tootInfo => {
         const ToolBoxTopDistance = tootInfo.y;
         this.layout(this.voiceCancelButton)
           .then(data => {
@@ -238,6 +272,7 @@ class ChatRoom extends Component {
     this.openReadPackageTime && clearTimeout(this.openReadPackageTime);
     this.textInputTimer && clearTimeout(this.textInputTimer);
   }
+
   _keyboardWillShow(e) {
     let keyboardHeight = e.endCoordinates.height;
     const { changeGlobelKeyHeight } = this.props;

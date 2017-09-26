@@ -6,9 +6,9 @@
 		"start": "node node_modules/react-native/local-cli/cli.js start",
 		"test": "jest",
 		"bundle-ios": "node node_modules/react-native/local-cli/cli.js bundle --entry-file index.ios.js  --platform ios --dev false --bundle-output ./ios/bundle/index.ios.jsbundle --assets-dest ./ios/bundle",
-	  "bundle-android": "cd android && ./gradlew installRelease",
-          "dev": "cross-env NODE_ENV=development react-native run-android",
-          "build": "cross-env NODE_ENV=production"
+		"bundle-android": "cd android && ./gradlew installRelease",
+		"dev": "cross-env NODE_ENV=development react-native run-android",
+		"build": "cross-env NODE_ENV=production"
 	},
 	"dependencies": {
 		"cross-env": "^5.0.5",

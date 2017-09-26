@@ -36,6 +36,7 @@ class ReduxExampleApp extends React.Component {
       onOpened: msg => {
         // 出席后才能接受推送消息
         WebIM.conn.setPresence();
+        console.log('msg', msg)
         store.dispatch( userAction.saveUserId( msg.accessToken ));
         NavigationActions.navigate({ routeName : 'MyApp' }),
         console.log('链接成功');

@@ -35,7 +35,7 @@ export default class Label extends React.Component {
     }
 
     _renderIcon = () => {
-        let { icon, iconStyle, iconPress, } = this.props;
+        let { icon, iconStyle, iconPress } = this.props;
         if ( icon ) {
             if(iconPress) {
                 return (
@@ -79,7 +79,9 @@ export default class Label extends React.Component {
         let { onPress } = this.props;
         if (onPress) {
           return (
-            <EIcon name="chevron-thin-right" color={Color.Grey} />
+            <View style={styles.rightArrowIconBox}>
+              <EIcon name="chevron-thin-right" color={Color.Grey} />
+            </View>
             );
         }
 
@@ -156,14 +158,18 @@ const styles = StyleSheet.create({
     },
     labelStyle : {
         fontSize: FontSize.Main,
-        color: Color.Black,
+      color: Color.Black,
     },
     labelRightComponent: {
         flexDirection: 'row',
-        alignItems: 'center'
+      alignItems: 'center',
+      justifyContent: 'center'
     },
     textStyle: {
         color: Color.LightBlack,
         fontSize: FontSize.Content
-    }
+    },
+  rightArrowIconBox: {
+    marginTop: 1
+  }
 });

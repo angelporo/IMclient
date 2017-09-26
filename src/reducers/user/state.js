@@ -9,7 +9,7 @@ import { DeviceStorage } from '../../utils.js';
 const keyBoardHeight = DeviceStorage.get('keyBoardHeight');
 
 const inintUserState = {
-    keyBoardHeight: keyBoardHeight || 220,// 手机接盘高度
+    keyBoardHeight: 220, // 手机接盘高度
     isLogged: true,
     isShowMune: false,
     userid: '',
@@ -23,6 +23,21 @@ const inintUserState = {
             name: '李渊',
             id: '123',
             key: '234534534',
+            type: "group",
+            isTop: true ,
+            groupMembers: [{ // 裙成员
+                id: '2142534',  // 聊天是id
+                members: [{ //群聊成员
+                    avatar: 'https://avatars1.githubusercontent.com/u/16830481?v=4&s=40',
+                    id: '3453656423543',
+                }, {
+                    avatar: 'https://avatars1.githubusercontent.com/u/16830481?v=4&s=40',
+                    id: '3453656423543',
+                }, {
+                    avatar: 'https://avatars1.githubusercontent.com/u/16830481?v=4&s=40',
+                    id: '3453656423543',
+                }]
+            }],
             unReadMessageCount: '56',// 消息数量
             groupPageNum: 1,  // 查询群组成员页码
             members: [],
@@ -40,7 +55,7 @@ const inintUserState = {
                 avatar: "https://avatars1.githubusercontent.com/u/16830481?v=4&s=40",
                 name: 'liyuan',
                 from: '24354', // 消息来源id
-                to: '233564'  // 消息发送id
+                to: '233564'  // 消息发送id 聊天房间id
             }]
         }, { latestMessage: '最后的消息',
             latestTime: '2017-05-23',
@@ -121,7 +136,7 @@ const inintUserState = {
             }]
         }
     ],
-    friendList: []
+    friendList: [],
 };
 
 /* frindListDemo: {

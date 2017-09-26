@@ -59,6 +59,7 @@ export function changeLogginState ({ userid, isLoggin }) {
  * Return: { undefined }
  **/
 export function changeKeyHeight ({keyHeight}) {
+  DeviceStorage.save("keyBoardHeight", keyHeight); // 保存keyBoardHeight到数据库
     return {
         type: types.CHANGE_KEY_HEIGHT,
         keyHeight
@@ -196,7 +197,7 @@ export const getGroupsRooms = () => ( dispatch, getState ) => {
         success: (resp) => {
             console.log("获取群聊列表", resp);
             if(!resp.length) return;
-            dispatch( getChatRoomOthorInfoByGoupId( resp ) );
+            dispatch( getChatRoomOthorInfoByGoupId( resp )(dispatch, getState) );
         },
         error:  (e) => {
             console.log('环信获取用户群主信息失败', e);
@@ -230,7 +231,7 @@ export const sendChatTxtMeg = ({ chatData , roomID, message }) => (dispatch, get
                 msgID: msgId,
                 avatar: 'https://avatars1.githubusercontent.com/u/16830481?v=4&s=40',
                 name: 'liyuan',
-                from: '234432',
+                from: '234432', // 消息来源后台存放用户jid
                 to: '234543'
             };
             // 获取当前群组在联系人列表中索引
@@ -268,10 +269,10 @@ export const updateStoreGroupInfo = ({ msgData, index }) => {
  * Param: {resp: Array}
  * Return: { Promise }
  **/
-export function getChatRoomOthorInfoByGoupId  (resp) {
+export const getChatRoomOthorInfoByGoupId =  resp => (dispatch, getState) => {
     // NOTE: 通过遍历获取每个聊天室id,  异步 通过每个聊天室id获取自己服务器中详细内容
     let result = [];
-    resp.forEach( item => {
+    resp.forEach( async (item) => {
         // TODO: 通过群聊id获取自己 线上群聊信息
         // await fetch( uil, data)
         // .then( response => response.json() )
@@ -280,11 +281,34 @@ export function getChatRoomOthorInfoByGoupId  (resp) {
         //     console.log(data);
         // })
         // .catch( e => console.log('用户聊天群组列表ERR', e));
+        // await getAdminIdByGroup(item.roomId)(dispatch, getState);
         const data = { // 返回 构建结构
             latestMessage: '最后的消息',
             latestTime: '2017-03-23',
             name: item.name,
+            isTop: false,
             id: item.roomId,
+            type: 'group', // 消息类型(group: 群聊, single: 单聊);
+            groupMembers: {
+                id: '2142534',  // 聊天是id
+                myUserNameAsGroup: '群内昵称',
+                adminId: ['213445'], // 管理员id 用来比较设置权限问题
+                groupName: '群名称',
+                type: 'group', // 消息类型(group: 群聊, single: 单聊);
+                members: [{ //群聊成员
+                    avatar: 'https://avatars1.githubusercontent.com/u/16830481?v=4&s=40',
+                    id: '3453656423543',
+                    userName: 'liyuan',
+                }, {
+                    avatar: 'https://avatars1.githubusercontent.com/u/16830481?v=4&s=40',
+                    id: '3453656423543',
+                    userName: 'enhen',
+                }, {
+                    avatar: 'https://avatars1.githubusercontent.com/u/16830481?v=4&s=40',
+                    id: '3453656423543',
+                    userName: 'liyuan',
+                }]
+            },
             unReadMessageCount: 12,
             groupPageNum: 1,  // 查询群组成员页码
             avatar: 'https://avatars1.githubusercontent.com/u/16830481?v=4&s=40',
@@ -345,20 +369,37 @@ export function getChatRoomOthorInfoByGoupId  (resp) {
  * Param: param
  * Return: { undefined }
  **/
-export const getGroupMemberByGroupID = (id, page) => (dispatch, getState) => {
-    const pageNum = 1,
-    pageSize = 1000;
+export const getGroupMemberByGroupID = function (id) {
+    return async function (dispatch, getState) {
+        // 查询群聊信息 -> 自己服务器
     const options = {
-        pageNum: pageNum,
-        pageSize: pageSize,
-        groupId: 'yourGroupId',
-        success: function (resp) {
-            console.log("Response: ", resp);
+        roomId: id,
+        success: function ( resp ) {
+            console.log("members:", resp );
         },
         error: function(e){}
     };
-    WebIM.conn.listGroupMember(options);
+        await WebIM.conn.queryRoomMember( options );
+    }
 }
+
+
+/**
+ * 获取群聊管理员列表
+ * Param: param
+ * Return: {undefined}
+ **/
+export const getAdminIdByGroup =  ( groupId ) => (dispatch, getState) => {
+    const reult = [];
+    /**
+     * http request
+     * Param: param
+     * Return: {undefined}
+     **/
+    return result
+}
+
+
 
 /**
  * 更新用户参与聊天列表
@@ -370,4 +411,16 @@ export const updataChatRooms = ({ chatRooms }) => {
         type: types.CHANGE_CHAT_ROOMS,
         chatRooms
     };
+}
+
+/**
+ * 切换聊天顶置功能
+ * Param: param
+ * Return: {undefined}
+ **/
+export const switchIsTopChat = ({ index }) => {
+  return {
+    type: types.SWITCH_CHAT_TOP,
+    index
+  }
 }

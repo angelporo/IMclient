@@ -30,6 +30,7 @@ import {
 } from '../../UiLibrary';
 
 const SelectSendContent = (<Micon name="add-circle" size={ 30 } color={Color.Grey} />);
+
 const VoiceIcon = (<Micon name="keyboard-voice" size={30} color={Color.Grey} />);
 
 /**
