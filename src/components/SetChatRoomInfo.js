@@ -8,12 +8,12 @@ import React, {Component} from 'react';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
 import {
-  View,
-  Text,
-  Image,
-  FlatList,
-  TouchableOpacity,
-  Switch,
+    View,
+    Text,
+    Image,
+    FlatList,
+    TouchableOpacity,
+    Switch,
     ScrollView,
     Modal
 } from 'react-native';
@@ -26,7 +26,9 @@ import Icon from 'react-native-vector-icons/Ionicons';
 const MyIcon = (<Icon name="ios-person" size={30} color="#4F8EF7" />);
 import {
     getGroupMemberByGroupID,
-    switchIsTopChat
+    switchIsTopChat,
+    setGroupName,
+    setUserNameAsGroupChat
 } from '../reducers/user/userActions';
 import NewGroupChatRoom from './NewGroupModal';
 import {
@@ -40,21 +42,27 @@ import {
 class SectChatRoomInfoAndDisplayGroupMember extends Component {
   static navigationOptions = props => {
     return {
-      title: '信息',
-      // headerRight: headerRight
+        title: '信息',
+        // headerRight: headerRight,
+        headerBackTitle: '返回',
+        headerTruncatedBackTitle: '返回',
+        lazy: true,
     };
   }
 
-  constructor(props) {
-    super(props);
-    this.state = {
-      isFetch: false,
-        bringToTop: false,
-        isMenuShow: false,
-        openGroupChatRoom: false,
-    };
-      const { getAdminIdByGroupu } = props;
-  }
+    constructor(props) {
+        super(props);
+        const { id } = props.navigation.state.params.info
+        this.groupIndex = props.userRecentChat.findIndex( n => id === n.id );
+        const { userRecentChat } = this.props;
+        // const { isTop } = userRecentChat[ this.groupIndex ]
+        this.state = {
+            isFetch: false,
+            isMenuShow: false,
+            openGroupChatRoom: false,
+            // isTop: isTop,
+        };
+    }
   handleDeleteAndExitGroup () {
     alert('delete');
   }
@@ -64,130 +72,157 @@ class SectChatRoomInfoAndDisplayGroupMember extends Component {
     // 获取群成员
     getGroupMemberByGroupID( this.props.navigation.state.params.info.id );
   }
-  intoSetGroupName () {
-    this.props.navigation.navigate("SetInputComponent", {
-      title: '群聊名称',
-      value: this.props.navigation.state.params.info.name});
+    intoSetGroupName () {
+        const { userRecentChat } = this.props;
+        const { name } = userRecentChat[ this.groupIndex ]
+      this.props.navigation.navigate("SetInputComponent", {
+          title: '群聊名称',
+          value: name,
+          onSubmit: this.handleAmendGroupChatName.bind(this)
+      }
+);
   }
-  intoSetUserNameAsGroup() {
-    this.props.navigation.navigate("SetInputComponent", {
-      title: '设置我在群内昵称',
-      value: this.props.navigation.state.params.info.groupMembers.myUserNameAsGroup});
-  }
+    intoSetUserNameAsGroup() {
+        const { userRecentChat } = this.props;
+      const { groupMembers } = userRecentChat[ this.groupIndex ];
+        this.props.navigation.navigate("SetInputComponent", {
+            title: '设置我在群内昵称',
+            value: groupMembers.myUserNameAsGroup,
+            onSubmit: this.handleAmendUserNameAsGroupChat.bind(this)
+        });
+    }
+
     openAddfriendsToGroupMember () {
         this.setState({
             openGroupChatRoom: true
         });
     }
+    handleAmendUserNameAsGroupChat ({value}) {
+        // 提交设置群聊名称
+        const { setUserNameAsGroupChat } = this.props;
+        setUserNameAsGroupChat({
+            setType: 'setUserNameByGroup',
+            content: value,
+            index: this.groupIndex
+        })
+    }
     _switchIsTopGroup () {
         // 切换顶置聊天功能
-        this.setState({bringToTop: !this.state.bringToTop})
+        const { userRecentChat, switchIsTopChat } = this.props;
+      const { isTop } = userRecentChat[ this.groupIndex ];
+        switchIsTopChat({
+            index: this.groupIndex,
+            isTop: !isTop
+        });
+    }
+
+    handleAmendGroupChatName ({value}) {
+        // 提交设置群聊名称
+        const { setGroupName } = this.props;
+        setGroupName({
+            setType: 'setGroupName',
+            content: value,
+            index: this.groupIndex
+        })
+    }
+    handleAddFriendToGroupChat({ friends }) {
+        /**
+         * 选择联系人添加到群聊中
+         * 发送请求到后台 添加
+         * Param: param
+         * Return: { undefined }
+         **/
+        alert( '添加到列表', friends.length );
+  }
+
+    componentWillUpdate(props, nextProps) {
 
     }
-  render () {
-    const { groupMembers, name } = this.props.navigation.state.params.info;
-      return (
-          <ScrollView>
-          <GroupMembers
-          data={ groupMembers.members }
-          handleAddFriends={ this.openAddfriendsToGroupMember.bind(this) }
-          />
-          <View style={styles.utilBar}>
-          <View style={ styles.ListItemLableBox }>
-          <ListItem.Label
-          labelText="群聊名称"
-          style={ styles.ListItemLabel }
-          labelStyle={{ fontSize: 16 }}
-          rightComponent={() => ( <Text style={{ color: Color.LightGrey }}>{ name }</Text> )}
-          onPress={ this.intoSetGroupName.bind(this)}/>
-          </View>
-          <View style={styles.ListItemLableBox}>
-          <ListItem.Label
-          labelText="顶置聊天"
-          style={styles.ListItemLabel}
-          labelStyle={{fontSize: 16}}
-          rightComponent={() => (
-              <SwitchTools
-              value={ this.state.bringToTop }
-              onValueChange={ this._switchIsTopGroup.bind(this)}
-              /> )}
-          />
-          </View>
-          <View style={ styles.ListItemLableBox }>
-          <ListItem.Label
-          labelText="我在本群的昵称"
-          style={ styles.ListItemLabel }
-          labelStyle={{ fontSize: 16 }}
-          rightComponent={() => ( <Text style={{color: Color.LightGrey}}>{ groupMembers.myUserNameAsGroup }</Text> )}
-          onPress={ this.intoSetUserNameAsGroup.bind(this)}
-          />
-          </View>
-          <View style={ styles.ListItemLableBox }>
-          <ListItem.Label
-          labelText="投诉"
-          style={ styles.ListItemLabel }
-          labelStyle={{ fontSize: 16 }}
-          onPress={ () => alert('enen') }
-          />
-          </View>
-          </View>
-          {
-              groupMembers.type ===  'group' ? (
-                  <View style={{marginVertical: 30}}>
-                  <Button
-                  style={styles.deleteGroup}
-                  textStyle={styles.whiteText}
-                  onPress={ this.handleDeleteAndExitGroup.bind(this) }
-                  >
-                  删除并退出
-                  </Button>
-                  </View>
-              ) : null
-          }
 
-          <Modal
-          onRequestClose={ () =>
-              this.setState({ openGroupChatRoom: !this.state.openGroupChatRoom})}
-          animationType={ "slide" }
-          transparent={ false }
-          onShow={() => this.setState({ isMenuShow: false })}
-          visible={ this.state.openGroupChatRoom }>
-          {/*// NOTE: 发送红包type选项(群发和单发) */}
-          <NewGroupChatRoom
-          closeModal={() => this.setState({
-              openGroupChatRoom: !this.state.openGroupChatRoom
-          })}
-          />
-          </Modal>
-          </ScrollView>
-      );
-  }
+    render () {
+        const { userRecentChat } = this.props;
+        const { name, isTop, groupMembers } = userRecentChat[ this.groupIndex ]
+        return (
+            <ScrollView>
+            <GroupMembers
+            data={ groupMembers.members }
+            handleAddFriends={ this.openAddfriendsToGroupMember.bind(this) }
+            />
+            <View style={styles.utilBar}>
+            <View style={ styles.ListItemLableBox }>
+            <ListItem.Label
+            labelText="群聊名称"
+            style={ styles.ListItemLabel }
+            labelStyle={{ fontSize: 16 }}
+            rightComponent={() => ( <Text style={{ color: Color.LightGrey }}>{ name }</Text> )}
+            onPress={ this.intoSetGroupName.bind(this)}/>
+            </View>
+            <View style={styles.ListItemLableBox}>
+            <ListItem.Label
+            labelText="顶置聊天"
+            style={styles.ListItemLabel}
+            labelStyle={{fontSize: 16}}
+            rightComponent={() => (
+                <Switch
+                onValueChange={ this._switchIsTopGroup.bind(this)}
+                value={ isTop }
+                thumbTintColor={ isTop ? Color.White : Color.LightGrey }
+                tintColor={ Color.LightGrey }
+                onTintColor={ Color.WechatGreen }
+                /> )}
+            />
+            </View>
+            <View style={ styles.ListItemLableBox }>
+            <ListItem.Label
+            labelText="我在本群的昵称"
+            style={ styles.ListItemLabel }
+            labelStyle={{ fontSize: 16 }}
+            rightComponent={() => ( <Text style={{color: Color.LightGrey}}>{ groupMembers.myUserNameAsGroup }</Text> )}
+            onPress={ this.intoSetUserNameAsGroup.bind(this)}
+            />
+            </View>
+            <View style={ styles.ListItemLableBox }>
+            <ListItem.Label
+            labelText="投诉"
+            style={ styles.ListItemLabel }
+            labelStyle={{ fontSize: 16 }}
+            onPress={ () => alert('enen') }
+            />
+            </View>
+            </View>
+            {
+                groupMembers.type ===  'group' ? (
+                    <View style={{marginVertical: 30}}>
+                    <Button
+                    style={styles.deleteGroup}
+                    textStyle={styles.whiteText}
+                    onPress={ this.handleDeleteAndExitGroup.bind(this) }
+                    >
+                    删除并退出
+                    </Button>
+                    </View>
+                ) : null
+            }
+
+            <Modal
+            onRequestClose={ () =>
+                this.setState({ openGroupChatRoom: !this.state.openGroupChatRoom})}
+            animationType={ "slide" }
+            transparent={ false }
+            onShow={() => this.setState({ isMenuShow: false })}
+            visible={ this.state.openGroupChatRoom }>
+            {/*// NOTE: 发送红包type选项(群发和单发) */}
+            <NewGroupChatRoom
+            closeModal={() => this.setState({
+                openGroupChatRoom: !this.state.openGroupChatRoom
+            })}
+          onSubmit={ this.handleAddFriendToGroupChat.bind(this)}
+            />
+            </Modal>
+            </ScrollView>
+        );
+    }
 }
-
-/**
- * 切换选择
- * Param: param
- * Return: {undefined}
- **/
-class SwitchTools extends Component {
-  constructor(props) {
-    super(props);
-  }
-  render () {
-    const { onValueChange, value } = this.props;
-    return (
-      <Switch
-        onValueChange={ onValueChange }
-        value={ value }
-        thumbTintColor={value ? Color.White : Color.LightGrey }
-        tintColor={ Color.LightGrey }
-        onTintColor={ Color.WechatGreen }
-        {...this.props}
-        />
-    )
-  }
-}
-
 
 export class GroupMembers extends Component{
   constructor(props) {
@@ -313,13 +348,15 @@ const styles = EStyleSheet.create({
   }
 });
 
-const mapStateToProps = state => ({
-
+let mapStateToProps = state => ({
+    userRecentChat: state.userReducer.userRecentChat
 });
 
-const mapDispatchToProps = dispatch => ({
+let mapDispatchToProps = dispatch => ({
     getGroupMemberByGroupID: compose( dispatch, getGroupMemberByGroupID),
-    switchIsTopChat: compose( dispatch, switchIsTopChat),
+    switchIsTopChat: compose( dispatch, switchIsTopChat ),
+    setGroupName: compose( dispatch, setGroupName),
+    setUserNameAsGroupChat: compose( dispatch, setUserNameAsGroupChat),
 });
 
 export default connect( mapStateToProps, mapDispatchToProps )( SectChatRoomInfoAndDisplayGroupMember );

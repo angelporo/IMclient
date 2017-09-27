@@ -290,7 +290,7 @@ export const getChatRoomOthorInfoByGoupId =  resp => (dispatch, getState) => {
             id: item.roomId,
             type: 'group', // 消息类型(group: 群聊, single: 单聊);
             groupMembers: {
-                id: '2142534',  // 聊天是id
+                id: item.roomId,  // 聊天是id
                 myUserNameAsGroup: '群内昵称',
                 adminId: ['213445'], // 管理员id 用来比较设置权限问题
                 groupName: '群名称',
@@ -418,9 +418,36 @@ export const updataChatRooms = ({ chatRooms }) => {
  * Param: param
  * Return: {undefined}
  **/
-export const switchIsTopChat = ({ index }) => {
+export const switchIsTopChat = ({ index, isTop }) => {
   return {
     type: types.SWITCH_CHAT_TOP,
-    index
+    index,
+    isTop
   }
+}
+
+/**
+ * 设置群昵称
+ * Param: param
+ * Return: {undefined}
+ **/
+export const setGroupName = ({content, setType, index}) => {
+    return ({
+        type: types.SET_GROUP_NAME,
+        content,
+        index // 当前群聊消息在聊天数组中的索引
+    });
+}
+
+/**
+ * 设置用户在群聊中的昵称
+ * Param: param
+ * Return: {undefined}
+ **/
+export const setUserNameAsGroupChat = ({content, setType, index}) => {
+    return ({
+        type: types.SET_GROUP_USERNAME,
+        content,
+        index // 当前群聊消息在聊天数组中的索引
+    });
 }

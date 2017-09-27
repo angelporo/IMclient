@@ -209,6 +209,7 @@ class ChatRoom extends Component {
             voiceButtonColor: Color.Red
         });
     }
+
     _onMoveVoiceButton (e) {
         if(parseInt(e.nativeEvent.locationY) <= parseInt(this.moveDistance)){
             this.setState({
@@ -220,6 +221,7 @@ class ChatRoom extends Component {
             });
         }
     }
+
     lookChatRoomInfo () {
         this.props.navigation.navigate('SectChatRoomInfoAndDisplayGroupMember',{
             info: this.props.navigation.state.params.info,
@@ -229,7 +231,7 @@ class ChatRoom extends Component {
         this.props.navigation.setParams({
             chatListSwitchMenu: this.lookChatRoomInfo.bind(this),
             isPersons: this.props.navigation.state.params.info.type,
-            roomName: this.props.navigation.state.params.info.name
+            roomName: this.props.store.userRecentChat[this.roomChatIndex].name
         });
     }
 

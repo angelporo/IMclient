@@ -102,9 +102,10 @@ class ChatList extends Component {
   }
 
   _renderRow = ({item}) => {
+    const newItem = Object.assign(item);
     return (
       <Swipeout
-        key={item.key}
+        key={newItem.key}
         rightButtons={[{
           title: '删除',
           type: 'Delete',
@@ -113,13 +114,13 @@ class ChatList extends Component {
         }]}
         >
         <ConversationCell
-          avatar={ item.avatar }
-          unReadMessageCount={ item.unReadMessageCount }
-          name={item.name}
-          latestTime={ item.latestTime }
-          latestMessage={ item.latestMessage }
+          avatar={ newItem.avatar }
+          unReadMessageCount={ newItem.unReadMessageCount }
+          name={newItem.name}
+          latestTime={ newItem.latestTime }
+          latestMessage={ newItem.latestMessage }
           onPress={ () => {
-            this.props.navigation.navigate('ChatRoom',{ info: item});
+            this.props.navigation.navigate('ChatRoom',{ info: newItem});
           }}
           />
       </Swipeout>
@@ -148,7 +149,7 @@ class ChatList extends Component {
             <MenuBox
               isShow={ this.state.isMenuShow }
               data={this.state.menuData }
-              flatListData={RecentChatData}
+              flatListData={ RecentChatData }
               renderItem={ this._renderRow.bind( this ) }
               />
           <Modal
@@ -267,16 +268,11 @@ class ConversationCell extends React.Component {
   }
 }
 
-class MenuBox extends Component {
-  constructor(props){
-    super(props);
-  }
-  render () {
-    const { data,
-            isShow,
-            flatListData,
-            renderItem
-          } = this.props;
+function MenuBox({data,
+                  isShow,
+                  flatListData,
+                  renderItem
+                 }) {
     const menubox = (
       <View style={{position: 'relative',
                     width: '100%',
@@ -321,16 +317,16 @@ class MenuBox extends Component {
           }
         </View>
         <FlatList
-          data={ flatListData }
-          renderItem={ renderItem }
+      data={ flatListData }
+      keyExtractor={ (item, index) => item.id }
+      renderItem={ renderItem }
           />
       </View>
     );
-  }
 }
 
 MenuBox.propTypes = {
-  data: PropTypes.array,
+  data: PropTypes.array
 }
 
 const styles = EStyleSheet.create({

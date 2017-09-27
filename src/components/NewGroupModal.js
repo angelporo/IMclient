@@ -26,6 +26,7 @@ import EIcon from 'react-native-vector-icons/Entypo';
 import EEcon from 'react-native-vector-icons/EvilIcons';
 import FFIcon from 'react-native-vector-icons/Foundation';
 import Icon from 'react-native-vector-icons/Ionicons';
+import PropTypes from 'prop-types';
 const MyIcon = (<Icon name="ios-person" size={30} color="#4F8EF7" />);
 import {
   FontSize,
@@ -37,6 +38,10 @@ import {
 } from '../UiLibrary/';
 
 class NewGroupChatRoom extends Component {
+    static propTypes = {
+        onSubmit: PropTypes.func,
+        closeModal: PropTypes.func,
+    }
   constructor(props) {
     super(props);
     this.state = {
@@ -49,6 +54,14 @@ class NewGroupChatRoom extends Component {
         displaySelectBoxWidth: 0,
         friendListHeight: '100%',
     };
+      if(__DEV__) {
+          if(typeof props.closeModal !== 'function') {
+              throw new Error('选择好友props.closeModal必须是一个函数, 关闭按钮');
+          }
+          if(typeof props.onSubmit !== 'function') {
+              throw new Error('选择好友props.onSubmit必须是一个函数, 完成提交按钮');
+          }
+    }
   }
     componentDidMount() {
         console.log(this.flatListHeight);
@@ -56,13 +69,10 @@ class NewGroupChatRoom extends Component {
         //     console.log(res);
         // })
     }
-  onSubmitGroupChatRooms () {
-    alert('submit');
+    onSubmitGroupChatRooms () {
+        const { onSubmit } = this.props;
+        onSubmit({ friends: this.state.checkedFriend });
   }
-  selectFriendAddGroupChat() {
-    alert('ok');
-  }
-
   switchCheckedBox(item) {
     let list = this.state.friendList;
     let IndexFromItem = list.findIndex( e => e.userId === item.userId );
@@ -169,9 +179,9 @@ class NewGroupChatRoom extends Component {
                          </TouchableOpacity>);
     const openMune = ( <TouchableOpacity
                        style={ styles.MuneIcon }
-                       disabled={ this.state.touchDisabled }
+                       disabled={ !this.state.checkedFriend.length }
                        onPress={ this.onSubmitGroupChatRooms.bind(this)}>
-                       <Text style={this.state.touchDisabled ?
+                       <Text style={ !this.state.checkedFriend.length ?
                                     {color: Color.Grey, fontWeight: 'bold'} :
                                     {color: Color.White, fontWeight: 'bold'}
                                    }>完成</Text>

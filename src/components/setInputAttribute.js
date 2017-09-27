@@ -51,7 +51,8 @@ class SetInputComponent extends Component {
     };
   }
   onHandleSubmit () {
-    alert('ok');
+      console.log(this.props);
+      this.props.navigation.state.params.onSubmit({value:this.state.value})
   }
 
   componentWillMount() {
@@ -70,11 +71,11 @@ class SetInputComponent extends Component {
   componentDidMount() {
     _this = this;
   }
-  onChangeValue (value) {
-    this.setState({
-      value,
-    });
-  }
+    onChangeValue (value) {
+        this.setState({
+            value,
+        });
+    }
   render() {
     return (
       <View

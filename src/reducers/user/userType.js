@@ -9,3 +9,5 @@ export const SEND_GROUP_CHAT_INFO = 'SEND_GROUP_CHAT_INFO'; // 发送群聊信�
 export const CHANGE_CHAT_ROOMS = 'CHANGE_CHAT_ROOMS'; // 用户个人聊天, 非群组
 export const SAVE_USERID = 'SAVE_USERID'; // 登录成功保存用户id
 export const SWITCH_CHAT_TOP = 'SWITCH_CHAT_TOP'; // 切换聊天顶置功能
+export const SET_GROUP_NAME = 'SET_GROUP_NAME'; // 设置群聊群名称
+export const SET_GROUP_USERNAME = 'SET_GROUP_USERNAME' // 设置群聊用户在群众的昵称

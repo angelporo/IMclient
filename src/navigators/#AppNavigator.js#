@@ -34,6 +34,7 @@ export const AppNavigator = StackNavigator({
     // 全局配置导航
     headerMode: "float",
     headerBackTitle: '返回',
+    headerTruncatedBackTitle: '返回',
     navigationOptions: {
         headerStyle: { backgroundColor: Color.Black },
         headerTitleStyle: { color: Color.White,

@@ -90,6 +90,8 @@ const MyApp = TabNavigator({
       paddingVertical: 3
     }
   },
+  headerBackTitle: '返回',
+  headerTruncatedBackTitle: '返回',
   animationEnabled: false,
   tabBarPosition: 'bottom',
   TabBarBottom: true,
