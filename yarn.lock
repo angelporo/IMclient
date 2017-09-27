@@ -3438,6 +3438,10 @@ react-native-image-resizer@^0.1.1:
   version "0.1.1"
   resolved "http://registry.npm.taobao.org/react-native-image-resizer/download/react-native-image-resizer-0.1.1.tgz#2abcac85d97e08854b2de716d62953bbae003c77"
 
+react-native-input-password@^1.0.5:
+  version "1.0.5"
+  resolved "http://registry.npm.taobao.org/react-native-input-password/download/react-native-input-password-1.0.5.tgz#301c3d7510e83955f8100e26cdda9ad353921a30"
+
 react-native-photo-upload@^1.0.3:
   version "1.0.3"
   resolved "http://registry.npm.taobao.org/react-native-photo-upload/download/react-native-photo-upload-1.0.3.tgz#2a0b4cabfbc577fed85bad101c6fdd02f0548c2a"

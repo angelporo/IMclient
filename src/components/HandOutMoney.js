@@ -10,7 +10,9 @@ import {
   TouchableOpacity,
   Text,
   StatusBar,
-  ScrollView
+  ScrollView,
+  Platform,
+  KeyboardAvoidingView
 } from 'react-native';
 
 import {
@@ -23,7 +25,8 @@ import {
 } from '../UiLibrary/';
 import PropTypes from 'prop-types';
 import Eicon from 'react-native-vector-icons/Entypo';
-
+import FIcon from 'react-native-vector-icons/FontAwesome';
+import Password from 'react-native-input-password';
 
 const openMuneIcon = (<Eicon name="dots-three-horizontal" size={ 28 } color={Color.White} />);
 
@@ -45,14 +48,21 @@ class HandleSendRedPackage extends Component {
       sum: "",
       num: "1",
       isCanSubmit:  false,
-      submitText: '塞钱进红包'
+      submitText: '塞钱进红包',
+      insterPasd: false
     };
     this.type = this.props.type;
   }
   _onSubmit () {
-    alert('submit');
+    this.setState({
+      insterPasd: true
+    });
   }
-
+  onHandleCloseInsterPsd() {
+    this.setState({
+      insterPasd: false
+    });
+  }
   _isCanSubmit (sum, num) {
     const RegNum = /^([1-9]\d*|[0]{1,1})$/;
     const Reg = /(^[-+]?[1-9]\d*(\.\d{1,2})?$)|(^[-+]?[0]{1}(\.\d{1,2})?$)/;
@@ -108,73 +118,129 @@ class HandleSendRedPackage extends Component {
         <ScrollView
           endFillColor={ Color.Grey }
           >
-        <TextInput.number
-          labelText="单个金额"
-          style={styles.msgInput}
-          type="message"
-          placeholder="0"
-          keyboardType="numeric"
-          value={this.state.sum}
-          unit="元"
-          onChangeText={ this._changMoneyText.bind(this)}
-          />
-        {
-          this.type === 'group' ? (
-            <TextInput.number
-              labelText="红包数量"
-              style={styles.numberInput}
-              type="message"
-              placeholder="1"
-              unit="个"
-              keyboardType="numeric"
-              defaultValue={ this.state.num }
-              value={ this.state.num }
-              onChangeText={ this._changMoneyNumber.bind(this) }
-              />
-          ) : null
-        }
           <TextInput.number
-            placeholder="大吉大利,红包拿来"
-            labelText="留言"
-            style={styles.moneyInput}
+            labelText="单个金额"
+            style={styles.msgInput}
+            type="message"
+            placeholder="0"
+            keyboardType="numeric"
+            value={this.state.sum}
+            unit="元"
+            onChangeText={ this._changMoneyText.bind(this)}
             />
+          {
+            this.type === 'group' ? (
+              <TextInput.number
+                labelText="红包数量"
+                style={styles.numberInput}
+                type="message"
+                placeholder="1"
+                unit="个"
+                keyboardType="numeric"
+                defaultValue={ this.state.num }
+                value={ this.state.num }
+                onChangeText={ this._changMoneyNumber.bind(this) }
+                />
+            ) : null
+          }
+        <TextInput.number
+      placeholder="大吉大利,红包拿来"
+      labelText="留言"
+      style={styles.moneyInput}
+        />
 
-          <View style={styles.mstHint}>
-            <Text style={styles.moneyDisplay}>
-              {`￥${ this.state.sum === '' ? "0.00" : this.state.sum }`}
-            </Text>
-          </View>
+        <View style={styles.mstHint}>
+        <Text style={styles.moneyDisplay}>
+        {`￥${ this.state.sum === '' ? "0.00" : this.state.sum }`}
+      </Text>
+        </View>
 
-          <View>
-            <Button
-              style={styles.submitButton}
-              textStyle={ styles.submitText }
-              disabled={ !this.state.isCanSubmit }
-              onPress={this._onSubmit.bind(this)}
+        <View>
+        <Button
+      style={styles.submitButton}
+      textStyle={ styles.submitText }
+      disabled={ !this.state.isCanSubmit }
+      onPress={this._onSubmit.bind(this)}
         >
         塞钱进红包
-            </Button>
-          </View>
+      </Button>
+        </View>
         </ScrollView>
-          <AlertBox.AlertMenuBox
-            visible={ this.state.isShowMune }
-            onClosePress={ () => this.setState({isShowMune: false })}
-            data={[{text: '红包记录', onPress: () => alert('ok')}]}/>
+        <AlertBox.AlertMenuBox
+      visible={ this.state.isShowMune }
+      onClosePress={ () => this.setState({isShowMune: false })}
+      data={[{text: '红包记录', onPress: () => alert('ok')}]}>
+        </AlertBox.AlertMenuBox>
+        {
+          this.state.insterPasd ? (<InsterPassWordBox
+                                   onClose={this.onHandleCloseInsterPsd.bind(this)} />) : null
+        }
       </View>
     );
   }
 }
 
+function InsterPassWordBox ({onClose}) {
+  const CloseBtn = (<FIcon color={ Color.Grey } name="times" size={ 20 }/>);
+  const PassWordComponent = () =>{
+    if (Platform.OS === 'ios') {
+      return (
+        <KeyboardAvoidingView
+          behavior="padding"
+          >
+          <Password
+            maxLength={6}
+            onChange={ (text) => {}}
+            />
+        </KeyboardAvoidingView>
+      );
+    } else {
+      return (
+        <Password
+          maxLength={6}
+          onChange={ (text) => {}}
+          />);
+    }
+  };
+  return (
+    <View style={styles.insterPasdBox}>
+      <View style={styles.insterPasdContent}>
+        <TouchableOpacity
+          style={styles.insterPsdCloseBtn}
+          onPress={onClose}>
+          {CloseBtn}
+        </TouchableOpacity>
+        <View style={styles.psdTitle}>
+          <Text style={{color: Color.Grey, fontSize: FontSize.Main}}>请输入支付密码</Text>
+        </View>
+        <View style={ styles.pasdInputBox }>
+          { PassWordComponent() }
+          </View>
+      </View>
+    </View>
+  )
+}
+
 const styles = StyleSheet.create({
   html: {
     backgroundColor: Color.BackgroundGrey,
-    height: '100%'
+    height: '100%',
+    position: 'relative'
   },
   closeBtn: {
     padding: 9
   },
   MuneIcon: {
     padding: 9
+  },
+  insterPsdCloseBtn: {
+    position: 'absolute',
+    left: 0,
+    top: 0,
+    padding: 15,
+    alignItems: 'center',
+    justifyContent: 'center',
+    zIndex: 101
   },
   title: {
     color: Color.White,
@@ -184,6 +250,32 @@ const styles = StyleSheet.create({
     marginHorizontal: 16,
     marginLeft: 16,
     marginRight: 16
+  },
+  pasdInputBox: {
+    alignItems: 'center'
+  },
+  psdTitle: {
+    paddingVertical: 16,
+    alignItems: 'center'
+  },
+  insterPasdBox: {
+    width: '100%',
+    height: '100%',
+    position: 'absolute',
+    left: 0,
+    top: 0,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, .4)',
+  },
+  insterPasdContent: {
+    width: '90%',
+    height: 150,
+    backgroundColor: Color.White,
+    zIndex: 100,
+    borderRadius: 6,
+    overflow: 'hidden',
+    paddingTop: 10
   },
   mstHint: {
     height: 100,
@@ -208,7 +300,8 @@ const styles = StyleSheet.create({
   moneyDisplay: {
     textAlign: 'center',
     fontSize: 34,
-    fontWeight: 'bold'
+    fontWeight: 'bold',
+    marginTop: 20
   }
 });
 

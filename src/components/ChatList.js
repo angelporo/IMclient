@@ -100,7 +100,9 @@ class ChatList extends Component {
   _openAddFriend () {
     this.props.navigation.navigate('AddFriend',{data: 'hah'});
   }
-
+  newGroupChat ({friends})  {
+    alert(friends.length);
+  }
   _renderRow = ({item}) => {
     const newItem = Object.assign(item);
     return (
@@ -160,7 +162,8 @@ class ChatList extends Component {
               onShow={() => this.setState({ isMenuShow: false })}
             visible={ this.state.openGroupChatRoom }>
             {/*// NOTE: 发送红包type选项(群发和单发) */}
-            <NewGroupChatRoom
+              <NewGroupChatRoom
+                onSubmit={this.newGroupChat.bind(this)}
           closeModal={() => this.setState({ openGroupChatRoom: !this.state.openGroupChatRoom })}
               />
           </Modal>
@@ -315,12 +318,14 @@ function MenuBox({data,
           {
             isShow ? menubox : (<View/>)
           }
-        </View>
+      </View>
+        <ScrollView>
         <FlatList
       data={ flatListData }
       keyExtractor={ (item, index) => item.id }
       renderItem={ renderItem }
-          />
+        />
+        </ScrollView>
       </View>
     );
 }
