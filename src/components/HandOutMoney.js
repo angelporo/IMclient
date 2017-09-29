@@ -38,9 +38,8 @@ const openMuneIcon = (<Eicon name="dots-three-horizontal" size={ 28 } color={Col
 class HandleSendRedPackage extends Component {
   static propTypes = {
     closeModal: PropTypes.func,
-    type: PropTypes.string,  // "group" or "single"
+      type: PropTypes.string,  // "group" or "single"
   }
-
   constructor(props) {
     super(props);
     this.state = {

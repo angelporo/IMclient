@@ -74,7 +74,6 @@ class UserInfoComponent extends Component {
         />
         </PhotoUpload>
     );
-
   }
 }
 
