@@ -17,7 +17,6 @@ import EStyleSheet from 'react-native-extended-stylesheet';
 import FIcon from 'react-native-vector-icons/FontAwesome';
 import EIcon from 'react-native-vector-icons/Entypo';
 import EEcon from 'react-native-vector-icons/EvilIcons';
-import FFIcon from 'react-native-vector-icons/Foundation';
 import Icon from 'react-native-vector-icons/Ionicons';
 const MyIcon = (<Icon name="ios-person" size={30} color="#4F8EF7" />);
 import {
@@ -40,7 +39,7 @@ class UserCenter extends Component {
                          /> );
     return {
       title: '我',
-      headerRight: headerRight,
+      // headerRight: headerRight,
       tabBarIcon: ({ tintColor }) => (
         <AddPerson hintColor={ tintColor } />
       ),
@@ -68,6 +67,8 @@ class UserCenter extends Component {
         style={styles.container}
         >
         <TouchableHighlight
+        delayPressOut={ 200 }
+        delayPressIn={ 0 }
           onPress={() => this.props.navigation.navigate('UserInfo')}
           >
           <View
@@ -99,18 +100,24 @@ class UserCenter extends Component {
               </View>
             </View>
 
-            <EIcon name="chevron-thin-right" color={Color.Grey} />
+        <EIcon name="chevron-thin-right" color={Color.Grey} />
           </View>
         </TouchableHighlight>
 
         <ListItem.Header/>
 
         <ListItem.Label
-          onPress={this._onPressWallet.bind(this)}
-          icon={(<EIcon name="wallet" color={ Color.Grey } size={ 30 }/>)}
-      labelText="钱包"
+        onPress={this._onPressWallet.bind(this)}
+        icon={(<EIcon name="wallet" color={ Color.Grey } size={ 28 }/>)}
+        labelText="钱包"
         />
         <ListItem.Separator/>
+        <ListItem.Label
+        onPress={this._onPressWallet.bind(this)}
+        icon={(<FIcon name="gear" color={ Color.Grey } size={ 30 }/>)}
+        labelText="设置"
+        />
+        <ListItem.Separator />
         </ScrollView>
     )
   }

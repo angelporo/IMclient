@@ -12,6 +12,8 @@ const inintUserState = {
     keyBoardHeight: 220, // 手机接盘高度
     isLogged: true,
     isShowMune: false,
+    avatar: 'https://www.sparklabs.com/forum/styles/comboot/theme/images/default_avatar.jpg',
+    mobile: '17636999981',
     userid: '',
     userName: '李渊的信信',
     isFetch: false,

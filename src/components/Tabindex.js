@@ -47,14 +47,12 @@ const MyApp = TabNavigator({
     screen: ChatList,
     navigationOptions: {
       tabBarLabel:'信信',
-      lazy: true
     }
   },
   userContactList: {
     screen: UserContackList,
     navigationOptions: {
       tabBarLabel:'通讯录',
-      lazy: true
     }
   },
   userCenter: {

@@ -149,7 +149,7 @@ const styles = StyleSheet.create({
   iconStyle: {
     justifyContent: 'center',
     alignItems: 'center',
-    marginRight: 15,
+      marginRight: 15,
     },
     labelLeftComponent: {
         flexDirection: 'row',
@@ -162,8 +162,8 @@ const styles = StyleSheet.create({
     },
     labelRightComponent: {
         flexDirection: 'row',
-      alignItems: 'center',
-      justifyContent: 'center'
+        alignItems: 'center',
+        justifyContent: 'flex-end'
     },
     textStyle: {
         color: Color.LightBlack,
