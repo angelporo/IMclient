@@ -23,6 +23,7 @@ import EIcon from 'react-native-vector-icons/Entypo';
 import EEcon from 'react-native-vector-icons/EvilIcons';
 import FFIcon from 'react-native-vector-icons/Foundation';
 import Icon from 'react-native-vector-icons/Ionicons';
+import { CachedImage } from "react-native-img-cache";
 const MyIcon = (<Icon name="ios-person" size={30} color="#4F8EF7" />);
 import {
     getGroupMemberByGroupID,
@@ -236,11 +237,15 @@ export class GroupMembers extends Component{
     }
     return (
       <View style={styles.groupMembersItemBox}>
-        <Image
-          resizeMode={ Image.resizeMode.contain }
-          source={ {uri: item.avatar} }
-          style={ styles.groupMemberItemAvatar }
-          />
+        <CachedImage
+        component={ Image }
+        source={{
+            uri: item.avatar
+        }}
+        style={ styles.groupMemberItemAvatar }
+        resizeMode={ Image.resizeMode.contain }
+        mutable
+        />
         <Text style={{ marginTop: 8 }}>{ item.userName }</Text>
       </View>
     );

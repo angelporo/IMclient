@@ -19,6 +19,7 @@ import EStyleSheet from 'react-native-extended-stylesheet';
 import * as Animatable from 'react-native-animatable';
 import Micon from 'react-native-vector-icons/MaterialIcons';
 import MMicon from 'react-native-vector-icons/MaterialCommunityIcons';
+import { CachedImage } from "react-native-img-cache";
 import Eicon from 'react-native-vector-icons/Entypo';
 
 export default class AlertRedPackage extends Component {
@@ -76,16 +77,20 @@ export default class AlertRedPackage extends Component {
             </TouchableOpacity>
             <View style={{height: '100%'}}>
               <View style={styles.avatarBox}>
-                <Image
-                  source={ {url: icon} }
-                  style={styles.userAvatar}
+                <CachedImage
+                  component={ Image }
+                  source={{
+                    uri: icon
+                  }}
+                  style={ styles.userAvatar }
+                  mutable
                   />
                 <Text style={styles.userNameText}>{userName}</Text>
               </View>
-                { /* 抢红包按钮 */ }
-                <View style={styles.rushMoneyIconBox}>
-                  <Text>hahah</Text>
-                </View>
+              { /* 抢红包按钮 */ }
+              <View style={styles.rushMoneyIconBox}>
+                <Text>红包按钮</Text>
+              </View>
             </View>
           </Animatable.View>
         </Animatable.View>
