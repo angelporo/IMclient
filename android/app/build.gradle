@@ -87,6 +87,7 @@ android {
     buildToolsVersion "23.0.1"
 
     defaultConfig {
+        vectorDrawables.useSupportLibrary = true
         applicationId "com.imclient"
         minSdkVersion 16
         targetSdkVersion 22
@@ -135,6 +136,9 @@ android {
 }
 
 dependencies {
+    compile project(':react-native-fetch-blob')
+    compile project(':react-native-bottomsheet')
+    compile project(':react-native-image-crop-picker')
     compile project(':react-native-fs')
     compile project(':react-native-image-resizer')
     compile project(':react-native-bottom-sheet')

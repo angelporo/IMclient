@@ -38,11 +38,11 @@
 		</dict>
 	</dict>
 	<key>NSCameraUsageDescription</key>
-	<string>上传头像</string>
+	<string>信信将获取您的图片权限</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string></string>
+	<string/>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>上传头像</string>
+	<string>信信将获取您的图片权限</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>Entypo.ttf</string>

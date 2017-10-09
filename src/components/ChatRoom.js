@@ -41,6 +41,8 @@ import Eicon from 'react-native-vector-icons/Entypo';
 import Ficon from 'react-native-vector-icons/FontAwesome';
 import OIcon from 'react-native-vector-icons/Octicons';
 import * as Animatable from 'react-native-animatable';
+// import ImagePicker from  "react-native-image-picker";
+import ImagePicker from 'react-native-image-crop-picker';
 import HandleSendRedPackage from './HandOutMoney';
 const { height, width } = Dimensions.get('window');
 
@@ -389,7 +391,28 @@ class ChatRoom extends Component {
       </Animatable.View>
     );
   }
+    getPhotoByCamera () {
+        // 相册获取图片
+        ImagePicker.openCamera({
+            loadingLabelText: '加载中...'
+        })
+        .then(image => {
+            console.log(image);
+        }).catch(e => {
 
+        })
+    }
+
+    getPhotoByImageLibrary () {
+        ImagePicker.openPicker({
+            multiple: true,
+            loadingLabelText: '加载中...'
+        }).then(image => {
+            console.log( image );
+        }).catch(e => {
+
+        })
+    }
   render() {
     const ChatListView = (
       <FlatList
@@ -536,12 +559,12 @@ class ChatRoom extends Component {
         <SeletTypeItem
       height={(this.state.keyBoardHeight || 170) / 2}
       text={"相册"}
-      onPress={ () => alert('ok')}
+      onPress={ this.getPhotoByImageLibrary.bind(this)}
       Icon={ selectPhoto } />
         <SeletTypeItem
       height={(this.state.keyBoardHeight || 170) / 2}
       text={"相机"}
-      onPress={ () => alert('ok')}
+      onPress={ this.getPhotoByCamera.bind(this)}
       Icon={ selectCamera } />
         </Animatable.View>
         <Modal

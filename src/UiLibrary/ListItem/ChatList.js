@@ -17,13 +17,16 @@ import {
 } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import React, { Component } from 'react';
-
+import { CachedImage } from "react-native-img-cache";
 import FontSize from '../FontSize';
 import Color from '../Color';
+
+
 export default class MessageCell extends Component {
   constructor(props) {
     super(props);
   }
+
   render() {
     const { currentUser, message, onPreddRedPackage } = this.props;
     const { type } = message.msg;
@@ -49,12 +52,25 @@ export default class MessageCell extends Component {
       <View
         style={[ styles.messageCell, {flexDirection: differentStyle.flexDirection }]}
         >
-        <Image
-          source={{
+
+        {
+            /*
+            <Image
+            source={{
             uri: message.avatar
-          }}
-          style={styles.avatar}
-          />
+        }} />
+        */
+        }
+        {
+        <CachedImage
+        component={ Image }
+        source={{
+            uri: message.avatar
+        }}
+        style={ styles.avatar }
+        mutable
+        />
+        }
         { mgsComponent }
         <View style={styles.endBlankBlock} />
       </View>

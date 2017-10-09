@@ -144,7 +144,8 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'space-between',
         paddingHorizontal: 15,
-        paddingVertical: 6
+        paddingVertical: 6,
+        minHeight: 45
     },
   iconStyle: {
     justifyContent: 'center',
