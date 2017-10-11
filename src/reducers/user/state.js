@@ -19,6 +19,7 @@ const inintUserState = {
     isFetch: false,
     isError: null, // 提示错误消息, null ? closeAlert : openAlert
     currentChatRoomPage: 1, // 当前获取聊天列表页码
+    qrcodeUrl: "https://www.sparklabs.com/forum/styles/comboot/theme/images/default_avatar.jpg",
     userRecentChat:[// 用户最近联系人
         { latestMessage: '最后的消息',
             latestTime: '2017-05-23',

@@ -18,6 +18,7 @@ import FIcon from 'react-native-vector-icons/FontAwesome';
 import EIcon from 'react-native-vector-icons/Entypo';
 import EEcon from 'react-native-vector-icons/EvilIcons';
 import Icon from 'react-native-vector-icons/Ionicons';
+import { CachedImage } from "react-native-img-cache";
 const MyIcon = (<Icon name="ios-person" size={30} color="#4F8EF7" />);
 import {
   FontSize,
@@ -26,13 +27,18 @@ import {
   TextInput,
   ListItem
 } from '../UiLibrary/';
-const AddPerson = ({hintColor}) => (<Icon name="ios-chatbubbles" size={26} color={ hintColor } />);
+
+const AddPerson = ({hintColor}) => (<Icon
+                                   name="ios-chatbubbles"
+                                   size={26}
+                                   color={ hintColor }
+                                   />);
 
 class UserCenter extends Component {
   static navigationOptions = props => {
     const headerRight = (<Icon.Button
                          onPress={ () => _this._switchMenu.bind(_this)() }
-                         backgroundColor={Color.Black}
+                         backgroundColor={ Color.Black }
                          name="ellipsis-h"
                          size={ 26 }
                          color={ Color.White }
@@ -64,12 +70,12 @@ class UserCenter extends Component {
   render() {
     return (
       <ScrollView
-        style={styles.container}
+        style={ styles.container }
         >
         <TouchableHighlight
-        delayPressOut={ 200 }
-        delayPressIn={ 0 }
-          onPress={() => this.props.navigation.navigate('UserInfo')}
+          delayPressOut={ 200 }
+          delayPressIn={ 0 }
+          onPress={ () => this.props.navigation.navigate('UserInfo') }
           >
           <View
             style={[styles.cell]}
@@ -77,11 +83,13 @@ class UserCenter extends Component {
             <View
               style={styles.leftBox}
               >
-              <Image
+              <CachedImage
+                component={ Image }
                 source={{
                   uri: 'https://www.sparklabs.com/forum/styles/comboot/theme/images/default_avatar.jpg'
                 }}
-                style={styles.avatar}
+                style={ styles.avatar }
+                mutable
                 />
               <View
                 style={styles.userInfo}
@@ -93,33 +101,33 @@ class UserCenter extends Component {
                 </Text>
 
                 <Text
-                  style={styles.info}
+                  style={ styles.info }
                   >
                   手机号: 167263453
                 </Text>
               </View>
             </View>
 
-        <EIcon name="chevron-thin-right" color={Color.Grey} />
+            <EIcon name="chevron-thin-right" color={Color.Grey} />
           </View>
         </TouchableHighlight>
 
         <ListItem.Header/>
 
         <ListItem.Label
-        onPress={this._onPressWallet.bind(this)}
-        icon={(<EIcon name="wallet" color={ Color.Grey } size={ 28 }/>)}
-        labelText="钱包"
+          onPress={this._onPressWallet.bind(this)}
+          icon={(<EIcon name="wallet" color={ Color.Grey } size={ 28 }/>)}
+      labelText="钱包"
         />
-        <ListItem.Separator/>
+        <ListItem.Separator />
         <ListItem.Label
-        onPress={this._onPressWallet.bind(this)}
-        icon={(<FIcon name="gear" color={ Color.Grey } size={ 30 }/>)}
-        labelText="设置"
+      onPress={this._onPressWallet.bind(this)}
+      icon={(<FIcon name="gear" color={ Color.Grey } size={ 30 }/>)}
+      labelText="设置"
         />
         <ListItem.Separator />
         </ScrollView>
-    )
+    );
   }
 }
 

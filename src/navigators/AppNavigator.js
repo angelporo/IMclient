@@ -19,6 +19,7 @@ import MyApp from '../components/Tabindex';
 import UserWalletComponent from '../components/UserWallet';
 import SectChatRoomInfoAndDisplayGroupMember from '../components/SetChatRoomInfo';
 import SetInputComponent from '../components/setInputAttribute';
+import AmendUserMobile from '../components/AmendMobile';
 // 生成路由关系 绑定导航路由
 export const AppNavigator = StackNavigator({
     Login: { screen: Login },
@@ -29,7 +30,8 @@ export const AppNavigator = StackNavigator({
     UserInfo: { screen: UserInfoComponent },
     UserWallet: { screen: UserWalletComponent },
     SectChatRoomInfoAndDisplayGroupMember: { screen: SectChatRoomInfoAndDisplayGroupMember},
-    SetInputComponent: { screen: SetInputComponent }
+    SetInputComponent: { screen: SetInputComponent },
+    AmendUserMobile: { screen: AmendUserMobile }
 }, {
     // 全局配置导航
     headerMode: "float",

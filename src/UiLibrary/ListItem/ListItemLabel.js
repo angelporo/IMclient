@@ -59,7 +59,7 @@ export default class Label extends React.Component {
 
     _renderRightCompoent = () => {
         let { rightComponent, textStyle } = this.props;
-        if (typeof rightComponent === 'string' || typeof rightComponent === 'number') {
+        if ( typeof rightComponent === 'string' || typeof rightComponent === 'number' ) {
             return (
                 <Text
                     style={[

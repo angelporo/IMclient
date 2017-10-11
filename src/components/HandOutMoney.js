@@ -3,7 +3,7 @@
  * Param: param
  * Return: {undefined}
  **/
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import {
   StyleSheet,
   View,

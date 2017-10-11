@@ -31,7 +31,14 @@ export default class SearchText extends React.Component {
     }
 
     render() {
-        const { placeholder, value, isShowIcon,  onSubMitEditing, style, onChangeValue } = this.props;
+      const { placeholder,
+              value,
+              isShowIcon,
+              onSubMitEditing,
+              style,
+              onChangeValue,
+              keyboardType
+            } = this.props;
         return (
             <View style={[styles.searchBox, style]}>
             {
@@ -48,7 +55,8 @@ export default class SearchText extends React.Component {
             underlineColorAndroid='transparent'
             value={ value }
             onChangeText={ onChangeValue }
-            onSubmitEditing={ onSubMitEditing }
+          onSubmitEditing={ onSubMitEditing }
+          keyboardType={ !keyboardType ? "default" : "numeric"}
             />
             </View>
         );
