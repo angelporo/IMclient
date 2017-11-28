@@ -20,7 +20,7 @@ import React, { Component } from 'react';
 import { CachedImage } from "react-native-img-cache";
 import FontSize from '../FontSize';
 import Color from '../Color';
-
+import config from '../../config'
 
 export default class MessageCell extends Component {
   constructor(props) {
@@ -29,7 +29,8 @@ export default class MessageCell extends Component {
 
   render() {
     const { currentUser, message, onPreddRedPackage } = this.props;
-    const { type } = message.msg;
+    // 获取消息类型
+    const { type } = message;
     let differentStyle = {};
     //判断消息来源id号和用户id号
     if (message.from === currentUser) {
@@ -45,7 +46,7 @@ export default class MessageCell extends Component {
     }
     const textMsg = (<View
                      style={[styles.contentView, {backgroundColor: differentStyle.backgroundColor}]}>
-                     <Text style={ styles.messageCellText }>{ message.msg.content }</Text>
+                     <Text style={ styles.messageCellText }>{ message.chatContent }</Text>
                      </View>
                     );
     const ChatMessage = mgsComponent => (
@@ -54,30 +55,30 @@ export default class MessageCell extends Component {
         >
 
         {
-            /*
+          /*
             <Image
-            source={{
-            uri: message.avatar
-        }} />
-        */
-        }
-        {
-        <CachedImage
-        component={ Image }
-        source={{
-            uri: message.avatar
-        }}
-        style={ styles.avatar }
-        mutable
-        />
-        }
-        { mgsComponent }
-        <View style={styles.endBlankBlock} />
+                source={{
+                uri: message.avatar
+                }} />
+              */
+            }
+            {
+                <CachedImage
+                    component={ Image }
+                    source={{
+                      uri: `${config.domain}${message.avatar}`
+                    }}
+                    style={ styles.avatar }
+                    mutable
+                    />
+                }
+                { mgsComponent }
+                <View style={styles.endBlankBlock} />
       </View>
     );
     if (type === "text") {
       return ChatMessage(textMsg);
-    }else if (type === 'redPackage') {
+    }else if (type === 'redPackage') { // 红包消息
       return ChatMessage(redPackageMsg({packageData: '',
                                         style: [styles.contentView],
                                         onPress: onPreddRedPackage

@@ -23,11 +23,12 @@ class ReduxExampleApp extends React.Component {
   constructor(props){
     super(props);
     // 模拟登录:
+    const state = store.getState();
+    // 登录之后开始连接环信
     WebIM.conn.open({
       apiUrl: WebIM.config.apiURL,
-      user: 'test',
-      pwd: 'angel0112',
-      //  accessToken: password,
+      user: state.userReducer.userName,
+      pwd: 'angel',
       appKey: WebIM.config.appkey
     });
 
@@ -36,7 +37,7 @@ class ReduxExampleApp extends React.Component {
       onOpened: msg => {
         // 出席后才能接受推送消息
         WebIM.conn.setPresence();
-        console.log('msg', msg)
+        console.log('msg', msg);
         store.dispatch( userAction.saveUserId( msg.accessToken ));
         NavigationActions.navigate({ routeName : 'MyApp' }),
         console.log('链接成功');
@@ -47,13 +48,15 @@ class ReduxExampleApp extends React.Component {
         // 获取聊天室
         // store.dispatch( userAction.getChatRooms() );
         // 获取好友列表
-        store.dispatch( userAction.getRosterByIM() );
+        // store.dispatch( userAction.getRosterByIM() );
         // 获取用户群组列表
-        store.dispatch( userAction.getGroupsRooms());
+        // store.dispatch( userAction.getGroupsRooms());
       },
       // 接受消息
       onPresence: msg => {
-        console.log("onPresence", msg );
+        if (msg.type == 'subscribe') {
+          console.log("接受到的消息", msg);
+        }
         switch (msg.type) {
         case 'subscribe':
           // 加好友时双向订阅过程，所以当对方同意添加好友的时候

@@ -69,8 +69,9 @@ class ChatRoom extends Component {
     _userAtPage = 0;
     _userReachEnd = true;
 
-    static navigationOptions = ({navigation})  => {
-        const IconName = navigation.state.params.isPersons === "group" ? "ios-people" : "ios-person"
+  static navigationOptions = ({navigation})  => {
+    console.log(navigation.state)
+      const IconName = navigation.state.params.isPersons === "group" ? "ios-people" : "ios-person"
         const headerRight = (<Icon.Button
             onPress={ () => navigation.state.params.chatListSwitchMenu() }
             name={ IconName }
@@ -165,15 +166,30 @@ class ChatRoom extends Component {
     }, this._userHasBeenInputed ? 0 : 123);
   }
 
+  // 发送text类型消息
   _onSubmitEditing = () => {
     const { sendChatTxtMeg } = this.props;
-    const sendMsgOption = {
-      chatData: this.props.navigation.state.params.info.chatData,
-      roomID: this.props.navigation.state.params.info.id,
-      message: this.state.inputValue
-    };
+    const roomOption = this.props.navigation.state.params.info;
+    let requestBody;
+    const userName = this.props.store.userName;
+    if (roomOption.type === "users") {
+      // 单聊
+      requestBody = {
+        target: [roomOption.name],
+        target_type:"users",
+        from: userName,
+        msg: {
+          type:"txt",
+          msg:this.state.inputValue
+        }
+      }
+    }
+    if (roomOption.type === "group") {
+      // 发送群聊消息
+    }
     // 发送群聊文本消息
-    sendChatTxtMeg( sendMsgOption );
+    sendChatTxtMeg( requestBody );
+    // 发送之后清空聊天框消息
     this.setState({inputValue: ''});
   }
 
@@ -224,16 +240,19 @@ class ChatRoom extends Component {
         }
     }
 
-    lookChatRoomInfo () {
+  lookChatRoomInfo () {
         this.props.navigation.navigate('SectChatRoomInfoAndDisplayGroupMember',{
             info: this.props.navigation.state.params.info,
         });
     }
-    componentWillMount () {
+  componentWillMount () {
+    const roomNameFrist = this.props.store.userRecentChat;
+    const roomNameSecond = this.props.navigation.state.params.info.name;
+    const roomName = roomNameFrist.length != 0 ? roomNameFrist[this.roomChatIndex].name : roomNameSecond
         this.props.navigation.setParams({
             chatListSwitchMenu: this.lookChatRoomInfo.bind(this),
             isPersons: this.props.navigation.state.params.info.type,
-            roomName: this.props.store.userRecentChat[this.roomChatIndex].name
+            roomName: roomName
         });
     }
 
@@ -414,9 +433,11 @@ class ChatRoom extends Component {
         })
     }
   render() {
+    const rencentConcats = this.props.store.userRecentChat;
+    const rencentConcat = rencentConcats.length != 0  ? rencentConcats[this.roomChatIndex].groupMembers : []
     const ChatListView = (
       <FlatList
-        data={this.props.store.userRecentChat[this.roomChatIndex].chatData}
+        data={ rencentConcat }
         keyExtractor={(item, index) => item.msgId}
         onRefresh={this._onPullMessage}
         refreshing={this.state.refreshing }

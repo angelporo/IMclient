@@ -145,11 +145,14 @@ class SectChatRoomInfoAndDisplayGroupMember extends Component {
     const { name, isTop, groupMembers } = userRecentChat[ this.groupIndex ]
     return (
       <ScrollView>
-        {/*渲染群成员*/}
+        {
+          /**
         <GroupMembers
           data={ groupMembers }
           handleAddFriends={ this.openAddfriendsToGroupMember.bind(this) }
           />
+             **/
+        }
         <View style={styles.utilBar}>
           <View style={ styles.ListItemLableBox }>
             <ListItem.Label

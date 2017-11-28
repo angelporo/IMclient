@@ -1,16 +1,29 @@
 import  inintUserState from './state';
 import * as types from './userType';
 import { DeviceStorage } from '../../utils.js';
+import config from "../../config";
 
 
 export default function user(state = inintUserState, action) {
     switch (action.type) {
     case types.CHANGE_LOGGIN_STATE:
-        return { ...state, isFetch: action.isFetch};
+      // 登录成功改变登录状态和写入获取数据
+      console.log(action);
+      const resUser = action.response.content.user;
+      const userFriend = action.response.content.friend;
+      const recentConcat = action.response.recentConcat;
+      return { ...state,
+               isLogged: action.isLoggin,
+               isFetch: action.isFetch,
+               userid: resUser.Id,
+               mobile: resUser.Mobile,
+               userName: resUser.Name,
+               qrcodeUrl: `${config.domain}${resUser.avatar}`,
+               friendList: userFriend,
+               userRecentChat: recentConcat,
+             };
     case types.CLOSE_MUNE:
         return { ...state, isShowMune: action.menuState };
-    case types.CHANGE_LOGGIN_STATE:
-        return { ...state, isLogged: action.isLogged, userId: action.userid };
     case types.CHANGE_KEY_HEIGHT:
         DeviceStorage.save("keyBoardHeight", action.keyHeight); // 保存keyBoardHeight到数据库
         return {...state, keyBoardHeight: action.keyHeight };
@@ -19,7 +32,7 @@ export default function user(state = inintUserState, action) {
     case types.CAHNGE_GROUP:
         return Object.assign({}, state, { userRecentChat : action.result});
     case types.SEND_GROUP_CHAT_INFO:
-        state.userRecentChat[ action.index ].chatData.push( action.msgData );
+        state.userRecentChat[ action.index ].chatRoomHistory.push( action.msgData );
         return JSON.parse(JSON.stringify(state));
     case types.SAVE_USERID:
         return Object.assign({}, state, { userid: action.userId, isLogged: true });
@@ -36,7 +49,6 @@ export default function user(state = inintUserState, action) {
         state.userRecentChat[action.index].groupMembers.myUserNameAsGroup = action.content
         return JSON.parse(JSON.stringify(state));
     default:
-        console.log(state);
         return state;
     }
 }

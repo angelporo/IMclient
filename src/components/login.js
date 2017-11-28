@@ -27,9 +27,8 @@ import {
 } from '../UiLibrary/';
 import MyApp from './Tabindex';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import WebIM, { api } from '../Lib/WebIM.js';
-
-console.log('测试环信', WebIM);
+// import WebIM, { api } from '../Lib/WebIM.js';
+import config from "../config";
 
 class Login extends Component {
     static navigationOptions = ({navigation}) => {
@@ -49,7 +48,6 @@ class Login extends Component {
     // 菜单内容
     menuData  = [{text: '找回密码', onPress: () => alert('ha')},
     {text: '帮助中心', onPress: () => alert('he')}]
-
     _switchMenu () {
         this.setState({isShowMenu: true});
     }
@@ -65,17 +63,56 @@ class Login extends Component {
     }
 
   _login = async () => {
-    console.log( this.props.navigation );
-      const { loggin } = this.props;
-      loggin({ phone: this.state.phone,
-               psd: this.state.password });
-
-    // NOTE: 登录状态 需要后台查询当前用户是 在线还是离线返回结果做出页面跳转或者错误提示
-
-    this.props.navigation.dispatch({type: 'Logined'});
-
+    const  { changeLogginState } = this.props;
+    const _this = this;
+    const mobile = '18303403737';
+    const psd = 'angel';
+    const body = {
+      mobile: mobile,  //this.state.phone,
+      passWord: psd //this.state.password
+    };
+    const path = `${config.domain}/login`;
+    fetch(path, {
+      method:"POST",
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(body)
+    })
+      .then(response => response.json())
+      .then((res) => {
+        // 返回数据
+        if (res.code != 0) {
+          alert(res.msg);
+        }
+        // 登录成功
+        // 适配用户最近联系人
+        const userRencentChatData = _this.userRecentChatAD(res.content.recentConcat);
+        res.recentConcat = userRencentChatData;
+        changeLogginState({response: res, isLoggin: true});
+        _this.props.navigation.dispatch({type: 'Logined'});
+      })
+      .catch(e => console.log(e));
   }
-
+  // 用户最近联系人适配器
+  userRecentChatAD (res) {
+    return res.map((n, i) => {
+      const roomInfo = n.chatRoomInfo;
+      const history = n.chatRoomHistory;
+      return {
+        latestMessage: roomInfo.lastMessage,
+        latestTime: roomInfo.lastMessageTime,
+        name:roomInfo.name,
+        id: roomInfo.id,
+        key: roomInfo.id,
+        type:roomInfo.type,
+        affiliations: roomInfo,
+        isTop: roomInfo.isTop,
+        groupMembers: history,
+        avatar: `${config.domain}${roomInfo.avatar}`
+      }
+    })
+  }
   componentWillUpdate() {
 
   }
@@ -84,14 +121,14 @@ class Login extends Component {
     this.props.navigation.setParams({ loginSwitchMenu:this._switchMenu.bind(this)});
   }
     _goRegister () {
-        this.props.navigation.dispatch({type: 'Logined'});
-        // this.props.navigation.dispatch({type: 'Register'});
+        // this.props.navigation.dispatch({type: 'Logined'});
+        this.props.navigation.dispatch({type: 'Register'});
     }
 componentDidMount() {
   BackHandler.addEventListener("hardwareBackPress", () => alert('退出app'));
   }
     render() {
-      const { switchMenuState, changeLogginState,  navigation } = this.props;
+      const { switchMenuState,  navigation } = this.props;
       return  (
         <View
           style={ styles.container }

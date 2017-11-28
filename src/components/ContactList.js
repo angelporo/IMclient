@@ -7,10 +7,10 @@ import React, {Component} from 'react';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
 import {
-    View,
-    FlatList,
-    ScrollView,
-    Image
+  View,
+  FlatList,
+  ScrollView,
+  Image
 } from 'react-native';
 import * as userAction from '../reducers/user/userActions';
 import EStyleSheet from 'react-native-extended-stylesheet';
@@ -20,6 +20,7 @@ import EEcon from 'react-native-vector-icons/EvilIcons';
 import FFIcon from 'react-native-vector-icons/Foundation';
 import Icon from 'react-native-vector-icons/Ionicons';
 import WebIM from '../Lib/WebIM.js';
+import config from "../config";
 import {
   FontSize,
   Button,
@@ -70,13 +71,17 @@ class UserContackList extends Component {
     await this.props.refresh();
     this.setState({ refreshing: false });
   }
+  // 好友item
   _renderRow ({item}) {
+    alert(`${config.domain}${item.avatar}`);
     const avatar = (
-        <Image
-        source={{uri: item.avatar}}
+      <Image
+        source={{uri: `${config.domain}${item.avatar}`}}
         style={styles.avatar}
         />
     );
+    item.type = "users"; // 设置进入聊天房间类型
+    item.userid = item.name
     return (
       <ListItem.Label
         icon={avatar}
@@ -106,16 +111,17 @@ class UserContackList extends Component {
     );
   }
   render() {
+    console.log(this.props)
     return (
-        <FlatList
-          style={ styles.container }
-          initialNumToRender={ 10 }
-          data={ this.props.friendListData }
-          renderItem={this._renderRow.bind(this)}
-          refreshing={ this.state.refreshing }
-          onRefresh={ this._onRefresh.bind(this) }
-          ItemSeparatorComponent={ this._renderSeparator }
-          />
+      <FlatList
+        style={ styles.container }
+        initialNumToRender={ 10 }
+        data={ this.props.friendListData }
+        renderItem={this._renderRow.bind(this)}
+        refreshing={ this.state.refreshing }
+        onRefresh={ this._onRefresh.bind(this) }
+        ItemSeparatorComponent={ this._renderSeparator }
+        />
     );
   }
 }
@@ -131,7 +137,7 @@ const styles = EStyleSheet.create({
     borderRadius: 4,
     width: 45,
     height: 45
-    }, 
+  }, 
   online: {
     color: Color.WechatGreen
   }

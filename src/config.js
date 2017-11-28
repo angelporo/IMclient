@@ -3,11 +3,13 @@
  **/
 
 const config = {
-    'local': {
-        server: 'http://127.0.0.1:7078'
+    'pro': {
+      server: 'http://127.0.0.1:7078',
+      domain: "http://localhost:8080"
     },
     'dev': {
-        server: 'http://im-server.plusman.cn'
+      server: 'http://im-server.plusman.cn',
+      domain: "http://localhost:8080"
     }
 };
 

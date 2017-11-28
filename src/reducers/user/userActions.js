@@ -5,6 +5,7 @@
  **/
 import * as types from './userType';
 import WebIM from '../../Lib/WebIM';
+import "whatwg-fetch"
 import { DeviceStorage } from '../../utils.js';
 // import * as userUiAction from './userStateAction';
 
@@ -46,10 +47,11 @@ export function switchMenuState ({menuState}) {
  * Param: param
  * Return: {undefined}
  **/
-export function changeLogginState ({ userid, isLoggin }) {
+export function changeLogginState ({ response, isLoggin }) {
     return {
-        type: types.CHANGE_LOGGIN_STATE,
-        userid
+      type: types.CHANGE_LOGGIN_STATE,
+      response,
+      isLoggin,
     };
 }
 
@@ -121,17 +123,17 @@ export const register = ({userName, psd, nickName, phone}) => (dispatch , getSta
  * Param: param
  * Return: {undefined}
  **/
-export const loggin = ({phone, psd}) => (dispatch, getState) => {
-    if (WebIM.conn.isOpened()) {
-        WebIM.conn.close('logout');
-    }
+export const loggin = ({mobile, passWord}) => (dispatch, getState) => {
+    // if (WebIM.conn.isOpened()) {
+    //     WebIM.conn.close('logout');
+    // }
     const options = {
-        apiUrl: WebIM.config.apiURL,
-        user: phone,
-        pwd: psd,
-        appKey: WebIM.config.appkey,
+        // apiUrl: WebIM.config.apiURL,
+        mobile: mobile,
+        passWord: passWord,
+        // appKey: WebIM.config.appkey,
     };
-    WebIM.conn.open( options );
+    // WebIM.conn.open( options );
 }
 
 
@@ -211,43 +213,26 @@ export const getGroupsRooms = () => ( dispatch, getState ) => {
  * Param: { msg: String,roomId: String }
  * Return: { undefined }
  **/
-export const sendChatTxtMeg = ({ chatData , roomID, message }) => (dispatch, getState) => {
-    const msgId = WebIM.conn.getUniqueId();            // 生成本地消息id
-    let msg = new WebIM.message('txt', msgId); // 创建文本消息
-    console.log('msgid', msgId);
-    const option = {
-        msg: message,             // 消息内容
-        to: roomID,                     // 接收消息对象(群组id)
-        roomType: false,
-        chatType: 'chatRoom',
-        success: function () {
-            // 发送群聊成功
-            console.log('群聊信息发送成功');
-            const msgData = {
-                msg: {
-                    content: message,
-                    type: 'text'
-                },
-                msgID: msgId,
-                avatar: 'https://avatars1.githubusercontent.com/u/16830481?v=4&s=40',
-                name: 'liyuan',
-                from: '234432', // 消息来源后台存放用户jid
-                to: '234543'
-            };
-            // 获取当前群组在联系人列表中索引
-            const index = getState()
-            .userReducer
-            .userRecentChat
-            .findIndex(n => n.id === roomID);
-            dispatch( updateStoreGroupInfo({ msgData, index }));
-        },
-        fail: function () {
-            console.log('failed');
-        }
-    };
-    msg.set(option);
-    msg.setGroup('groupchat');
-    WebIM.conn.send(msg.body);
+export const sendChatTxtMeg = (requestBody) => (dispatch, getState) => {
+  fetch("http://localhost:8080/sendmsg", {
+    method:"POST",
+    headers:{
+      'Content-Type': 'application/json'
+    },
+    body:JSON.stringify(requestBody)
+  })
+    .then(response => response.json())
+    .then(data => {
+      if(data.code != 0) {
+        return alert(data.msg)
+      }
+      // 发送成功写入本地聊天记录里面
+      const msgData = data.entities
+      const msg = msgData.msg
+      const msgType = msgData.type
+      const from = msgData.from
+    })
+    .catch(e => console.log(e))
 }
 
 /**

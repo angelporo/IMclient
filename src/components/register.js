@@ -17,7 +17,9 @@ import {
   TextInput
 } from '../UiLibrary/';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import api from '../Lib/WebIM';
+// import api from '../Lib/WebIM';
+import config from "../config"
+import "whatwg-fetch"
 const myIcon = (<Icon name="rocket" size={30} color="#900" />);
 
 class Register extends Component {
@@ -37,21 +39,25 @@ class Register extends Component {
   }
   _register () {
     let options = {
-      username: 'angelporo',
-      password: 'angel0112',
-      nickname: 'angel'
+      userName: 'angelporo',
+      passWord: 'angel0112',
+      nickName: 'angel',
+      mobile: "18303403747"
     };
     // 环信注册
-    // FIXME: 目前为 开放注册 , 上线需要授权注册
-    // TODO: 登录逻辑和注册逻辑
-    // api.register(options)
-    // .then(({data}) => {
-    //     if(data.error) {
-    //         console.log('注册失败', data.error)
-    //     }
-    //     Alert.alert('Success')
-    //     console.log(JSON.stringify(data));
-    // }).catch(e => console.log('注册时发生错误', e));
+    let path = `${config.domain}/user`
+    // 登录前必须检测条件是否成熟
+    if (!this.state.isCanLogin) return alert('条件未成熟!')
+    fetch(path, {
+      method: "PUT",
+      headers:{
+        "Content-type": "application/json"
+      },
+      body: JSON.stringify(options)
+    })
+      .then( response => response.json())
+      .then(data => console.log(data))
+      .catch(e => console.log(e))
   }
 
   render() {
