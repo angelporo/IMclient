@@ -10,16 +10,16 @@ import config from './WebIMConfig';
 import Api from '../Services/Api.js';
 
 // init DOMParser / document for strophe and sdk
-// window.WebIM.config.isDebug = true
 console = console || {}
 console.group = console.group || function () {
   }
 console.groupEnd = console.groupEnd || function () {
   }
 
-let WebIM = window.WebIM = websdk
-window.WebIM.config = config
-window.DOMParser = xmldom.DOMParser
+let WebIM = window.WebIM = websdk;
+window.WebIM.config = config;
+window.DOMParser = xmldom.DOMParser;
+window.WebIM.config.isDebug = false;
 let document = window.document = new DOMParser().parseFromString("<?xml version='1.0'?>\n", 'text/xml')
 
 if (WebIM.config.isDebug) {

@@ -327,9 +327,9 @@ const styles = EStyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center'
   },
-    groupMemberItemAvatar: {
-        borderRadius: 4,
-        overflow: 'hidden',
+  groupMemberItemAvatar: {
+    borderRadius: 4,
+    overflow: 'hidden',
     width: 40,
     height: 40,
     justifyContent: 'center',

@@ -140,7 +140,7 @@ class ChatList extends Component {
 
   render() {
     let { RecentChatData } = this.props;
-    console.log(RecentChatData);
+    // console.log(RecentChatData);
     if (RecentChatData.length) {
       return (
         <View style={styles.container}>

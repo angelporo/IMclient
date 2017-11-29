@@ -73,7 +73,6 @@ class UserContackList extends Component {
   }
   // 好友item
   _renderRow ({item}) {
-    alert(`${config.domain}${item.avatar}`);
     const avatar = (
       <Image
         source={{uri: `${config.domain}${item.avatar}`}}
@@ -81,7 +80,7 @@ class UserContackList extends Component {
         />
     );
     item.type = "users"; // 设置进入聊天房间类型
-    item.userid = item.name
+    item.userid = item.name;
     return (
       <ListItem.Label
         icon={avatar}

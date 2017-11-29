@@ -22,22 +22,12 @@ EStyleSheet.build(styleConfig);
 class ReduxExampleApp extends React.Component {
   constructor(props){
     super(props);
-    // 模拟登录:
-    const state = store.getState();
-    // 登录之后开始连接环信
-    WebIM.conn.open({
-      apiUrl: WebIM.config.apiURL,
-      user: state.userReducer.userName,
-      pwd: 'angel',
-      appKey: WebIM.config.appkey
-    });
 
     // NOTE: 监听环信用户事件
     WebIM.conn.listen({
       onOpened: msg => {
         // 出席后才能接受推送消息
         WebIM.conn.setPresence();
-        console.log('msg', msg);
         store.dispatch( userAction.saveUserId( msg.accessToken ));
         NavigationActions.navigate({ routeName : 'MyApp' }),
         console.log('链接成功');
@@ -54,8 +44,9 @@ class ReduxExampleApp extends React.Component {
       },
       // 接受消息
       onPresence: msg => {
+        console.log("推送的消息", msg)
         if (msg.type == 'subscribe') {
-          console.log("接受到的消息", msg);
+          // console.log("接受到的消息", msg);
         }
         switch (msg.type) {
         case 'subscribe':
@@ -77,6 +68,8 @@ class ReduxExampleApp extends React.Component {
           store.dispatch(RosterActions.getContacts());
           Alert.alert(msg.from + ' ' + I18n.t('unsubscribed'));
           break;
+        case "notify":
+          console.log()
         }
       },
       // 断开连接
@@ -84,16 +77,18 @@ class ReduxExampleApp extends React.Component {
         console.log('onClosed');
       },
       onError: error => {
-        console.log('链接失败', error);
+        // 处理各种异常
+        console.log('', error);
       },
       // 更新黑名单
       onBlacklistUpdate: (list) => {
       },
       // 文本信息
       onTextMessage: (message) => {
-        console.log('onTextMessage', message);
+        console.log('文本消息', message);
       },
       onPictureMessage: (message) => {
+        // 图片消息
         console.log('onPictureMessage', message);
       }
     });

@@ -11,6 +11,7 @@ const keyBoardHeight = DeviceStorage.get('keyBoardHeight');
 const inintUserState = {
   keyBoardHeight: 220, // 手机接盘高度
   isLogged: false,
+  psd:"", // 用户密码
   isShowMune: false,
   avatar: 'https://www.sparklabs.com/forum/styles/comboot/theme/images/default_avatar.jpg',
   mobile: '17636999981',

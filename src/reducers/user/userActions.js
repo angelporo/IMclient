@@ -5,7 +5,7 @@
  **/
 import * as types from './userType';
 import WebIM from '../../Lib/WebIM';
-import "whatwg-fetch"
+import "whatwg-fetch";
 import { DeviceStorage } from '../../utils.js';
 // import * as userUiAction from './userStateAction';
 
@@ -47,12 +47,19 @@ export function switchMenuState ({menuState}) {
  * Param: param
  * Return: {undefined}
  **/
-export function changeLogginState ({ response, isLoggin }) {
-    return {
-      type: types.CHANGE_LOGGIN_STATE,
-      response,
-      isLoggin,
-    };
+export function changeLogginState ({ response, isLoggin, psd }) {
+  // 登录成功后连接环信, 开启接受推送资源
+  WebIM.conn.open({
+    apiUrl: WebIM.config.apiURL,
+    user: response.content.user.Name,
+    pwd: psd,
+    appKey: WebIM.config.appkey
+  });
+  return {
+    type: types.CHANGE_LOGGIN_STATE,
+    response,
+    isLoggin,
+  };
 }
 
 /**

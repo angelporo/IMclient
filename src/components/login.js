@@ -10,6 +10,7 @@ import {
   Alert,
   BackHandler
 } from 'react-native';
+import "whatwg-fetch";
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
@@ -65,11 +66,11 @@ class Login extends Component {
   _login = async () => {
     const  { changeLogginState } = this.props;
     const _this = this;
-    const mobile = '18303403737';
-    const psd = 'angel';
+    const mobile = '18303403737'//this.state.phone,
+    const psd = 'angel' //this.state.password
     const body = {
-      mobile: mobile,  //this.state.phone,
-      passWord: psd //this.state.password
+      mobile: mobile,
+      passWord: psd
     };
     const path = `${config.domain}/login`;
     fetch(path, {
@@ -89,29 +90,44 @@ class Login extends Component {
         // 适配用户最近联系人
         const userRencentChatData = _this.userRecentChatAD(res.content.recentConcat);
         res.recentConcat = userRencentChatData;
-        changeLogginState({response: res, isLoggin: true});
+        changeLogginState({response: res, isLoggin: true, psd: psd});
         _this.props.navigation.dispatch({type: 'Logined'});
       })
       .catch(e => console.log(e));
+
   }
   // 用户最近联系人适配器
   userRecentChatAD (res) {
     return res.map((n, i) => {
-      const roomInfo = n.chatRoomInfo;
-      const history = n.chatRoomHistory;
-      return {
-        latestMessage: roomInfo.lastMessage,
-        latestTime: roomInfo.lastMessageTime,
-        name:roomInfo.name,
-        id: roomInfo.id,
-        key: roomInfo.id,
-        type:roomInfo.type,
-        affiliations: roomInfo,
-        isTop: roomInfo.isTop,
-        groupMembers: history,
-        avatar: `${config.domain}${roomInfo.avatar}`
+      let data = n.members;
+      const roomInfo = data.chatType === "users" ? data.user : data.chatGroup;
+      const history = data.chatRoomHistory;
+      if (data.chatType == "users") {
+        // 单聊
+        return {
+          latestMessage: data.lastMsg,
+          latestTime: data.lastMsgUpdated,
+          name:roomInfo.Name,
+          type:data.chatType,
+          isTop: roomInfo.isTop,
+          groupMembers: history,
+          avatar: `${config.domain}${roomInfo.Avatar}`
+        };
+      }else if (data.chatType == "chatgroups"){
+        // 群聊
+        return {
+          latestMessage: data.lastMsg,
+          latestTime: data.lastMsgUpdated,
+          name:roomInfo.name,
+          id: roomInfo.id,
+          type:data.chattype,
+          affiliations: roomInfo.affiliations,
+          isTop: data.isTop,
+          groupMembers: history,
+          avatar: `${config.domain}${roomInfo.groupAvatar}`
+        };
       }
-    })
+    });
   }
   componentWillUpdate() {
 

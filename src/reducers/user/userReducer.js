@@ -13,14 +13,15 @@ export default function user(state = inintUserState, action) {
       const userFriend = action.response.content.friend;
       const recentConcat = action.response.recentConcat;
       return { ...state,
+               psd: action.psd,
                isLogged: action.isLoggin,
-               isFetch: action.isFetch,
+               // isFetch: action.isFetch,
                userid: resUser.Id,
                mobile: resUser.Mobile,
                userName: resUser.Name,
                qrcodeUrl: `${config.domain}${resUser.avatar}`,
                friendList: userFriend,
-               userRecentChat: recentConcat,
+               userRecentChat: recentConcat
              };
     case types.CLOSE_MUNE:
         return { ...state, isShowMune: action.menuState };
