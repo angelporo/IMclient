@@ -5,8 +5,8 @@
  **/
 import React, {Component} from 'react';
 import {
-    StyleSheet,
-    View,
+  StyleSheet,
+  View,
   Alert,
   BackHandler
 } from 'react-native';
@@ -107,11 +107,14 @@ class Login extends Component {
         return {
           latestMessage: data.lastMsg,
           latestTime: data.lastMsgUpdated,
-          name:roomInfo.Name,
+          id:roomInfo.Name,
+          name: roomInfo.Name,
           type:data.chatType,
           isTop: roomInfo.isTop,
           groupMembers: history,
-          avatar: `${config.domain}${roomInfo.Avatar}`
+          recentKey: data.recentKey,
+          avatar: `${config.domain}${roomInfo.Avatar}`,
+          chatRoomHistory: []
         };
       }else if (data.chatType == "chatgroups"){
         // 群聊
@@ -120,11 +123,13 @@ class Login extends Component {
           latestTime: data.lastMsgUpdated,
           name:roomInfo.name,
           id: roomInfo.id,
-          type:data.chattype,
+          type:data.chatType,
           affiliations: roomInfo.affiliations,
-          isTop: data.isTop,
+          isTop: roomInfo.isTop,
+          recentKey: data.recentKey,
           groupMembers: history,
-          avatar: `${config.domain}${roomInfo.groupAvatar}`
+          avatar: `${config.domain}${roomInfo.groupAvatar}`,
+          chatRoomHistory: []
         };
       }
     });

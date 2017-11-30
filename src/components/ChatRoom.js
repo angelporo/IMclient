@@ -32,6 +32,7 @@ import {
   AlertBox
 } from '../UiLibrary/';
 import WebIM from '../Lib/WebIM.js';
+import { getNowFormatDate } from '../utils.js';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import { changeKeyHeight, sendChatTxtMeg } from '../reducers/user/userActions';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -70,7 +71,6 @@ class ChatRoom extends Component {
     _userReachEnd = true;
 
   static navigationOptions = ({navigation})  => {
-    console.log(navigation.state)
       const IconName = navigation.state.params.isPersons === "group" ? "ios-people" : "ios-person"
         const headerRight = (<Icon.Button
             onPress={ () => navigation.state.params.chatListSwitchMenu() }
@@ -168,24 +168,38 @@ class ChatRoom extends Component {
 
   // 发送text类型消息
   _onSubmitEditing = () => {
-    const { sendChatTxtMeg } = this.props;
+    const { sendChatTxtMeg, store } = this.props;
     const roomOption = this.props.navigation.state.params.info;
     let requestBody;
+    const avatar = store.avatar
     const userName = this.props.store.userName;
+    const requestContent = {
+      target_type:roomOption.type,
+      from: store.userName,
+      recentId: roomOption.recentKey + "",
+      msg: {
+        type:"txt",
+        msg: this.state.inputValue
+      },
+      ext:{
+        fromAvatar: avatar,
+        sendTime: parseInt(Date.now().toString().substr(0, 10)),
+      }
+    }
     if (roomOption.type === "users") {
       // 单聊
       requestBody = {
         target: [roomOption.name],
-        target_type:"users",
-        from: userName,
-        msg: {
-          type:"txt",
-          msg:this.state.inputValue
-        }
+        ...requestContent
       }
-    }
-    if (roomOption.type === "group") {
-      // 发送群聊消息
+    }else if (roomOption.type === "chatgroups") {
+      // 群发文本消息
+      requestBody = {
+        target: [roomOption.id],
+        ...requestContent
+      }
+    }else {
+      alert("发送文本消息类型未定义");
     }
     // 发送群聊文本消息
     sendChatTxtMeg( requestBody );
@@ -193,14 +207,15 @@ class ChatRoom extends Component {
     this.setState({inputValue: ''});
   }
 
-    _renderRow = ({ item }) => {
-    const { userid } = this.props;
-    // this.currentMaxRowId = +rowId;
+    _renderRow = ({ item, index }) => {
+    const { userid, store } = this.props;
+      // this.currentMaxRowId = +rowId;
     return (
       <ListItem.MessageCell
         onPreddRedPackage={this._onOpenReadPackage.bind(this)}
-        currentUser={ userid }
+        currentUser={ store.userName }
         message={ item }
+        key={index}
         />
     );
   }
@@ -434,7 +449,7 @@ class ChatRoom extends Component {
     }
   render() {
     const rencentConcats = this.props.store.userRecentChat;
-    const rencentConcat = rencentConcats.length != 0  ? rencentConcats[this.roomChatIndex].groupMembers : []
+    const rencentConcat = rencentConcats.length != 0  ? rencentConcats[this.roomChatIndex].chatRoomHistory : []
     const ChatListView = (
       <FlatList
         data={ rencentConcat }

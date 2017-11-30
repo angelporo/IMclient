@@ -42,9 +42,9 @@ class ReduxExampleApp extends React.Component {
         // 获取用户群组列表
         // store.dispatch( userAction.getGroupsRooms());
       },
-      // 接受消息
+      // 接受推送通知
       onPresence: msg => {
-        console.log("推送的消息", msg)
+        // console.log("通知", msg)
         if (msg.type == 'subscribe') {
           // console.log("接受到的消息", msg);
         }
@@ -69,7 +69,7 @@ class ReduxExampleApp extends React.Component {
           Alert.alert(msg.from + ' ' + I18n.t('unsubscribed'));
           break;
         case "notify":
-          console.log()
+          // console.log(msg)
         }
       },
       // 断开连接
@@ -82,10 +82,11 @@ class ReduxExampleApp extends React.Component {
       },
       // 更新黑名单
       onBlacklistUpdate: (list) => {
+
       },
       // 文本信息
       onTextMessage: (message) => {
-        console.log('文本消息', message);
+        store.dispatch(userAction.onTextMessage(message))
       },
       onPictureMessage: (message) => {
         // 图片消息

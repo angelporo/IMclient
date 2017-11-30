@@ -30,9 +30,10 @@ export default class MessageCell extends Component {
   render() {
     const { currentUser, message, onPreddRedPackage } = this.props;
     // 获取消息类型
-    const { type } = message;
+    const { type, content } = message.msg;
     let differentStyle = {};
     //判断消息来源id号和用户id号
+    console.log(this.props);
     if (message.from === currentUser) {
       differentStyle = {
         flexDirection: 'row-reverse',
@@ -46,7 +47,7 @@ export default class MessageCell extends Component {
     }
     const textMsg = (<View
                      style={[styles.contentView, {backgroundColor: differentStyle.backgroundColor}]}>
-                     <Text style={ styles.messageCellText }>{ message.chatContent }</Text>
+                     <Text style={ styles.messageCellText }>{ content }</Text>
                      </View>
                     );
     const ChatMessage = mgsComponent => (
@@ -66,7 +67,7 @@ export default class MessageCell extends Component {
                 <CachedImage
                     component={ Image }
                     source={{
-                      uri: `${config.domain}${message.avatar}`
+                      uri: message.avatar
                     }}
                     style={ styles.avatar }
                     mutable
@@ -76,14 +77,20 @@ export default class MessageCell extends Component {
                 <View style={styles.endBlankBlock} />
       </View>
     );
-    if (type === "text") {
+    if (type == "txt") {
       return ChatMessage(textMsg);
-    }else if (type === 'redPackage') { // 红包消息
+    }else if (type == 'redPackage') {
+      // 红包消息
       return ChatMessage(redPackageMsg({packageData: '',
                                         style: [styles.contentView],
                                         onPress: onPreddRedPackage
                                        }));
     }
+    return (
+      <View>
+        <Text>消息类型不正确!</Text>
+      </View>
+    )
   }
 }
 

@@ -6,7 +6,8 @@
 import * as types from './userType';
 import WebIM from '../../Lib/WebIM';
 import "whatwg-fetch";
-import { DeviceStorage } from '../../utils.js';
+import { DeviceStorage, getNowFormatDate } from '../../utils.js';
+import config from "../../config";
 // import * as userUiAction from './userStateAction';
 
 
@@ -59,6 +60,7 @@ export function changeLogginState ({ response, isLoggin, psd }) {
     type: types.CHANGE_LOGGIN_STATE,
     response,
     isLoggin,
+    psd
   };
 }
 
@@ -221,7 +223,11 @@ export const getGroupsRooms = () => ( dispatch, getState ) => {
  * Return: { undefined }
  **/
 export const sendChatTxtMeg = (requestBody) => (dispatch, getState) => {
-  fetch("http://localhost:8080/sendmsg", {
+  const data = getState().userReducer
+  const userAvatar = data.avatar;
+  const path = config.domain + "/sendmsg"
+  console.log(requestBody)
+  fetch(path , {
     method:"POST",
     headers:{
       'Content-Type': 'application/json'
@@ -233,13 +239,26 @@ export const sendChatTxtMeg = (requestBody) => (dispatch, getState) => {
       if(data.code != 0) {
         return alert(data.msg)
       }
-      // 发送成功写入本地聊天记录里面
-      const msgData = data.entities
-      const msg = msgData.msg
-      const msgType = msgData.type
-      const from = msgData.from
+      // 写入单聊和群聊信息
+      const userRecentChat = getState().userReducer.userRecentChat
+      console.log(data)
+      const target = requestBody.target[0]
+      const index = userRecentChat.findIndex( n => target == n.id)
+      // 构建消息聊天记录
+      const chatContent = {
+        msg:{
+          content: requestBody.msg.msg,
+          type:requestBody.msg.type
+        },
+        avatar: userAvatar,
+        from: requestBody.from,
+        to:target,
+        ext: requestBody.ext
+      }
+      // 发送成功 写入本地聊天记录里面 并且更新最近联系中数据
+      dispatch(updateStoreGroupInfo({msgData:chatContent, index: index}));
     })
-    .catch(e => console.log(e))
+    .catch(e => console.log("发送聊天内容出错", e))
 }
 
 /**
@@ -251,7 +270,7 @@ export const updateStoreGroupInfo = ({ msgData, index }) => {
     return {
         type: types.SEND_GROUP_CHAT_INFO,
         msgData,
-        index
+        index,
     }
 }
 
@@ -442,4 +461,44 @@ export const setUserNameAsGroupChat = ({content, setType, index}) => {
         content,
         index // 当前群聊消息在聊天数组中的索引
     });
+}
+
+// 收到文本消息,
+// 最近联系表如果有, 追加聊天记录
+// 最近联系列表如果没有, 添加追进联系人列表到本地, 并且写入聊天记录
+export const onTextMessage = (content) => (dispatch, getState) => {
+  if (content.error) {
+    alert(content.errorText);
+  }
+  const store = getState().userReducer;
+  const rencentChatList = store.userRecentChat;
+  const msggageFrom = content.from;
+  const has = rencentChatList.findIndex( n => n.id == msggageFrom);
+  const msgType = content.type == 'chat' ? "users" : "chatgroups";
+  if (has == -1) {
+    //  TODO: 最近聊天列表没有, 添加到聊天列表中 单聊和群聊
+
+  }else {
+    // comment: 最近聊天列表有, 写入聊天记录
+      const chatContent = {
+        msg:{
+          content: content.data,
+          type: "txt",
+        },
+        type: msgType,
+        avatar: config.domain + content.ext.fromAvatar,
+        from: content.from,
+        to: content.to,
+        ext: content.ext,
+      }
+    console.log("chatcontent", chatContent);
+    // 发送成功 写入本地聊天记录里面
+    dispatch(updateStoreGroupInfo({msgData:chatContent, index: has}));
+    // 更改最后聊天内容
+  }
+  return (
+    type: types.ON_TEXT_MESSAGE,
+    content,
+    acatar:"https://www.sparklabs.com/forum/styles/comboot/theme/images/default_avatar.jpg'"
+  )
 }

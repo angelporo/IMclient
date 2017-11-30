@@ -20,8 +20,8 @@ export default function user(state = inintUserState, action) {
                mobile: resUser.Mobile,
                userName: resUser.Name,
                qrcodeUrl: `${config.domain}${resUser.avatar}`,
-               friendList: userFriend,
-               userRecentChat: recentConcat
+               friendList: userFriend || [],
+               userRecentChat: recentConcat || [],
              };
     case types.CLOSE_MUNE:
         return { ...state, isShowMune: action.menuState };
@@ -33,7 +33,12 @@ export default function user(state = inintUserState, action) {
     case types.CAHNGE_GROUP:
         return Object.assign({}, state, { userRecentChat : action.result});
     case types.SEND_GROUP_CHAT_INFO:
-        state.userRecentChat[ action.index ].chatRoomHistory.push( action.msgData );
+      // 更新消息内容
+      state.userRecentChat[action.index].latestMessage = action.msgData.msg.content;
+      // 更新消息时间
+      state.userRecentChat[action.index].latestTime = action.msgData.ext.sendTime;
+      state.userRecentChat[action.index].chatRoomHistory.push( action.msgData );
+      console.log(state)
         return JSON.parse(JSON.stringify(state));
     case types.SAVE_USERID:
         return Object.assign({}, state, { userid: action.userId, isLogged: true });
@@ -48,7 +53,10 @@ export default function user(state = inintUserState, action) {
     case types.SET_GROUP_USERNAME:
         // 修改用户在群聊中的昵称
         state.userRecentChat[action.index].groupMembers.myUserNameAsGroup = action.content
-        return JSON.parse(JSON.stringify(state));
+      return JSON.parse(JSON.stringify(state));
+
+    case types.ON_TEXT_MESSAGE:
+      // 收到文本消息
     default:
         return state;
     }

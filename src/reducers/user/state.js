@@ -8,6 +8,7 @@ import { DeviceStorage } from '../../utils.js';
 
 const keyBoardHeight = DeviceStorage.get('keyBoardHeight');
 
+// userReducer
 const inintUserState = {
   keyBoardHeight: 220, // 手机接盘高度
   isLogged: false,
