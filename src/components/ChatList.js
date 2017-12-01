@@ -15,6 +15,9 @@ import {
   Modal,
   ScrollView
 } from 'react-native';
+import {
+  timeDifference,
+       } from '../utils.js';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import {
@@ -213,6 +216,25 @@ class ConversationCell extends React.Component {
 
   constructor(props) {
     super(props);
+Date.prototype.format = function (format) {
+           var args = {
+               "M+": this.getMonth() + 1,
+               "d+": this.getDate(),
+               "h+": this.getHours(),
+               "m+": this.getMinutes(),
+               "s+": this.getSeconds(),
+               "q+": Math.floor((this.getMonth() + 3) / 3),  //quarter
+               "S": this.getMilliseconds()
+           };
+           if (/(y+)/.test(format))
+               format = format.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
+           for (var i in args) {
+               var n = args[i];
+               if (new RegExp("(" + i + ")").test(format))
+                   format = format.replace(RegExp.$1, RegExp.$1.length == 1 ? n : ("00" + n).substr(("" + n).length));
+           }
+           return format;
+       };
   }
 
   render() {
@@ -222,6 +244,7 @@ class ConversationCell extends React.Component {
           latestTime,
           latestMessage,
           onPress } = this.props;
+    const lastTimeDiff = timeDifference(new Date(latestTime).format("yyyy-MM-dd hh:mm:ss"))
     return (
       <TouchableHighlight
         delayPressIn={ 0 }
@@ -259,7 +282,7 @@ class ConversationCell extends React.Component {
                 >{name}</Text>
               <Text
                 style={styles.latestTime}
-                >{latestTime}</Text>
+                >{lastTimeDiff}</Text>
             </View>
             <Text
               style={styles.boxFloor}

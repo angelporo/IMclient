@@ -78,7 +78,7 @@ class ReduxExampleApp extends React.Component {
       },
       onError: error => {
         // 处理各种异常
-        console.log('', error);
+        console.log('异常了!', error);
       },
       // 更新黑名单
       onBlacklistUpdate: (list) => {

@@ -3,7 +3,7 @@ package com.imclient;
 import com.facebook.react.ReactActivity;
 import com.RNFetchBlob.RNFetchBlobPackage;
 import com.clipsub.rnbottomsheet.RNBottomSheetPackage;
-import com.gnet.bottomsheet.RNBottomSheetPackage;
+// import com.gnet.bottomsheet.RNBottomSheetPackage;
 import io.realm.react.RealmReactPackage;
 
 public class MainActivity extends ReactActivity {

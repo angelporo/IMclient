@@ -8,7 +8,6 @@ export default function user(state = inintUserState, action) {
     switch (action.type) {
     case types.CHANGE_LOGGIN_STATE:
       // 登录成功改变登录状态和写入获取数据
-      console.log(action);
       const resUser = action.response.content.user;
       const userFriend = action.response.content.friend;
       const recentConcat = action.response.recentConcat;
@@ -38,7 +37,6 @@ export default function user(state = inintUserState, action) {
       // 更新消息时间
       state.userRecentChat[action.index].latestTime = action.msgData.ext.sendTime;
       state.userRecentChat[action.index].chatRoomHistory.push( action.msgData );
-      console.log(state)
         return JSON.parse(JSON.stringify(state));
     case types.SAVE_USERID:
         return Object.assign({}, state, { userid: action.userId, isLogged: true });
@@ -54,9 +52,6 @@ export default function user(state = inintUserState, action) {
         // 修改用户在群聊中的昵称
         state.userRecentChat[action.index].groupMembers.myUserNameAsGroup = action.content
       return JSON.parse(JSON.stringify(state));
-
-    case types.ON_TEXT_MESSAGE:
-      // 收到文本消息
     default:
         return state;
     }

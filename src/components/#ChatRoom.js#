@@ -183,8 +183,8 @@ class ChatRoom extends Component {
       },
       ext:{
         fromAvatar: avatar,
-        // 发送消息时间戳 (必须是10位数的int)
-        sendTime: Math.round(new Date().getTime()/1000),
+        // 发送消息时间戳 (必须是10)
+        sendTime: parseInt(Date.now().toString().substr(0, 10)),
       }
     }
     if (roomOption.type === "users") {

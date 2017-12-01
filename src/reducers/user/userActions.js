@@ -6,8 +6,31 @@
 import * as types from './userType';
 import WebIM from '../../Lib/WebIM';
 import "whatwg-fetch";
-import { DeviceStorage, getNowFormatDate } from '../../utils.js';
+import { DeviceStorage,
+         getNowFormatDate,
+         timeDifference,
+         DateFormat
+       } from '../../utils.js';
 import config from "../../config";
+Date.prototype.format = function (format) {
+           var args = {
+               "M+": this.getMonth() + 1,
+               "d+": this.getDate(),
+               "h+": this.getHours(),
+               "m+": this.getMinutes(),
+               "s+": this.getSeconds(),
+               "q+": Math.floor((this.getMonth() + 3) / 3),  //quarter
+               "S": this.getMilliseconds()
+           };
+           if (/(y+)/.test(format))
+               format = format.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
+           for (var i in args) {
+               var n = args[i];
+               if (new RegExp("(" + i + ")").test(format))
+                   format = format.replace(RegExp.$1, RegExp.$1.length == 1 ? n : ("00" + n).substr(("" + n).length));
+           }
+           return format;
+       };
 // import * as userUiAction from './userStateAction';
 
 
@@ -226,7 +249,6 @@ export const sendChatTxtMeg = (requestBody) => (dispatch, getState) => {
   const data = getState().userReducer
   const userAvatar = data.avatar;
   const path = config.domain + "/sendmsg"
-  console.log(requestBody)
   fetch(path , {
     method:"POST",
     headers:{
@@ -241,9 +263,9 @@ export const sendChatTxtMeg = (requestBody) => (dispatch, getState) => {
       }
       // 写入单聊和群聊信息
       const userRecentChat = getState().userReducer.userRecentChat
-      console.log(data)
       const target = requestBody.target[0]
       const index = userRecentChat.findIndex( n => target == n.id)
+      const sendTUnix = requestBody.ext.sendTime * 1000
       // 构建消息聊天记录
       const chatContent = {
         msg:{
@@ -253,7 +275,10 @@ export const sendChatTxtMeg = (requestBody) => (dispatch, getState) => {
         avatar: userAvatar,
         from: requestBody.from,
         to:target,
-        ext: requestBody.ext
+        ext:{
+          fromAvatar: requestBody.ext.fromAvatar,
+          sendTime: sendTUnix, // 对比时间搓
+        }
       }
       // 发送成功 写入本地聊天记录里面 并且更新最近联系中数据
       dispatch(updateStoreGroupInfo({msgData:chatContent, index: index}));
@@ -263,7 +288,19 @@ export const sendChatTxtMeg = (requestBody) => (dispatch, getState) => {
 
 /**
  * 发送群聊成功信息 更新store中群聊信息
- * Param: { chatDataFormCurrentRoom : Array( 当前群组聊天数据 ), msg: String }
+ * Param: { msgData: {
+        msg:{
+          content: requestBody.msg.msg,
+          type:requestBody.msg.type
+        },
+        avatar: userAvatar,
+        from: requestBody.from,
+        to:target,
+        ext:{
+          fromAvatar: requestBody.ext.fromAvatar,
+          sendTime: sendTime, // 对比时间搓
+        }
+      } }
  * Return: { undefined }
  **/
 export const updateStoreGroupInfo = ({ msgData, index }) => {
@@ -282,93 +319,6 @@ export const updateStoreGroupInfo = ({ msgData, index }) => {
  **/
 export const getChatRoomOthorInfoByGoupId =  resp => (dispatch, getState) => {
     // NOTE: 通过遍历获取每个聊天室id,  异步 通过每个聊天室id获取自己服务器中详细内容
-    let result = [];
-    resp.forEach( async (item) => {
-        // TODO: 通过群聊id获取自己 线上群聊信息
-        // await fetch( uil, data)
-        // .then( response => response.json() )
-        // .then( data => {
-        //     // TODO: 对接store中数据接口
-        //     console.log(data);
-        // })
-        // .catch( e => console.log('用户聊天群组列表ERR', e));
-        // await getAdminIdByGroup(item.roomId)(dispatch, getState);
-        const data = { // 返回 构建结构
-            latestMessage: '最后的消息',
-            latestTime: '2017-03-23',
-            name: item.name,
-            isTop: false,
-            id: item.roomId,
-            type: 'group', // 消息类型(group: 群聊, single: 单聊);
-            groupMembers: {
-                id: item.roomId,  // 聊天是id
-                myUserNameAsGroup: '群内昵称',
-                adminId: ['213445'], // 管理员id 用来比较设置权限问题
-                groupName: '群名称',
-                type: 'group', // 消息类型(group: 群聊, single: 单聊);
-                members: [{ //群聊成员
-                    avatar: 'https://avatars1.githubusercontent.com/u/16830481?v=4&s=40',
-                    id: '3453656423543',
-                    userName: 'liyuan',
-                }, {
-                    avatar: 'https://avatars1.githubusercontent.com/u/16830481?v=4&s=40',
-                    id: '3453656423543',
-                    userName: 'enhen',
-                }, {
-                    avatar: 'https://avatars1.githubusercontent.com/u/16830481?v=4&s=40',
-                    id: '3453656423543',
-                    userName: 'liyuan',
-                }]
-            },
-            unReadMessageCount: 12,
-            groupPageNum: 1,  // 查询群组成员页码
-            avatar: 'https://avatars1.githubusercontent.com/u/16830481?v=4&s=40',
-            chatInfo: {
-                name: '王宇飞',
-                avatar: 'https://avatars1.githubusercontent.com/u/16830481?v=4&s=40',//对方头像
-                userId: '34545645'// 对方聊天用户id
-            },
-            chatData: [{// 集体聊天记录
-                msg: {
-                    content: 'haha',
-                    type: 'text'
-                },
-                avatar: "https://avatars1.githubusercontent.com/u/16830481?v=4&s=40",
-                name: 'liyuan',
-                from: '23455553', // 消息来源id
-                to: '233564'  // 消息发送id
-            }, {
-                msg: {
-                    content: '一会就吃饭了, 想想今天吃什么!',
-                    type: 'text'
-                },
-                avatar: "https://avatars1.githubusercontent.com/u/16830481?v=4&s=40",
-                name: 'liyuan',
-                from: '223455553', // 消息来源id
-                to: '233564'  // 消息发送id
-            }, {// 集体聊天记录
-                msg: {
-                    content: 'haha',
-                    type: 'text'
-                },
-                avatar: "https://avatars1.githubusercontent.com/u/16830481?v=4&s=40",
-                name: 'liyuan',
-                from: '23455553', // 消息来源id
-                to: '233564'  // 消息发送id
-            }, {
-                msg: {
-                    content: '',
-                    type: 'redPackage',
-                    redPackageData: [2, 3, 4, 5, 4]
-                },
-                avatar: "https://avatars1.githubusercontent.com/u/16830481?v=4&s=40",
-                name: 'liyuan',
-                from: '23455553', // 消息来源id
-                to: '233564'  // 消息发送id
-            }]
-        };
-        result.push( data );
-    });
     return {
         type: types.CAHNGE_GROUP,
         result: result
@@ -475,10 +425,13 @@ export const onTextMessage = (content) => (dispatch, getState) => {
   const msggageFrom = content.from;
   const has = rencentChatList.findIndex( n => n.id == msggageFrom);
   const msgType = content.type == 'chat' ? "users" : "chatgroups";
+  console.log("recent_content", content);
+  const unixD = content.ext.sendTime * 1000
   if (has == -1) {
-    //  TODO: 最近聊天列表没有, 添加到聊天列表中 单聊和群聊
-
+    // 现有最近聊天没有
+    // TODO: 新建最近聊天列表和聊天记录
   }else {
+    // 现有最近聊天存在
     // comment: 最近聊天列表有, 写入聊天记录
       const chatContent = {
         msg:{
@@ -489,16 +442,13 @@ export const onTextMessage = (content) => (dispatch, getState) => {
         avatar: config.domain + content.ext.fromAvatar,
         from: content.from,
         to: content.to,
-        ext: content.ext,
+        ext: {
+          fromAvatar: content.ext.fromAvatar,
+          sendTime: unixD, // 对比时间搓
+        }
       }
-    console.log("chatcontent", chatContent);
     // 发送成功 写入本地聊天记录里面
     dispatch(updateStoreGroupInfo({msgData:chatContent, index: has}));
     // 更改最后聊天内容
   }
-  return (
-    type: types.ON_TEXT_MESSAGE,
-    content,
-    acatar:"https://www.sparklabs.com/forum/styles/comboot/theme/images/default_avatar.jpg'"
-  )
 }

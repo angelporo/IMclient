@@ -11,6 +11,9 @@ import {
   BackHandler
 } from 'react-native';
 import "whatwg-fetch";
+import {
+  timeDifference
+} from "../utils"
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
@@ -102,11 +105,14 @@ class Login extends Component {
       let data = n.members;
       const roomInfo = data.chatType === "users" ? data.user : data.chatGroup;
       const history = data.chatRoomHistory;
+      // 服务器发送过来时间格式只能使用10位int
+      const timeInt = (parseInt(Date.parse(data.lastMsgUpdated)) + "").substr(0, 10)
+      const sendTimeStr = timeInt;
       if (data.chatType == "users") {
         // 单聊
         return {
           latestMessage: data.lastMsg,
-          latestTime: data.lastMsgUpdated,
+          latestTime: sendTimeStr,
           id:roomInfo.Name,
           name: roomInfo.Name,
           type:data.chatType,
@@ -120,7 +126,7 @@ class Login extends Component {
         // 群聊
         return {
           latestMessage: data.lastMsg,
-          latestTime: data.lastMsgUpdated,
+          latestTime: sendTimeStr,
           name:roomInfo.name,
           id: roomInfo.id,
           type:data.chatType,
