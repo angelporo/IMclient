@@ -69,7 +69,7 @@ class Login extends Component {
   _login = async () => {
     const  { changeLogginState } = this.props;
     const _this = this;
-    const mobile = '18303403737'//this.state.phone,
+    const mobile = '18303403737'//this.state.phone
     const psd = 'angel' //this.state.password
     const body = {
       mobile: mobile,
@@ -106,7 +106,7 @@ class Login extends Component {
       const roomInfo = data.chatType === "users" ? data.user : data.chatGroup;
       const history = data.chatRoomHistory;
       // 服务器发送过来时间格式只能使用10位int
-      const timeInt = (parseInt(Date.parse(data.lastMsgUpdated)) + "").substr(0, 10)
+      const timeInt = parseInt(Date.parse(data.lastMsgUpdated))
       const sendTimeStr = timeInt;
       if (data.chatType == "users") {
         // 单聊
@@ -119,7 +119,7 @@ class Login extends Component {
           isTop: roomInfo.isTop,
           groupMembers: history,
           recentKey: data.recentKey,
-          avatar: `${config.domain}${roomInfo.Avatar}`,
+          avatar: roomInfo.Avatar,
           chatRoomHistory: []
         };
       }else if (data.chatType == "chatgroups"){
@@ -134,7 +134,7 @@ class Login extends Component {
           isTop: roomInfo.isTop,
           recentKey: data.recentKey,
           groupMembers: history,
-          avatar: `${config.domain}${roomInfo.groupAvatar}`,
+          avatar:roomInfo.groupAvatar,
           chatRoomHistory: []
         };
       }

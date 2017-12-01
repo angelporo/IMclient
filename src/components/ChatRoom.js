@@ -23,6 +23,7 @@ import {
   FlatList
 } from 'react-native';
 import { connect } from 'react-redux';
+import config from "../config"
 import { compose } from 'redux';
 import {
   FontSize,
@@ -171,7 +172,7 @@ class ChatRoom extends Component {
     const { sendChatTxtMeg, store } = this.props;
     const roomOption = this.props.navigation.state.params.info;
     let requestBody;
-    const avatar = store.avatar
+    const avatar = store.avatar;
     const userName = this.props.store.userName;
     const requestContent = {
       target_type:roomOption.type,
@@ -337,7 +338,6 @@ class ChatRoom extends Component {
     this.setState({
       currentToolType: getCurrentType(this.state.currentToolType)
     }, () => {
-      // alert(this.state.currentToolType);
       if (this.state.currentToolType === 'tool') {
         // 打开tool
         return this.setState({

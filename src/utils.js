@@ -98,8 +98,7 @@ export let timeDifference = (tmpTime) => {
   var nowTime = new Date().getTime();//获取当前时间戳
   var tmpTimeDifference = nowTime - tmpTimeStamp;//计算当前与需要计算的时间的时间戳的差值
   if (tmpTimeDifference < 0) {                //时间超出，不能计算
-    alert("开始日期大于结束日期，计算失败！");
-    return 0;
+    return "刚刚";
   }
   /**
    * 通过最开始强调的各个时间段用毫秒表示的数值，进行时间上的取整，为0的话，则没有到达

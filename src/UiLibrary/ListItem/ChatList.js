@@ -33,7 +33,6 @@ export default class MessageCell extends Component {
     const { type, content } = message.msg;
     let differentStyle = {};
     //判断消息来源id号和用户id号
-    console.log(this.props);
     if (message.from === currentUser) {
       differentStyle = {
         flexDirection: 'row-reverse',
@@ -67,7 +66,7 @@ export default class MessageCell extends Component {
                 <CachedImage
                     component={ Image }
                     source={{
-                      uri: message.avatar
+                      uri: `${config.domain}${message.ext.fromAvatar}`
                     }}
                     style={ styles.avatar }
                     mutable

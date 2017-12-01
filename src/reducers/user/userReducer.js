@@ -11,6 +11,7 @@ export default function user(state = inintUserState, action) {
       const resUser = action.response.content.user;
       const userFriend = action.response.content.friend;
       const recentConcat = action.response.recentConcat;
+      console.log(action)
       return { ...state,
                psd: action.psd,
                isLogged: action.isLoggin,
@@ -18,7 +19,8 @@ export default function user(state = inintUserState, action) {
                userid: resUser.Id,
                mobile: resUser.Mobile,
                userName: resUser.Name,
-               qrcodeUrl: `${config.domain}${resUser.avatar}`,
+               qrcodeUrl: `${config.domain}${action.response.content.user.Avatar}`,
+               avatar: action.response.content.user.Avatar,
                friendList: userFriend || [],
                userRecentChat: recentConcat || [],
              };

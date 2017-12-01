@@ -14,7 +14,7 @@ const inintUserState = {
   isLogged: false,
   psd:"", // 用户密码
   isShowMune: false,
-  avatar: 'https://www.sparklabs.com/forum/styles/comboot/theme/images/default_avatar.jpg',
+  avatar: "",
   mobile: '17636999981',
   userid: '',
   userName: 'liyuan',

@@ -15,6 +15,7 @@ import {
   Modal,
   ScrollView
 } from 'react-native';
+import config from "../config"
 import {
   timeDifference,
        } from '../utils.js';
@@ -259,7 +260,7 @@ Date.prototype.format = function (format) {
             >
             <Image
               source={{
-                uri: avatar
+                uri: `${config.domain}${avatar}`
               }}
               style={styles.avatar}
               />
