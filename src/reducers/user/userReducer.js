@@ -26,13 +26,14 @@ export default function user(state = inintUserState, action) {
     case types.CLOSE_MUNE:
         return { ...state, isShowMune: action.menuState };
     case types.CHANGE_KEY_HEIGHT:
-        DeviceStorage.save("keyBoardHeight", action.keyHeight); // 保存keyBoardHeight到数据库
+        DeviceStorage.save( "keyBoardHeight", action.keyHeight ); // 保存keyBoardHeight到数据库
         return {...state, keyBoardHeight: action.keyHeight };
     case types.GET_ROSTER:
       return Object.assign({}, state, { friendList: action.roster });
     case types.CREATE_GROUPS:
       // 新建群组聊天
-      return Object.assign({}, state, {userRecentChat: state.userRecentChat.unshift(action.content)})
+      state.userRecentChat.unshift(action.content)
+      return Object.assign({}, state)
     case types.CAHNGE_GROUP:
         return Object.assign({}, state, { userRecentChat : action.result});
     case types.SEND_GROUP_CHAT_INFO:

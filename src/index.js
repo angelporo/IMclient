@@ -86,7 +86,7 @@ class ReduxExampleApp extends React.Component {
       },
       // 文本信息
       onTextMessage: (message) => {
-      console.log(0, message)
+        console.log( 0, message)
         store.dispatch(userAction.onTextMessage({
           content: message,
           type:"txt",

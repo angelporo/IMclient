@@ -123,35 +123,43 @@ class ChatList extends Component {
       userId: this.props.userInfo.userid + "",
       membersOnly: false,
     }
-    console.log("body", this.props.userInfo)
-    fetch(path, {
-      method: "POST",
-      headers:{
-        'Content-Type':'application/json'
-      },
-      body:JSON.stringify(fetchBody)
-    })
-      .then( response => response.json())
-      .then(data => {
-        console.log(data)
-        if (data.code != 0) {
-          alert(data.msg)
-        }
-        // 关闭群聊页面
-        // 发送到最近聊天页面
-        const c = data.content
-        const groupsContent = {
-          avatar: c.GroupAvatar,
-          chatRoomHistory: [],
-          id:c.GroupRoomId,
-          name: "群聊",
-          isTop: false,
-          groupIndex: c.Index,
-          type:"chatgroups",
-        }
-        _this.props.addRecnentChatUnshift({content: groupsContent})
+    if (friends.length > 1) {
+      // 群聊
+      fetch(path, {
+        method: "POST",
+        headers:{
+          'Content-Type':'application/json'
+        },
+        body:JSON.stringify(fetchBody)
       })
-      .catch( e => console.log(e))
+        .then( response => response.json())
+        .then(data => {
+          if (data.code != 0) {
+            alert(data.msg)
+          }
+          // 关闭群聊页面
+          // 发送到最近聊天页面
+          const c = data.content
+          const groupsContent = {
+            avatar: c.GroupAvatar,
+            chatRoomHistory: [],
+            id:c.GroupRoomId,
+            name: fetchBody.groupname,
+            isTop: false,
+            groupIndex: c.Index,
+            type:"chatgroups",
+          }
+          // 写入最近聊天
+          _this.setState({
+                openGroupChatRoom: true
+              });
+          _this.props.addRecnentChatUnshift({content: groupsContent})
+        })
+        .catch( e => console.log(e))
+    }else {
+      // TODO: 创建单聊和点击好友列表同样操作
+    }
+
   }
   _renderRow = ({item}) => {
     const newItem = Object.assign(item);
@@ -216,7 +224,7 @@ class ChatList extends Component {
             {/*// NOTE: 发送红包type选项(群发和单发) */}
               <NewGroupChatRoom
                 onSubmit={this.newGroupChat.bind(this)}
-          closeModal={() => this.setState({ openGroupChatRoom: !this.state.openGroupChatRoom })}
+                closeModal={() => this.setState({ openGroupChatRoom: !this.state.openGroupChatRoom })}
               />
           </Modal>
         </View>
@@ -327,7 +335,7 @@ Date.prototype.format = function (format) {
               <Text
                 style={styles.sessionName}
                 numberOfLines={1}
-                >{name}</Text>
+                >{name == "." ? "群聊" : name}</Text>
               <Text
                 style={styles.latestTime}
                 >{lastTimeDiff}</Text>
@@ -394,7 +402,7 @@ function MenuBox({data,
         <ScrollView>
         <FlatList
       data={ flatListData }
-      keyExtractor={ (item, index) => item.id }
+      keyExtractor={ (item, index) => index }
       renderItem={ renderItem }
         />
         </ScrollView>

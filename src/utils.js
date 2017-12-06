@@ -119,7 +119,7 @@ export let timeDifference = (tmpTime) => {
   } else if (DifferebceMinute >= 1) {
     ansTimeDifference = parseInt(DifferebceMinute) + "分钟前";
   } else {
-    ansTimeDifference = "刚刚";
+    ansTimeDifference = "";
   }
   return ansTimeDifference;
 }

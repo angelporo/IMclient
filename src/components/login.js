@@ -69,11 +69,11 @@ class Login extends Component {
   _login = async () => {
     const  { changeLogginState } = this.props;
     const _this = this;
-    const mobile = '18303403737'
-    const psd = 'angel'
+    // const mobile = '18303403737'
+    // const psd = 'angel'
 
-    // const mobile = this.state.phone
-    // const psd = this.state.password
+    const mobile = this.state.phone
+    const psd = this.state.password
 
     const body = {
       mobile: mobile,

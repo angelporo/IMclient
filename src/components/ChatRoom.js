@@ -472,11 +472,11 @@ class ChatRoom extends Component {
         }
         data.append('file', d)
       })
-      data.append('from', _this.userName)
-      data.append('target_type', _this.roomOption.type)
+      data.append('from', _this.userName )
+      data.append('target_type', _this.roomOption.type )
       data.append('recentId', _this.roomOption.recentKey + "",)
       data.append('fromAvatar', _this.userAvatar)
-      data.append("target", _this.roomOption.name)
+      data.append("target", _this.roomOption.id)
       data.append('sendTime', Math.round(new Date().getTime()/1000))
 
       // 发送群聊文本消息

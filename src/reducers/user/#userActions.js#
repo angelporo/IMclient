@@ -453,10 +453,10 @@ export const onTextMessage = ({content, type, sendOrReceive}) => (dispatch, getS
   const has = rencentChatList.findIndex( n => n.id == msggageFrom);
   const msgType = content.type == 'chat' ? "users" : "chatgroups";
   const unixD = content.ext.sendTime * 1000
+  alert(content.data)
   if (has == -1) {
     // 现有最近聊天没有
     // TODO: 新建最近聊天列表和聊天记录
-    alert(content.data)
   }else {
     // 现有最近聊天存在
     // comment: 最近聊天列表有, 写入聊天记录
