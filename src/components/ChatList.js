@@ -20,6 +20,7 @@ import {
   timeDifference,
        } from '../utils.js';
 import PropTypes from 'prop-types';
+import { compose } from 'redux';
 import { connect } from 'react-redux';
 import {
   FontSize,
@@ -36,6 +37,9 @@ import EEcon from 'react-native-vector-icons/EvilIcons';
 import FFIcon from 'react-native-vector-icons/Foundation';
 import Icon from 'react-native-vector-icons/Ionicons';
 import NewGroupChatRoom from './NewGroupModal';
+import {
+  addRecnentChatUnshift
+} from '../reducers/user/userActions';
 const AddPerson = ({hintColor}) => (<Icon name="ios-chatbubbles" size={26} color={ hintColor } />);
 const ChatIcon = (<EIcon iconStyle={ {} }
     name="chat" size={ 80 }
@@ -105,10 +109,53 @@ class ChatList extends Component {
     this.props.navigation.navigate('AddFriend',{data: 'hah'});
   }
   newGroupChat ({friends})  {
-    alert(friends.length);
+    const _this = this
+    const path = `${config.domain}/creategroup`
+    const membersName = friends.map( n => n.name )
+    const fetchBody = {
+      groupname: ".",
+      desc:".",
+      public:true,
+      maxusers:200,
+      allowinvites:true,
+      owner:this.props.userInfo.userName,
+      members: membersName,
+      userId: this.props.userInfo.userid + "",
+      membersOnly: false,
+    }
+    console.log("body", this.props.userInfo)
+    fetch(path, {
+      method: "POST",
+      headers:{
+        'Content-Type':'application/json'
+      },
+      body:JSON.stringify(fetchBody)
+    })
+      .then( response => response.json())
+      .then(data => {
+        console.log(data)
+        if (data.code != 0) {
+          alert(data.msg)
+        }
+        // 关闭群聊页面
+        // 发送到最近聊天页面
+        const c = data.content
+        const groupsContent = {
+          avatar: c.GroupAvatar,
+          chatRoomHistory: [],
+          id:c.GroupRoomId,
+          name: "群聊",
+          isTop: false,
+          groupIndex: c.Index,
+          type:"chatgroups",
+        }
+        _this.props.addRecnentChatUnshift({content: groupsContent})
+      })
+      .catch( e => console.log(e))
   }
   _renderRow = ({item}) => {
     const newItem = Object.assign(item);
+    console.log("newItem", newItem)
     return (
       <Swipeout
         key={newItem.key}
@@ -210,7 +257,7 @@ class ConversationCell extends React.Component {
   static propTypes = {
     avatar: PropTypes.string.isRequired,
     name: PropTypes.any.isRequired,
-    latestTime: PropTypes.string.isRequired,
+    latestTime: PropTypes.number.isRequired,
     latestMessage: PropTypes.string.isRequired,
     onPress: PropTypes.func.isRequired
   }
@@ -444,11 +491,13 @@ const styles = EStyleSheet.create({
   }
 });
 const mapStateToProps = state =>({
-  RecentChatData: state.userReducer.userRecentChat
+  RecentChatData: state.userReducer.userRecentChat,
+  userInfo: state.userReducer
 });
 
 
 const mapDispatchToProps = dispatch => ({
+addRecnentChatUnshift: compose( dispatch, addRecnentChatUnshift)
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(ChatList);

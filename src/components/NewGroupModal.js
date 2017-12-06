@@ -26,6 +26,7 @@ import EIcon from 'react-native-vector-icons/Entypo';
 import EEcon from 'react-native-vector-icons/EvilIcons';
 import FFIcon from 'react-native-vector-icons/Foundation';
 import Icon from 'react-native-vector-icons/Ionicons';
+import config from "../config"
 import PropTypes from 'prop-types';
 const MyIcon = (<Icon name="ios-person" size={30} color="#4F8EF7" />);
 import {
@@ -75,7 +76,7 @@ class NewGroupChatRoom extends Component {
   }
   switchCheckedBox(item) {
     let list = this.state.friendList;
-    let IndexFromItem = list.findIndex( e => e.userId === item.userId );
+    let IndexFromItem = list.findIndex( e => e.name === item.name );
     list[IndexFromItem].ischeck = !list[IndexFromItem].ischeck;
     const newList = list.filter(n => n.ischeck);
     if ( item.ischeck ) {
@@ -118,7 +119,7 @@ class NewGroupChatRoom extends Component {
         onPress={ () => this.deleteItemFriendList.bind(this)(item) }
         style={ styles.selectListBox }>
         <Image
-          source={{uri: item.avatar }}
+          source={{uri: `${config.domain}${item.avatar}` }}
           style={ styles.selectFriendFace }
           resizeMode={ Image.resizeMode.content }
           />
@@ -144,7 +145,7 @@ class NewGroupChatRoom extends Component {
               />
           </View>
           <Image
-            source={{ uri: item.avatar }}
+            source={{ uri: `${config.domain}${item.avatar}` }}
             style={styles.avatar}
             />
           <Text> {item.name}{ item.ischeck } </Text>

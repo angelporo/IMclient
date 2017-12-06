@@ -28,7 +28,7 @@ class ReduxExampleApp extends React.Component {
       onOpened: msg => {
         // 出席后才能接受推送消息
         WebIM.conn.setPresence();
-        store.dispatch( userAction.saveUserId( msg.accessToken ));
+        // store.dispatch( userAction.saveUserId( msg.accessToken ));
         NavigationActions.navigate({ routeName : 'MyApp' }),
         console.log('链接成功');
         // 链接成功之后打开请求状态
@@ -86,11 +86,20 @@ class ReduxExampleApp extends React.Component {
       },
       // 文本信息
       onTextMessage: (message) => {
-        store.dispatch(userAction.onTextMessage(message))
+      console.log(0, message)
+        store.dispatch(userAction.onTextMessage({
+          content: message,
+          type:"txt",
+          sendOrReceive: "receive"}))
       },
       onPictureMessage: (message) => {
         // 图片消息
-        console.log('onPictureMessage', message);
+        console.log('1', message)
+        store.dispatch(userAction.onTextMessage({
+          content: message,
+          type:"img",
+          sendOrReceive: "receive"
+        }))
       }
     });
   }

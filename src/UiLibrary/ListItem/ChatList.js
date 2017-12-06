@@ -28,7 +28,12 @@ export default class MessageCell extends Component {
   }
 
   render() {
-    const { currentUser, message, onPreddRedPackage } = this.props;
+    const { currentUser,
+            message,
+            onPreddRedPackage,
+            key,
+            handleImg
+          } = this.props;
     // 获取消息类型
     const { type, content } = message.msg;
     let differentStyle = {};
@@ -44,53 +49,78 @@ export default class MessageCell extends Component {
         backgroundColor: '#FFFFFF'
       };
     }
-    const textMsg = (<View
-                     style={[styles.contentView, {backgroundColor: differentStyle.backgroundColor}]}>
-                     <Text style={ styles.messageCellText }>{ content }</Text>
-                     </View>
-                    );
-    const ChatMessage = mgsComponent => (
+    const textMsg = (
       <View
-        style={[ styles.messageCell, {flexDirection: differentStyle.flexDirection }]}
-        >
-
-        {
-          /*
-            <Image
-                source={{
-                uri: message.avatar
-                }} />
-              */
-            }
-            {
-                <CachedImage
-                    component={ Image }
-                    source={{
-                      uri: `${config.domain}${message.ext.fromAvatar}`
-                    }}
-                    style={ styles.avatar }
-                    mutable
-                    />
-                }
-                { mgsComponent }
-                <View style={styles.endBlankBlock} />
+        style={[styles.contentView, {backgroundColor: differentStyle.backgroundColor}]}>
+        <Text style={ styles.messageCellText }>{ content }</Text>
       </View>
     );
+
+    let chatMessage = (mgsComponent) =>{
+      return (
+        <View
+          key={key}
+          style={[ styles.messageCell,
+          {flexDirection: differentStyle.flexDirection }]}>
+          <CachedImage
+            component={ Image }
+            source={{
+              uri: `${config.domain}${message.ext.fromAvatar}`
+            }}
+            style={ styles.avatar }
+            mutable
+            />
+          { mgsComponent }
+          <View style={styles.endBlankBlock} />
+        </View>
+      )
+    }
+
     if (type == "txt") {
-      return ChatMessage(textMsg);
+      return chatMessage(textMsg, key);
     }else if (type == 'redPackage') {
       // 红包消息
-      return ChatMessage(redPackageMsg({packageData: '',
+      return chatMessage(redPackageMsg({packageData: '',
                                         style: [styles.contentView],
                                         onPress: onPreddRedPackage
                                        }));
+    }else if (type == "img") {
+      // 图片信息
+      return chatMessage(imgMsgComponent({
+        uri: `${config.domain}/files/chatImg/${message.from}_TO_${message.to}/${message.ext.other.sendMsgUri}`,
+        onPress: this.props.handleImg
+        }));
+    }else{
+      return (
+        <View key={key}>
+          <Text>消息类型不正确!</Text>
+        </View>
+      )
     }
-    return (
-      <View>
-        <Text>消息类型不正确!</Text>
-      </View>
-    )
   }
+}
+
+
+const imgMsgComponent = ({
+  uri,
+  onPress
+}) => {
+  return (
+    <TouchableOpacity
+      onPress={ onPress }
+      style={ styles.sendMsgContent }
+      >
+
+      <CachedImage
+        component={ Image }
+        source={{
+          uri: uri
+        }}
+        style={styles.sendMsgImg}
+        mutable
+        />
+    </TouchableOpacity>
+  )
 }
 
 /**
@@ -98,22 +128,23 @@ export default class MessageCell extends Component {
  * Param: param
  * Return: { undefined }
  **/
-const redPackageMsg = ({packageData,
-                        style,
-                       onPress}) => {
-  return (
-    <TouchableOpacity
-      onPress={ onPress }
-      style={[styles.redPackageBox]}>
-      <View style={styles.rePackageContent}>
-        <Text style={styles.redPacageText}>大吉大利,红包拿来</Text>
-      </View>
-      <View style={styles.redPackageHint}>
-        <Text style={ styles.rePackageHintText }>信信红包</Text>
-      </View>
-    </TouchableOpacity>
-  );
-}
+const redPackageMsg = ({
+  packageData,
+  style,
+  onPress}) => {
+    return (
+      <TouchableOpacity
+        onPress={ onPress }
+        style={[styles.redPackageBox]}>
+        <View style={styles.rePackageContent}>
+          <Text style={styles.redPacageText}>大吉大利,红包拿来</Text>
+        </View>
+        <View style={styles.redPackageHint}>
+          <Text style={ styles.rePackageHintText }>信信红包</Text>
+        </View>
+      </TouchableOpacity>
+    );
+  }
 
 const styles = EStyleSheet.create({
   messageCell: {
@@ -128,6 +159,13 @@ const styles = EStyleSheet.create({
     margin: 5,
     width: 40,
     height: 40
+  },
+  sendMsgContent:{
+
+  },
+  sendMsgImg:{
+    width: "10rem",
+    height: "8rem"
   },
   contentView: {
     borderRadius: 4,

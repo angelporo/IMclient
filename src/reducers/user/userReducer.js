@@ -11,7 +11,6 @@ export default function user(state = inintUserState, action) {
       const resUser = action.response.content.user;
       const userFriend = action.response.content.friend;
       const recentConcat = action.response.recentConcat;
-      console.log(action)
       return { ...state,
                psd: action.psd,
                isLogged: action.isLoggin,
@@ -30,7 +29,10 @@ export default function user(state = inintUserState, action) {
         DeviceStorage.save("keyBoardHeight", action.keyHeight); // 保存keyBoardHeight到数据库
         return {...state, keyBoardHeight: action.keyHeight };
     case types.GET_ROSTER:
-        return Object.assign({}, state, { friendList: action.roster });
+      return Object.assign({}, state, { friendList: action.roster });
+    case types.CREATE_GROUPS:
+      // 新建群组聊天
+      return Object.assign({}, state, {userRecentChat: state.userRecentChat.unshift(action.content)})
     case types.CAHNGE_GROUP:
         return Object.assign({}, state, { userRecentChat : action.result});
     case types.SEND_GROUP_CHAT_INFO:
@@ -39,9 +41,9 @@ export default function user(state = inintUserState, action) {
       // 更新消息时间
       state.userRecentChat[action.index].latestTime = action.msgData.ext.sendTime;
       state.userRecentChat[action.index].chatRoomHistory.push( action.msgData );
-        return JSON.parse(JSON.stringify(state));
-    case types.SAVE_USERID:
-        return Object.assign({}, state, { userid: action.userId, isLogged: true });
+      return Object.assign({}, state, {...state});
+    // case types.SAVE_USERID:
+    //     return Object.assign({}, state, { userid: action.userId, isLogged: true });
     case types.SWITCH_CHAT_TOP:
         state.userRecentChat[action.index].isTop = action.isTop;
         console.log('比较', Object.assign({}, state) === state );

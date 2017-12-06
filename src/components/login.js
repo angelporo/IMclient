@@ -69,13 +69,17 @@ class Login extends Component {
   _login = async () => {
     const  { changeLogginState } = this.props;
     const _this = this;
-    const mobile = '18303403737'//this.state.phone
-    const psd = 'angel' //this.state.password
+    const mobile = '18303403737'
+    const psd = 'angel'
+
+    // const mobile = this.state.phone
+    // const psd = this.state.password
+
     const body = {
       mobile: mobile,
       passWord: psd
     };
-    const path = `${config.domain}/login`;
+    const path = `${config.domain}/login`
     fetch(path, {
       method:"POST",
       headers: {
@@ -204,7 +208,7 @@ componentDidMount() {
               </Button>
               <AlertBox.AlertMenuBox
                 onClosePress={ () => this.setState({isShowMenu: false}) }
-                data={this.menuData}
+                data={ this.menuData }
                 visible={ this.state.isShowMenu }
                 />
         </View>

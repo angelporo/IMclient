@@ -29,16 +29,16 @@ public class MainApplication extends Application implements ReactApplication {
 
     @Override
     protected List<ReactPackage> getPackages() {
-      return Arrays.<ReactPackage>asList(
-          new MainReactPackage(),
-            new PickerPackage(),
-            new RNFSPackage(),
-            new ImageResizerPackage(),
-          new RNBottomSheetPackage(),
-          new VectorIconsPackage(),
-          new ImagePickerPackage(),
-          new RealmReactPackage()
-      );
+        return Arrays.<ReactPackage>asList(
+                                           new MainReactPackage(),
+                                           new PickerPackage(),
+                                           new RNFSPackage(),
+                                           new ImageResizerPackage(),
+                                           new RNBottomSheetPackage(),
+                                           new VectorIconsPackage(),
+                                           new ImagePickerPackage(),
+                                           new RealmReactPackage()
+                                           );
     }
   };
 

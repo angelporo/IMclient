@@ -43,7 +43,6 @@ import Eicon from 'react-native-vector-icons/Entypo';
 import Ficon from 'react-native-vector-icons/FontAwesome';
 import OIcon from 'react-native-vector-icons/Octicons';
 import * as Animatable from 'react-native-animatable';
-// import ImagePicker from  "react-native-image-picker";
 import ImagePicker from 'react-native-image-crop-picker';
 import HandleSendRedPackage from './HandOutMoney';
 const { height, width } = Dimensions.get('window');
@@ -94,8 +93,11 @@ class ChatRoom extends Component {
     this.moveDistance = 130;
     this.firstEnter = 0;
     this.textInput = null;
-    this.roomID = this.props.navigation.state.params.info.id;
+    this.roomID = props.navigation.state.params.info.id;
     this.roomChatIndex = props.store.userRecentChat.findIndex(n => n.id === this.roomID);
+    this.roomOption = props.navigation.state.params.info;
+    this.userName = props.store.userName;
+    this.userAvatar = props.store.avatar;
     this.state = {
       textInputHeight: 40,
       // 消息数据获取渠道只能在store中拿
@@ -167,44 +169,56 @@ class ChatRoom extends Component {
     }, this._userHasBeenInputed ? 0 : 123);
   }
 
-  // 发送text类型消息
-  _onSubmitEditing = () => {
-    const { sendChatTxtMeg, store } = this.props;
-    const roomOption = this.props.navigation.state.params.info;
-    let requestBody;
-    const avatar = store.avatar;
-    const userName = this.props.store.userName;
-    const requestContent = {
-      target_type:roomOption.type,
-      from: store.userName,
-      recentId: roomOption.recentKey + "",
-      msg: {
-        type:"txt",
-        msg: this.state.inputValue
-      },
-      ext:{
-        fromAvatar: avatar,
-        // 发送消息时间戳 (必须是10位数的int)
-        sendTime: Math.round(new Date().getTime()/1000),
-      }
-    }
-    if (roomOption.type === "users") {
+  handlePressImgContent () {
+    alert("click pic")
+  }
+
+  // 获取发送消息request
+  getSendMsgRequestBody () {
+    var requestBody
+    if (this.roomOption.type === config.chat) {
       // 单聊
       requestBody = {
-        target: [roomOption.name],
-        ...requestContent
+        target: [this.roomOption.name],
       }
-    }else if (roomOption.type === "chatgroups") {
+    }else if (this.roomOption.type === config.chatgroups) {
       // 群发文本消息
       requestBody = {
-        target: [roomOption.id],
-        ...requestContent
+        target: [this.roomOption.id],
       }
     }else {
       alert("发送文本消息类型未定义");
     }
+    return requestBody
+  }
+
+  // 发送text类型消息
+  _onSubmitEditing = () => {
+    const { sendChatTxtMeg } = this.props;
+    const requestContent = {
+      target_type:this.roomOption.type,
+      from: this.userName,
+      recentId: this.roomOption.recentKey + "",
+      msg: {
+        type:"txt",
+        msg: this.state.inputValue,
+        fileName: " ", // 不能为空string
+        size:{
+          width: 0,
+          height:0,
+        },
+        secret:" ", // 不能为空string
+      },
+      ext:{
+        fromAvatar: this.userAvatar,
+        // 发送消息时间戳 (必须是10位数的int)
+        sendTime: Math.round(new Date().getTime()/1000),
+      }
+    }
+    let requestBody = this.getSendMsgRequestBody.bind(this)()
     // 发送群聊文本消息
-    sendChatTxtMeg( requestBody );
+    sendChatTxtMeg({requestBody:{...requestBody, ...requestContent},
+                    type:'txt' });
     // 发送之后清空聊天框消息
     this.setState({inputValue: ''});
   }
@@ -217,7 +231,8 @@ class ChatRoom extends Component {
         onPreddRedPackage={this._onOpenReadPackage.bind(this)}
         currentUser={ store.userName }
         message={ item }
-        key={index}
+        key={ index }
+        handleImg= {this.handlePressImgContent.bind(this)}
         />
     );
   }
@@ -438,23 +453,49 @@ class ChatRoom extends Component {
         })
     }
 
-    getPhotoByImageLibrary () {
-        ImagePicker.openPicker({
-            multiple: true,
-            loadingLabelText: '加载中...'
-        }).then(image => {
-            console.log( image );
-        }).catch(e => {
+  getPhotoByImageLibrary () {
+    const { sendChatTxtMeg } = this.props
+    const _this = this
+    const roomType = this.roomOption.type
+    ImagePicker.openPicker({
+      multiple: true,
+      loadingLabelText: '加载中...'
+    }).then( (image) => {
+      // 发送图片消息,  构建request
+      let data = new FormData();
+      image.forEach( (n) => {
+        let d = {
+          name: n.filename,
+          uri:n.sourceURL,
+          type:"multipart/form-data",
+          size: n.size
+        }
+        data.append('file', d)
+      })
+      data.append('from', _this.userName)
+      data.append('target_type', _this.roomOption.type)
+      data.append('recentId', _this.roomOption.recentKey + "",)
+      data.append('fromAvatar', _this.userAvatar)
+      data.append("target", _this.roomOption.name)
+      data.append('sendTime', Math.round(new Date().getTime()/1000))
 
-        })
-    }
+      // 发送群聊文本消息
+      sendChatTxtMeg( {requestBody:data,
+                       type:"img",
+                       imgInfo: image
+                      });
+    })
+      .catch(e => {
+      console.log("上传图片错误", e)
+    })
+  }
   render() {
     const rencentConcats = this.props.store.userRecentChat;
     const rencentConcat = rencentConcats.length != 0  ? rencentConcats[this.roomChatIndex].chatRoomHistory : []
     const ChatListView = (
       <FlatList
         data={ rencentConcat }
-        keyExtractor={(item, index) => item.msgId}
+        keyExtractor={(item, index) => index }
         onRefresh={this._onPullMessage}
         refreshing={this.state.refreshing }
         ref={(reference) => { this.chatListView = reference; }}
@@ -540,32 +581,35 @@ class ChatRoom extends Component {
                           this.setState({ inputValue: text });
                         }}
                         />
-                  ) : (
-                    <View
-                      style={[styles.input,
-                              {justifyContent: 'center',
-                               alignItems: 'center'},
-                              {
-                                height:
-                                Math.max(40,
-                                         this.state.textInputHeight < 180 ?
-                                                                        this.state.textInputHeight :
-                                                                        180
-                                                                        )}
-                                                                      ]}>
-                      <View
-                        style={ [styles.voiceButton,
-                                 {backgroundColor: this.state.voiceButtonColor}
-                        ] }
-                        onStartShouldSetResponder={ evt => true }
-                        onResponderGrant={ this._onLongPressVoice.bind(this) }
-                        onResponderMove={this._onMoveVoiceButton.bind(this)}
-                        onResponderRelease={this._onResponderRelease.bind(this)}
-                        >
-                      <Text style={{color: this.state.voiceTextColor}}>{this.state.voiceValue}</Text>
-                    </View>
-            </View>
                   )
+                :
+                (
+                  <View
+                    style={[
+                      styles.input,
+                      {justifyContent: 'center',
+                       alignItems: 'center'},
+                      {
+                        height:
+                        Math.max(40,
+                                 this.state.textInputHeight < 180 ?
+                                                                this.state.textInputHeight :
+                                                                180
+                                                                )}
+                                                              ]}>
+                    <View
+                      style={ [styles.voiceButton,
+                               {backgroundColor: this.state.voiceButtonColor}
+                      ] }
+                      onStartShouldSetResponder={ evt => true }
+                      onResponderGrant={ this._onLongPressVoice.bind(this) }
+                      onResponderMove={this._onMoveVoiceButton.bind(this)}
+                      onResponderRelease={this._onResponderRelease.bind(this)}
+                      >
+                    <Text style={{color: this.state.voiceTextColor}}>{this.state.voiceValue}</Text>
+                  </View>
+            </View>
+                )
               }
         <TouchableOpacity
       onPress={ this._onPressAddButton.bind(this) }
@@ -589,7 +633,7 @@ class ChatRoom extends Component {
                                    opacity: this.state.selectTypeOpacity
                                  }]}>
         <SeletTypeItem
-      height={(this.state.keyBoardHeight || 170) / 2}
+      height={(this.state.keyBoardHeight || 170) / 2 }
       onPress={ () => this.setState({modalVisible: true})}
       text={"红包"}
       Icon={selectWallet} />
@@ -606,7 +650,7 @@ class ChatRoom extends Component {
         </Animatable.View>
         <Modal
       animationType={"slide"}
-      onRequestClose={() => this.setState({modalVisible: false}) }
+      onRequestClose={ () => this.setState({modalVisible: false}) }
       transparent={ false }
       visible={this.state.modalVisible}>
         {/*// NOTE: 发送红type选项(群发和单发) */}
@@ -642,7 +686,7 @@ function SeletTypeItem ({onPress, Icon, text, height}) {
               height: height,
               marginTop: 10
       }}
-      onPress={ onPress}
+      onPress={ onPress }
       >
       <View style={styles.selectItemIcon}>
         { Icon }

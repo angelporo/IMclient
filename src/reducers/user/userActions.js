@@ -201,26 +201,6 @@ export const getRosterByIM = () => (dispatch, getState) => {
 }
 
 /**
- * 获取当前登录用户参与的聊天(项目中不使用聊天室功能)
- * Param: param
- * Return: {undefined}
- **/
-export const getChatRooms = () => ( dispatch, getState ) => {
-    WebIM.conn.getChatRooms({
-        apiUrl: WebIM.config.apiURL,
-        pagenum: 1,                                 // 页数
-        pagesize: 25,                               // 每页个数
-        success: function (list) {
-            console.log('聊天室列表', list.data);
-            dispatch( updataChatRooms({ chatRooms: list }))
-        },
-        error: function (e) {
-            console.log('List chat room error');
-        }
-    });
-}
-
-/**
  * 获取登录用户聊天群组列表
  * Param: param
  * Return: {undefined}
@@ -245,63 +225,109 @@ export const getGroupsRooms = () => ( dispatch, getState ) => {
  * Param: { msg: String,roomId: String }
  * Return: { undefined }
  **/
-export const sendChatTxtMeg = (requestBody) => (dispatch, getState) => {
+export const sendChatTxtMeg = ({
+  requestBody,
+  type,
+  imgInfo,  // 发送图片是具体未知, 用来获取图片在客户端本地地址, 避免服务器压力过大
+}) => (dispatch, getState) => {
   const data = getState().userReducer
   const userAvatar = data.avatar;
-  const path = config.domain + "/sendmsg"
-  fetch(path , {
-    method:"POST",
-    headers:{
-      'Content-Type': 'application/json'
-    },
-    body:JSON.stringify(requestBody)
-  })
-    .then(response => response.json())
-    .then(data => {
-      if(data.code != 0) {
-        return alert(data.msg)
+  console.log(requestBody)
+  if (type == "txt") {
+    // send txt message
+    let textPath = `${config.domain}/sendmsg?time=${Date.now()}`
+    let textcontenttype = 'application/json'
+    // frist send and then change the chat state
+    const userRecentChat = getState().userReducer.userRecentChat
+    const target = requestBody.target[0]
+    // 获取当前最近聊天记录索引
+    const index = userRecentChat.findIndex( n => target == n.id)
+    const sendTUnix = requestBody.ext.sendTime * 1000
+    // 构建消息聊天记录
+    const timeStemp = Date.now()
+    const chatContent = {
+      msg:{
+        content: requestBody.msg.msg,
+        type:requestBody.msg.type
+      },
+      avatar: userAvatar,
+      from: requestBody.from,
+      to:target,
+      timeId: timeStemp,
+      ext:{
+        other: requestBody.ext,
+        fromAvatar: requestBody.ext.fromAvatar,
+        sendTime: sendTUnix, // 对比时间搓
       }
-      // 写入单聊和群聊信息
-      const userRecentChat = getState().userReducer.userRecentChat
-      const target = requestBody.target[0]
-      const index = userRecentChat.findIndex( n => target == n.id)
-      const sendTUnix = requestBody.ext.sendTime * 1000
-      // 构建消息聊天记录
-      const chatContent = {
-        msg:{
-          content: requestBody.msg.msg,
-          type:requestBody.msg.type
-        },
-        avatar: userAvatar,
-        from: requestBody.from,
-        to:target,
-        ext:{
-          fromAvatar: requestBody.ext.fromAvatar,
-          sendTime: sendTUnix, // 对比时间搓
-        }
-      }
-      // 发送成功 写入本地聊天记录里面 并且更新最近联系中数据
-      dispatch(updateStoreGroupInfo({msgData:chatContent, index: index}));
+    }
+    // 发送成功 写入本地聊天记录里面 并且更新最近联系中数据
+    dispatch(updateStoreGroupInfo({msgData: chatContent, index: index}));
+    fetch(textPath , {
+      method:"POST",
+      headers:{
+        'Content-Type': textcontenttype,
+      },
+      body:JSON.stringify(requestBody)
     })
-    .catch(e => console.log("发送聊天内容出错", e))
+      .then(response => response.json())
+      .then(data => {
+        if(data.code != 0) {
+          return alert(data.msg)
+        }
+        // TODO: 如果发送失败 改变发送消息的状态
+
+      })
+      .catch(e => console.log("发送聊天内容出错", e))
+  }
+  if (type == "img") {
+    // 发送图片消息
+    let imgPath = config.domain + "/sendimg"
+    fetch(imgPath , {
+      method:"POST",
+      headers:{
+        'Content-Type': 'multipart/form-data',
+      },
+      body: requestBody,
+    })
+      .then( response => response.json())
+      .then( data => {
+        if (data.code != 0) {
+          alert(data.msg)
+          return
+        }
+        data.content.forEach((n, i) => {
+          // 遍历发送成功图片消息
+          const msg = n.res.msg
+          const ext = n.res.ext
+          let sendImgContent = {
+            ...n.info,
+            type: n.res.target_type == "users" ? "chat" : "chatgroups",
+            ext: {
+              ...ext,
+              // TODO: 使用客户端本地地址来渲染图片,
+              // sendMsgUri(用户本地地址)
+            },
+            from: n.res.from,
+            to: n.res.target[0],
+            width: msg.size.width,
+            height: msg.size.hegiht,
+          }
+          dispatch(onTextMessage({
+            content: sendImgContent,
+            type:"img",
+            sendOrReceive: "send"
+          }))
+          // 发送图片后显示到聊天记录里面
+        })
+      })
+    .catch( e => console.log(e))
+  }
+
 }
 
+
 /**
- * 发送群聊成功信息 更新store中群聊信息
- * Param: { msgData: {
-        msg:{
-          content: requestBody.msg.msg,
-          type:requestBody.msg.type
-        },
-        avatar: userAvatar,
-        from: requestBody.from,
-        to:target,
-        ext:{
-          fromAvatar: requestBody.ext.fromAvatar,
-          sendTime: sendTime, // 对比时间搓
-        }
-      } }
- * Return: { undefined }
+ * 更新用户聊天记录
  **/
 export const updateStoreGroupInfo = ({ msgData, index }) => {
     return {
@@ -310,7 +336,6 @@ export const updateStoreGroupInfo = ({ msgData, index }) => {
         index,
     }
 }
-
 
 /**
  * 通过聊天室id获取聊天室自己数据库中数据
@@ -416,16 +441,16 @@ export const setUserNameAsGroupChat = ({content, setType, index}) => {
 // 收到文本消息,
 // 最近联系表如果有, 追加聊天记录
 // 最近联系列表如果没有, 添加追进联系人列表到本地, 并且写入聊天记录
-export const onTextMessage = (content) => (dispatch, getState) => {
+export const onTextMessage = ({content, type, sendOrReceive}) => (dispatch, getState) => {
   if (content.error) {
     alert(content.errorText);
   }
   const store = getState().userReducer;
   const rencentChatList = store.userRecentChat;
-  const msggageFrom = content.from;
+  // 接收和发送时的目标字段不相同,  所以使用变量来判断
+  const msggageFrom = sendOrReceive == "send" ? content.to : content.from;
   const has = rencentChatList.findIndex( n => n.id == msggageFrom);
   const msgType = content.type == 'chat' ? "users" : "chatgroups";
-  console.log("recent_content", content);
   const unixD = content.ext.sendTime * 1000
   if (has == -1) {
     // 现有最近聊天没有
@@ -435,14 +460,15 @@ export const onTextMessage = (content) => (dispatch, getState) => {
     // comment: 最近聊天列表有, 写入聊天记录
       const chatContent = {
         msg:{
-          content: content.data,
-          type: "txt",
+          content: type == "img" ? "[图片]" : content.data,
+          type: type,
         },
         type: msgType,
         avatar: config.domain + content.ext.fromAvatar,
         from: content.from,
         to: content.to,
         ext: {
+          other: content.ext,
           fromAvatar: content.ext.fromAvatar,
           sendTime: unixD, // 对比时间搓
         }
@@ -451,4 +477,14 @@ export const onTextMessage = (content) => (dispatch, getState) => {
     dispatch(updateStoreGroupInfo({msgData:chatContent, index: has}));
     // 更改最后聊天内容
   }
+}
+
+/*
+ * 新建群组聊天
+ */
+export let addRecnentChatUnshift = ({content}) => {
+  return ({
+    type: types.CREATE_GROUPS,
+    content,
+  })
 }

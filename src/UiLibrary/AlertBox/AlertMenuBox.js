@@ -21,7 +21,6 @@ import EStyleSheet from 'react-native-extended-stylesheet';
 export default class AlertMenuBox extends Component {
   static propTypes = {
     style: PropTypes.any,
-    data: PropTypes.Object
   }
   constructor(props) {
     super(props);
