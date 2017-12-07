@@ -1,4 +1,4 @@
-'use strict'
+// 'use strict'
 
 /**
  * git do not control webim.config.js

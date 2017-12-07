@@ -23,10 +23,10 @@ import {
   PageHeader,
   AlertBox,
 } from '../UiLibrary/';
+
 import PropTypes from 'prop-types';
 import Eicon from 'react-native-vector-icons/Entypo';
 import FIcon from 'react-native-vector-icons/FontAwesome';
-import Password from 'react-native-input-password';
 
 const openMuneIcon = (<Eicon name="dots-three-horizontal" size={ 28 } color={Color.White} />);
 
@@ -187,7 +187,7 @@ function InsterPassWordBox ({onClose}) {
         <KeyboardAvoidingView
           behavior="padding"
           >
-          <Password
+          <TextInput.Password
             maxLength={6}
             onChange={ (text) => {}}
             />
@@ -195,7 +195,7 @@ function InsterPassWordBox ({onClose}) {
       );
     } else {
       return (
-        <Password
+        <TextInput.Password
           maxLength={6}
           onChange={ (text) => {}}
           />);

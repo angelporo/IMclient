@@ -76,6 +76,8 @@ class NewGroupChatRoom extends Component {
   }
   switchCheckedBox(item) {
     let list = this.state.friendList;
+    console.log('list', list )
+    console.log('item', item)
     let IndexFromItem = list.findIndex( e => e.name === item.name );
     list[IndexFromItem].ischeck = !list[IndexFromItem].ischeck;
     const newList = list.filter(n => n.ischeck);
@@ -99,8 +101,8 @@ class NewGroupChatRoom extends Component {
   deleteItemFriendList (item) {
     const list = this.state.checkedFriend;
     let friendList = this.state.friendList;
-    const IndexFromItem = list.findIndex( e => e.userId === item.userId);
-    let friendIndex = this.state.friendList.findIndex( e => e.userId === item.userId);
+    const IndexFromItem = list.findIndex( e => e.name === item.name);
+    let friendIndex = this.state.friendList.findIndex( e => e.name === item.name);
     friendList[friendIndex].ischeck = false;
     const newSelecetFriendList = friendList.filter(n => n.ischeck);
     this.setState({

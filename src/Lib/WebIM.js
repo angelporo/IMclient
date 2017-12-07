@@ -1,4 +1,4 @@
-'use strict'
+// 'use strict'
 // 此处的strophe也是改造过的，需要拷贝
 import '../Sdk/dist/strophe-1.2.8.js';
 // 改造过的sdk目录

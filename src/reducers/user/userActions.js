@@ -12,6 +12,7 @@ import { DeviceStorage,
          DateFormat
        } from '../../utils.js';
 import config from "../../config";
+
 Date.prototype.format = function (format) {
            var args = {
                "M+": this.getMonth() + 1,
@@ -260,8 +261,8 @@ export const sendChatTxtMeg = ({
         sendTime: sendTUnix, // 对比时间搓
       }
     }
-    // 发送成功 写入本地聊天记录里面 并且更新最近联系中数据
     dispatch(updateStoreGroupInfo({msgData: chatContent, index: index}));
+    // 发送成功 写入本地聊天记录里面 并且更新最近联系中数据
     fetch(textPath , {
       method:"POST",
       headers:{
@@ -275,9 +276,8 @@ export const sendChatTxtMeg = ({
           return alert(data.msg)
         }
         // TODO: 如果发送失败 改变发送消息的状态
-
       })
-      .catch(e => console.log("发送聊天内容出错", e))
+      .catch( e => console.log("发送聊天内容出错", e))
   }
   if (type == "img") {
     // 发送图片消息
@@ -295,7 +295,7 @@ export const sendChatTxtMeg = ({
           alert(data.msg)
           return
         }
-        console.log(data)
+        
         data.content.forEach((n, i) => {
           // 遍历发送成功图片消息
           const msg = n.res.msg
@@ -442,21 +442,22 @@ export const setUserNameAsGroupChat = ({content, setType, index}) => {
 // 收到文本消息,
 // 最近联系表如果有, 追加聊天记录
 // 最近联系列表如果没有, 添加追进联系人列表到本地, 并且写入聊天记录
-export const onTextMessage = ({content, type, sendOrReceive}) => (dispatch, getState) => {
+export const onTextMessage = ({content, type, sendOrReceive, roomId}) => (dispatch, getState) => {
+  // 接收和发送时的目标字段不相同,  所以使用变量来判断
+
   if (content.error) {
     alert(content.errorText);
   }
   const store = getState().userReducer;
   const rencentChatList = store.userRecentChat;
-  // 接收和发送时的目标字段不相同,  所以使用变量来判断
-  const msggageFrom = sendOrReceive == "send" ? content.to : content.from;
-  const has = rencentChatList.findIndex( n => n.id == msggageFrom);
+
+  const has = rencentChatList.findIndex( n => n.id == roomId);
   const msgType = content.type == 'chat' ? "users" : "chatgroups";
   const unixD = content.ext.sendTime * 1000
   if (has == -1) {
-    // 现有最近聊天没有
     // TODO: 新建最近聊天列表和聊天记录
-    alert(content.data)
+    console.log(getState().userReducer)
+
   }else {
     // 现有最近聊天存在
     // comment: 最近聊天列表有, 写入聊天记录

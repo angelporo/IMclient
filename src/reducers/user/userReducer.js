@@ -3,7 +3,6 @@ import * as types from './userType';
 import { DeviceStorage } from '../../utils.js';
 import config from "../../config";
 
-
 export default function user(state = inintUserState, action) {
     switch (action.type) {
     case types.CHANGE_LOGGIN_STATE:
@@ -37,12 +36,13 @@ export default function user(state = inintUserState, action) {
     case types.CAHNGE_GROUP:
         return Object.assign({}, state, { userRecentChat : action.result});
     case types.SEND_GROUP_CHAT_INFO:
+      console.log(action)
       // 更新消息内容
       state.userRecentChat[action.index].latestMessage = action.msgData.msg.content;
       // 更新消息时间
       state.userRecentChat[action.index].latestTime = action.msgData.ext.sendTime;
       state.userRecentChat[action.index].chatRoomHistory.push( action.msgData );
-      return Object.assign({}, state, {...state});
+      return JSON.parse(JSON.stringify(state));
     // case types.SAVE_USERID:
     //     return Object.assign({}, state, { userid: action.userId, isLogged: true });
     case types.SWITCH_CHAT_TOP:

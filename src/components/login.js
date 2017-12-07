@@ -56,7 +56,7 @@ class Login extends Component {
         this.setState({isShowMenu: true});
     }
 
-    constructor(props) {
+  constructor(props) {
         super(props);
         this.state = {
             password: '',

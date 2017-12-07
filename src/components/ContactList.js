@@ -68,7 +68,7 @@ class UserContackList extends Component {
     this.setState({
       refreshing: true
     });
-    await this.props.refresh();
+    // await this.props.refresh();
     this.setState({ refreshing: false });
   }
   // 好友item

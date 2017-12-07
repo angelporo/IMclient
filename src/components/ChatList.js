@@ -133,7 +133,7 @@ class ChatList extends Component {
         body:JSON.stringify(fetchBody)
       })
         .then( response => response.json())
-        .then(data => {
+        .then( async (data) => {
           if (data.code != 0) {
             alert(data.msg)
           }
@@ -150,10 +150,16 @@ class ChatList extends Component {
             type:"chatgroups",
           }
           // 写入最近聊天
-          _this.setState({
-                openGroupChatRoom: true
-              });
-          _this.props.addRecnentChatUnshift({content: groupsContent})
+          await _this.props.addRecnentChatUnshift({content: groupsContent})
+          // 关闭组建群聊页面
+          await _this.setState({
+                openGroupChatRoom: !this.state.openGroupChatRoom
+          });
+          // 进入刚组建群聊页面
+          setTimeout(() => {
+            _this.props.navigation.navigate('ChatRoom',{ info: groupsContent});
+
+          }, 700)
         })
         .catch( e => console.log(e))
     }else {
@@ -163,7 +169,7 @@ class ChatList extends Component {
   }
   _renderRow = ({item}) => {
     const newItem = Object.assign(item);
-    console.log("newItem", newItem)
+    // console.log("newItem", newItem)
     return (
       <Swipeout
         key={newItem.key}
@@ -303,8 +309,8 @@ Date.prototype.format = function (format) {
     const lastTimeDiff = timeDifference(new Date(latestTime).format("yyyy-MM-dd hh:mm:ss"))
     return (
       <TouchableHighlight
-        delayPressIn={ 0 }
-        delayPressOut={ 130 }
+        delayPressIn={ 60 }
+        delayPressOut={ 230 }
         onPress={ onPress }
         >
         <View
@@ -335,15 +341,15 @@ Date.prototype.format = function (format) {
               <Text
                 style={styles.sessionName}
                 numberOfLines={1}
-                >{name == "." ? "群聊" : name}</Text>
+                >{ name == "." ? "群聊" : name }</Text>
               <Text
                 style={styles.latestTime}
-                >{lastTimeDiff}</Text>
+                >{ lastTimeDiff }</Text>
             </View>
             <Text
               style={styles.boxFloor}
               numberOfLines={1}
-              >{latestMessage}</Text>
+              >{ latestMessage }</Text>
           </View>
         </View>
       </TouchableHighlight>

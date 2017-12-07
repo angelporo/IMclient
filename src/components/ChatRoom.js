@@ -280,11 +280,11 @@ class ChatRoom extends Component {
   componentWillMount () {
     const roomNameFrist = this.props.store.userRecentChat;
     const roomNameSecond = this.props.navigation.state.params.info.name;
-    const roomName = roomNameFrist.length != 0 ? roomNameFrist[this.roomChatIndex].name : roomNameSecond
-        this.props.navigation.setParams({
-            chatListSwitchMenu: this.lookChatRoomInfo.bind(this),
-            isPersons: this.props.navigation.state.params.info.type,
-            roomName: roomName
+    const roomName = roomNameFrist.length != 0 ? roomNameFrist[ this.roomChatIndex ].name : roomNameSecond
+    this.props.navigation.setParams({
+          chatListSwitchMenu: this.lookChatRoomInfo.bind(this),
+          isPersons: this.props.navigation.state.params.info.type,
+          roomName: roomName == "." ? config.defaultGroupsRoomName : roomName
         });
     }
 

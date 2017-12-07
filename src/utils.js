@@ -88,6 +88,10 @@ export class DeviceStorage {
   }
 
 export let timeDifference = (tmpTime) => {
+  // console.log('聊天时间', typeof(tmpTime))
+  if (tmpTime == 'undefined' || tmpTime == 'null') {
+    return ''
+  }
   var mm=1000;//1000毫秒 代表1秒
   var minute = mm * 60;
   var hour = minute * 60;
@@ -119,7 +123,7 @@ export let timeDifference = (tmpTime) => {
   } else if (DifferebceMinute >= 1) {
     ansTimeDifference = parseInt(DifferebceMinute) + "分钟前";
   } else {
-    ansTimeDifference = "";
+    ansTimeDifference = "刚刚";
   }
   return ansTimeDifference;
 }

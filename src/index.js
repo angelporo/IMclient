@@ -22,14 +22,13 @@ EStyleSheet.build(styleConfig);
 class ReduxExampleApp extends React.Component {
   constructor(props){
     super(props);
-
     // NOTE: 监听环信用户事件
     WebIM.conn.listen({
       onOpened: msg => {
         // 出席后才能接受推送消息
         WebIM.conn.setPresence();
         // store.dispatch( userAction.saveUserId( msg.accessToken ));
-        NavigationActions.navigate({ routeName : 'MyApp' }),
+        // NavigationActions.navigate({ routeName : 'MyApp' }),
         console.log('链接成功');
         // 链接成功之后打开请求状态
         AppNavigator.router.getStateForAction(
@@ -45,7 +44,7 @@ class ReduxExampleApp extends React.Component {
       // 接受推送通知
       onPresence: msg => {
         // console.log("通知", msg)
-        if (msg.type == 'subscribe') {
+        if ( msg.type == 'subscribe' ) {
           // console.log("接受到的消息", msg);
         }
         switch (msg.type) {
@@ -86,10 +85,16 @@ class ReduxExampleApp extends React.Component {
       },
       // 文本信息
       onTextMessage: (message) => {
+        const userName = store.getState().userReducer.userName
+        if (message.type == "groupchat" && message.from == userName) {
+          // 来自自身发送的txt群聊信息不做渲染
+          return;
+        }
         console.log( 0, message)
         store.dispatch(userAction.onTextMessage({
           content: message,
           type:"txt",
+          roomId: message.type == "chat" ? message.from : message.to,
           sendOrReceive: "receive"}))
       },
       onPictureMessage: (message) => {
@@ -98,6 +103,7 @@ class ReduxExampleApp extends React.Component {
         store.dispatch(userAction.onTextMessage({
           content: message,
           type:"img",
+          roomId: message.type == "chat" ? message.from : message.to,
           sendOrReceive: "receive"
         }))
       }
