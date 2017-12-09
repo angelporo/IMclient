@@ -13,3 +13,4 @@ export const SET_GROUP_NAME = 'SET_GROUP_NAME'; // 设置群聊群名称
 export const SET_GROUP_USERNAME = 'SET_GROUP_USERNAME' // 设置群聊用户在群众的昵称
 export const ON_TEXT_MESSAGE = "ON_TEXT_MESSAGE" // 监听用户收到的文本消息
 export const CREATE_GROUPS = "CREATE_GROUPS"
+export const APEND_MEMBERS_TO_RECENT = "APEND_MEMBERS_TO_RECENT"

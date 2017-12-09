@@ -295,7 +295,6 @@ export const sendChatTxtMeg = ({
           alert(data.msg)
           return
         }
-        
         data.content.forEach((n, i) => {
           // 遍历发送成功图片消息
           const msg = n.res.msg
@@ -316,7 +315,8 @@ export const sendChatTxtMeg = ({
           dispatch(onTextMessage({
             content: sendImgContent,
             type:"img",
-            sendOrReceive: "send"
+            sendOrReceive: "send",
+            roomId: sendImgContent.to
           }))
           // 发送图片后显示到聊天记录里面
         })
@@ -444,20 +444,47 @@ export const setUserNameAsGroupChat = ({content, setType, index}) => {
 // 最近联系列表如果没有, 添加追进联系人列表到本地, 并且写入聊天记录
 export const onTextMessage = ({content, type, sendOrReceive, roomId}) => (dispatch, getState) => {
   // 接收和发送时的目标字段不相同,  所以使用变量来判断
-
   if (content.error) {
     alert(content.errorText);
   }
-  const store = getState().userReducer;
-  const rencentChatList = store.userRecentChat;
-
-  const has = rencentChatList.findIndex( n => n.id == roomId);
+  let store = getState().userReducer;
+  let rencentChatList = store.userRecentChat;
+  let has = rencentChatList.findIndex( n => n.id == roomId);
   const msgType = content.type == 'chat' ? "users" : "chatgroups";
   const unixD = content.ext.sendTime * 1000
+  console.log('content', content)
   if (has == -1) {
-    // TODO: 新建最近聊天列表和聊天记录
+    // 添加到最近聊天头部
     console.log(getState().userReducer)
-
+    let ext = content.ext
+    // 构建最近聊天记录详情
+    let userRecent = {
+      avatar: ext.fromAvatar,
+      id: content.to,
+      isTop:false,
+      latestMessage: content.data,
+      latestTime: unixD,
+      name: content.type == "groupchat" ? ext.targetInfo.groupInfo.name : ext.targetInfo.chatInfo.Name,
+      type: content.type == 'groupchat' ? "chatgroups" : "users",
+      groupMembers: ext.targetInfo.groupInfo.affiliations,
+      chatRoomHistory: [{
+        msg:{
+          content: type == "img" ? "[图片]" : content.data,
+          type: type,
+        },
+        type:msgType,
+        avatar: config.domain + content.ext.fromAvatar,
+        from: content.from,
+        to: content.to,
+        ext: {
+          other: content.ext,
+          fromAvatar: content.ext.fromAvatar,
+          sendTime: unixD, // 对比时间搓
+        }
+      }]
+    }
+    // 添加到列表中
+    dispatch(addRecnentChatUnshift({content: userRecent}))
   }else {
     // 现有最近聊天存在
     // comment: 最近聊天列表有, 写入聊天记录
@@ -477,7 +504,7 @@ export const onTextMessage = ({content, type, sendOrReceive, roomId}) => (dispat
         }
       }
     // 发送成功 写入本地聊天记录里面
-    dispatch(updateStoreGroupInfo({msgData:chatContent, index: has}));
+    dispatch(updateStoreGroupInfo({ msgData:chatContent, index: has }));
     // 更改最后聊天内容
   }
 }
@@ -490,4 +517,48 @@ export let addRecnentChatUnshift = ({content}) => {
     type: types.CREATE_GROUPS,
     content,
   })
+}
+
+
+export let appendToMembersByRoomId = ({members, idx}) => {
+  return ({
+    type: types.APEND_MEMBERS_TO_RECENT,
+    members,
+    idx,
+  })
+}
+
+/*
+ * params { userName: []string}
+ */
+export let getGroupsMemberByUserName = ({userNames, idx}) => (dispatch, getState) => {
+  const path = `${config.domain}/getusersInfo`
+  let request = {
+    method: "POST",
+    headers: {
+        'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({userName: userNames})
+  }
+  fetch(path, request)
+    .then(response => response.json())
+    .then(data => {
+      if (data.code != 0) {
+        alert(data.msg)
+        return
+      }
+      const groupsMemberInfo = data.content.map(n => {
+        return ({
+          name: n.Name,
+          age: n.Age,
+          avatar: n.Avatar,
+          userName: n.Name,
+          mobile: n.Mobile,
+          id: n.Name,
+        })
+      })
+      dispatch(appendToMembersByRoomId({members: groupsMemberInfo,
+                                        idx: idx}))
+    })
+    .catch( e => console.log(e))
 }

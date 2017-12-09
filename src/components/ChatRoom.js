@@ -35,7 +35,11 @@ import {
 import WebIM from '../Lib/WebIM.js';
 import { getNowFormatDate } from '../utils.js';
 import EStyleSheet from 'react-native-extended-stylesheet';
-import { changeKeyHeight, sendChatTxtMeg } from '../reducers/user/userActions';
+import { changeKeyHeight,
+         sendChatTxtMeg,
+         appendToMembersByRoomId,
+         getGroupsMemberByUserName
+       } from '../reducers/user/userActions';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Micon from 'react-native-vector-icons/MaterialIcons';
 import MMicon from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -64,28 +68,27 @@ class ChatRoom extends Component {
     state: {};
     currentMaxRowId:  0;
     chatListView: {};
-
     // 判断用户是否输入过
     _userHasBeenInputed: false;
     _userAtPage = 0;
     _userReachEnd = true;
 
   static navigationOptions = ({navigation})  => {
-      const IconName = navigation.state.params.isPersons === "group" ? "ios-people" : "ios-person"
-        const headerRight = (<Icon.Button
-            onPress={ () => navigation.state.params.chatListSwitchMenu() }
-            name={ IconName }
-            backgroundColor={Color.Black}
-            size={ 24 }
-            iconStyle={{ marginRight: 10 }}
-            color={Color.White}/>)
-        return {
-            headerRight: headerRight ,
-            headerTitle: navigation.state.params.roomName,
-            lazy: true,
-            gesturesEnabled: false
-        };
+    const IconName = navigation.state.params.isPersons === config.chatgroups ? "ios-people" : "ios-person"
+    const headerRight = (<Icon.Button
+                         onPress={ () => navigation.state.params.chatListSwitchMenu() }
+                         name={ IconName }
+                         backgroundColor={Color.Black}
+                         size={ 24 }
+                         iconStyle={{ marginRight: 10 }}
+                         color={Color.White}/>)
+    return {
+      headerRight: headerRight ,
+      headerTitle: navigation.state.params.roomName,
+      lazy: true,
+      gesturesEnabled: false
     };
+  };
 
   constructor(props) {
     super(props);
@@ -121,6 +124,33 @@ class ChatRoom extends Component {
       redPackageBackground: 'transparent', // 红包背景
       redPackageOpacity: 0
     };
+    const { appendToMembersByRoomId,
+            store,
+            getGroupsMemberByUserName,
+          } = props
+    const roomInfo = this.props.navigation.state.params.info
+    const rencentIdx = store.userRecentChat.findIndex( n => n.id == roomInfo.id)
+    let membersObj = store.userRecentChat[rencentIdx].groupMembers;
+    // 获取当前群聊和单聊成员
+    if (roomInfo.type == 'users') {
+      // 单聊添加对方为成员列表中
+      const member = {
+        name: roomInfo.id,
+        age: roomInfo.age,
+        id: roomInfo.id,
+        userName: roomInfo.name,
+        avatar: roomInfo.avatar
+      }
+      // 添加群成员到指定roomid中
+      appendToMembersByRoomId({members: [member], idx: rencentIdx })
+    }else {
+      // NOTE: 群聊成员, 服务器端获取群成员
+      // store 中groupMembersEntity(成员列表实体) groupMembers(成员抽象)
+      if (store.userRecentChat[rencentIdx].groupMembersEntity.length != membersObj.length) {
+        let aaa = membersObj.map(n => n.owner == "" ? { userName: n.member } : {userName: n.owner})
+        getGroupsMemberByUserName({userNames: aaa, idx: rencentIdx})
+      }
+    }
   }
   layout(ref) {
     /**
@@ -176,6 +206,7 @@ class ChatRoom extends Component {
   // 获取发送消息request
   getSendMsgRequestBody () {
     var requestBody
+    console.log(this.roomOption)
     if (this.roomOption.type === config.chat) {
       // 单聊
       requestBody = {
@@ -231,7 +262,7 @@ class ChatRoom extends Component {
         onPreddRedPackage={this._onOpenReadPackage.bind(this)}
         currentUser={ store.userName }
         message={ item }
-        key={ index }
+        key={ item.id }
         handleImg= {this.handlePressImgContent.bind(this)}
         />
     );
@@ -273,7 +304,9 @@ class ChatRoom extends Component {
     }
 
   lookChatRoomInfo () {
-        this.props.navigation.navigate('SectChatRoomInfoAndDisplayGroupMember',{
+    console.log(this.props)
+    // 构建和最近联系表中数据相同的结构体发送到最近联系人中, 然后打开
+    this.props.navigation.navigate('SectChatRoomInfoAndDisplayGroupMember',{
             info: this.props.navigation.state.params.info,
         });
     }
@@ -302,12 +335,15 @@ class ChatRoom extends Component {
   }
   componentDidMount() {
     // 获取取消语音滑动距离
+    const { appendToMembersByRoomId,
+            store,
+            getGroupsMemberByUserName,
+          } = this.props
     this.layout(this.voiceContent)
       .then( tootInfo => {
         const ToolBoxTopDistance = tootInfo.y;
         this.layout(this.voiceCancelButton)
           .then(data => {
-            // console.log(data);
             const LCD = height;
             const targetPaddingTop = ToolBoxTopDistance - data.y;
             this.moveDistance = targetPaddingTop;
@@ -832,7 +868,9 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   changeGlobelKeyHeight: compose( dispatch,  changeKeyHeight),
-  sendChatTxtMeg: compose( dispatch, sendChatTxtMeg)
+  sendChatTxtMeg: compose( dispatch, sendChatTxtMeg),
+  appendToMembersByRoomId: compose( dispatch, appendToMembersByRoomId),
+  getGroupsMemberByUserName: compose( dispatch, getGroupsMemberByUserName)
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(ChatRoom);

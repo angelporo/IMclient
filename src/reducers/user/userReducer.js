@@ -21,6 +21,7 @@ export default function user(state = inintUserState, action) {
                avatar: action.response.content.user.Avatar,
                friendList: userFriend || [],
                userRecentChat: recentConcat || [],
+               groupMembersEntity: resUser.groupMembersEntity || []
              };
     case types.CLOSE_MUNE:
         return { ...state, isShowMune: action.menuState };
@@ -34,7 +35,12 @@ export default function user(state = inintUserState, action) {
       state.userRecentChat.unshift(action.content)
       return Object.assign({}, state)
     case types.CAHNGE_GROUP:
-        return Object.assign({}, state, { userRecentChat : action.result});
+      return Object.assign({}, state, { userRecentChat : action.result});
+    case types.APEND_MEMBERS_TO_RECENT:
+      // 添加群成员列表
+      state.userRecentChat[action.idx].groupMembersEntity = action.members
+      console.log("enheng", action.members)
+      return Object.assign({}, state);
     case types.SEND_GROUP_CHAT_INFO:
       console.log(action)
       // 更新消息内容
@@ -55,7 +61,7 @@ export default function user(state = inintUserState, action) {
         return JSON.parse(JSON.stringify(state));
     case types.SET_GROUP_USERNAME:
         // 修改用户在群聊中的昵称
-        state.userRecentChat[action.index].groupMembers.myUserNameAsGroup = action.content
+        // state.userRecentChat[action.index].groupMembers.myUserNameAsGroup = action.content
       return JSON.parse(JSON.stringify(state));
     default:
         return state;

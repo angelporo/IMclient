@@ -8,7 +8,8 @@
 		"bundle-ios": "node node_modules/react-native/local-cli/cli.js bundle --entry-file index.ios.js  --platform ios --dev false --bundle-output ./ios/bundle/index.ios.jsbundle --assets-dest ./ios/bundle",
 		"bundle-android": "react-native bundle --platform android --dev false --entry-file index.android.js --bundle-output ./android/app/src/main/assets/index.android.bundle --assets-dest ./android/app/src/main/res/",
 		"build-android": "cd android && ./gradlew installRelease",
-		"build-dev-android": "cd android && ./gradlew assembleDevDebug",
+	  "build-dev-android": "cd android && ./gradlew assembleDevDebug",
+          "build-pro-android":"cd android && ./gradlew assembleRelease", 
 		"dev": "cross-env NODE_ENV=development",
 		"build": "cross-env NODE_ENV=production"
 	},

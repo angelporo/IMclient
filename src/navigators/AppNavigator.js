@@ -45,7 +45,7 @@ export const AppNavigator = StackNavigator({
         headerTintColor: Color.White,
     },
     mode:'card',
-    lazy: true,
+    lazy: false,
 });
 
 // 在store中绑定 state 到 component props

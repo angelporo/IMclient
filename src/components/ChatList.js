@@ -206,7 +206,7 @@ class ChatList extends Component {
   render() {
     let { RecentChatData } = this.props;
     // console.log(RecentChatData);
-    if (RecentChatData.length) {
+    if (RecentChatData.length > 0) {
       return (
         <View style={styles.container}>
           <StatusBar
@@ -267,6 +267,7 @@ class ChatList extends Component {
   }
 }
 
+// 最近聊天列表item
 class ConversationCell extends React.Component {
   static propTypes = {
     avatar: PropTypes.string.isRequired,
@@ -278,25 +279,25 @@ class ConversationCell extends React.Component {
 
   constructor(props) {
     super(props);
-Date.prototype.format = function (format) {
-           var args = {
-               "M+": this.getMonth() + 1,
-               "d+": this.getDate(),
-               "h+": this.getHours(),
-               "m+": this.getMinutes(),
-               "s+": this.getSeconds(),
-               "q+": Math.floor((this.getMonth() + 3) / 3),  //quarter
-               "S": this.getMilliseconds()
-           };
-           if (/(y+)/.test(format))
-               format = format.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
-           for (var i in args) {
-               var n = args[i];
-               if (new RegExp("(" + i + ")").test(format))
-                   format = format.replace(RegExp.$1, RegExp.$1.length == 1 ? n : ("00" + n).substr(("" + n).length));
-           }
-           return format;
-       };
+    Date.prototype.format = function (format) {
+      var args = {
+        "M+": this.getMonth() + 1,
+        "d+": this.getDate(),
+        "h+": this.getHours(),
+        "m+": this.getMinutes(),
+        "s+": this.getSeconds(),
+        "q+": Math.floor((this.getMonth() + 3) / 3),  //quarter
+        "S": this.getMilliseconds()
+      };
+      if (/(y+)/.test(format))
+        format = format.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
+      for (var i in args) {
+        var n = args[i];
+        if (new RegExp("(" + i + ")").test(format))
+          format = format.replace(RegExp.$1, RegExp.$1.length == 1 ? n : ("00" + n).substr(("" + n).length));
+      }
+      return format;
+    };
   }
 
   render() {
@@ -327,7 +328,7 @@ Date.prototype.format = function (format) {
               />
 
             <Badge
-              style={styles.cellBadge}
+              style={ styles.cellBadge }
               unReadMessageCount={unReadMessageCount}
               height={18}
               />
@@ -357,6 +358,8 @@ Date.prototype.format = function (format) {
   }
 }
 
+
+// 好友最近聊天有上角菜单
 function MenuBox({data,
                   isShow,
                   flatListData,
@@ -376,8 +379,8 @@ function MenuBox({data,
             <TouchableHighlight
               key={i}
               onPress={ n.onPress }
-              delayPressIn={0}
-              delayPressOut={ 200 }
+              delayPressIn={ 50 }
+              delayPressOut={ 130 }
               style={styles.menuBox}
               >
               <View style={styles.menuItem}>

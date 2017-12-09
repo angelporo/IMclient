@@ -85,25 +85,34 @@ class ReduxExampleApp extends React.Component {
       },
       // 文本信息
       onTextMessage: (message) => {
+        console.log( 0, message)
         const userName = store.getState().userReducer.userName
         if (message.type == "groupchat" && message.from == userName) {
           // 来自自身发送的txt群聊信息不做渲染
           return;
         }
-        console.log( 0, message)
+        if (message.type == "chat" && message.from == userName) {
+          // 来自自身发送的txt群聊信息不做渲染
+          return;
+        }
         store.dispatch(userAction.onTextMessage({
           content: message,
           type:"txt",
-          roomId: message.type == "chat" ? message.from : message.to,
+          roomId: message.type == "chat" ? message.to : message.to,
           sendOrReceive: "receive"}))
       },
       onPictureMessage: (message) => {
         // 图片消息
         console.log('1', message)
+        const userName = store.getState().userReducer.userName
+        if ( message.type == "groupchat" && message.from == userName) {
+          // 来自自身发送的txt群聊信息不做渲染
+          return;
+        }
         store.dispatch(userAction.onTextMessage({
           content: message,
           type:"img",
-          roomId: message.type == "chat" ? message.from : message.to,
+          roomId: message.type == "chat" ? message.to : message.to,
           sendOrReceive: "receive"
         }))
       }

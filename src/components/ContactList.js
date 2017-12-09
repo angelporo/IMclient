@@ -71,6 +71,35 @@ class UserContackList extends Component {
     // await this.props.refresh();
     this.setState({ refreshing: false });
   }
+
+
+  _handleIntoChatRoom ({item}) {
+    const { addRecnentChatUnshift, rencentChatList } = this.props;
+    // NOTE: 构建最近聊天数据结构, 添加到本地最近聊天数据中
+    const has = rencentChatList.findIndex( n => n.id == item.name)
+    const recentStruct = {
+      latestMessage: "",
+      latestTime: undefined,
+      name: item.name,
+      id: item.name,
+      type: item.type,
+      isTop: false,
+      affiliations: 1,
+      recentKey: undefined,
+      groupMembers: [{
+        userName: item.name,
+        avatar: item.avatar,
+      }],
+      avatar: item.avatar,
+      chatRoomHistory: []
+    }
+    if (has == -1) {
+      // 不存在则添加到最近联系人列表中
+      addRecnentChatUnshift({ content: recentStruct})
+    }
+    this.props.navigation.navigate('ChatRoom',{ info : recentStruct });
+  }
+  
   // 好友item
   _renderRow ({item}) {
     const avatar = (
@@ -83,13 +112,12 @@ class UserContackList extends Component {
     item.userid = item.name;
     return (
       <ListItem.Label
-        icon={avatar}
+        icon={ avatar }
         labelText={ item.name }
+        key={item.id}
         labelStyle={ item.status === 'online' ? styles.online : '' }
         iconPress={ () => alert('avatar perssed') }
-        onPress={()=>{
-          this.props.navigation.navigate('ChatRoom',{ info : item });
-        }}
+        onPress={() => this._handleIntoChatRoom.bind(this)({item:item})}
         />
     );
   }
@@ -143,11 +171,13 @@ const styles = EStyleSheet.create({
 });
 
 const mapStateToProps = state => ({
-  friendListData: state.userReducer.friendList
+  friendListData: state.userReducer.friendList,
+  rencentChatList: state.userReducer.userRecentChat, 
 });
 
 const mapDispatchToProps = dispatch => ({
-  refresh: compose( dispatch, userAction.getRosterByIM)
+  refresh: compose( dispatch, userAction.getRosterByIM),
+  addRecnentChatUnshift: compose( dispatch, userAction.addRecnentChatUnshift),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(UserContackList);

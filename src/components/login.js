@@ -69,8 +69,6 @@ class Login extends Component {
   _login = async () => {
     const  { changeLogginState } = this.props;
     const _this = this;
-    // const mobile = '18303403737'
-    // const psd = 'angel'
 
     const mobile = this.state.phone
     const psd = this.state.password
@@ -105,6 +103,7 @@ class Login extends Component {
   }
   // 用户最近联系人适配器
   userRecentChatAD (res) {
+    // TODO: 添加最近联系人或者最近群聊详情
     return res.map((n, i) => {
       let data = n.members;
       const roomInfo = data.chatType === "users" ? data.user : data.chatGroup;
@@ -121,23 +120,35 @@ class Login extends Component {
           name: roomInfo.Name,
           type:data.chatType,
           isTop: roomInfo.isTop,
-          groupMembers: history,
+          groupMembers: [],
           recentKey: data.recentKey,
           avatar: roomInfo.Avatar,
-          chatRoomHistory: []
+          owner: "",
+          affiliations: 1, // 单聊对方信息个数
+          chatRoomHistory: [],
+          groupMembersEntity: [], // 群聊成员实体内容
         };
       }else if (data.chatType == "chatgroups"){
         // 群聊
+        let owner
+        roomInfo.affiliations.forEach(n => {
+          if (n.owner != "") {
+            owner = n.owner
+          }
+        } )
         return {
           latestMessage: data.lastMsg,
           latestTime: sendTimeStr,
           name:roomInfo.name,
           id: roomInfo.id,
           type:data.chatType,
-          affiliations: roomInfo.affiliations,
+          affiliations: 1, // 群聊对方信息个数
           isTop: roomInfo.isTop,
           recentKey: data.recentKey,
-          groupMembers: history,
+          owner: owner ,  //群主
+          // TODO: 登录后查询最近聊天中成员
+          groupMembers: roomInfo.affiliations, //roomInfo.affiliations,
+          groupMembersEntity: [], // 群聊成员实体内容
           avatar:roomInfo.groupAvatar,
           chatRoomHistory: []
         };

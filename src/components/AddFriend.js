@@ -63,7 +63,7 @@ class AddFriendComponent extends Component {
     return (
       <ScrollView
         style={styles.container}
-        endFillColor={Color.Grey}
+        endFillColor={Color.backgroundGrey}
         >
         <TextInput.Search
           placeholder="输入对方手机号"

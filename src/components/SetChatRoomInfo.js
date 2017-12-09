@@ -24,6 +24,7 @@ import EEcon from 'react-native-vector-icons/EvilIcons';
 import FFIcon from 'react-native-vector-icons/Foundation';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { CachedImage } from "react-native-img-cache";
+import config from "../config"
 const MyIcon = (<Icon name="ios-person" size={30} color="#4F8EF7" />);
 import {
     getGroupMemberByGroupID,
@@ -69,19 +70,17 @@ class SectChatRoomInfoAndDisplayGroupMember extends Component {
   }
   componentDidMount() {
     _this = this;
-    const { getGroupMemberByGroupID } = this.props;
     // 获取群成员
-    getGroupMemberByGroupID( this.props.navigation.state.params.info.id );
   }
-    intoSetGroupName () {
-        const { userRecentChat } = this.props;
-        const { name } = userRecentChat[ this.groupIndex ]
-      this.props.navigation.navigate("SetInputComponent", {
-          title: '群聊名称',
-          value: name,
-          onSubmit: this.handleAmendGroupChatName.bind(this)
-      }
-);
+  intoSetGroupName () {
+    const { userRecentChat } = this.props;
+    const { name } = userRecentChat[ this.groupIndex ]
+    this.props.navigation.navigate("SetInputComponent", {
+      title: '群聊名称',
+      value: name,
+      onSubmit: this.handleAmendGroupChatName.bind(this)
+    }
+                                  );
   }
     intoSetUserNameAsGroup() {
         const { userRecentChat } = this.props;
@@ -141,13 +140,13 @@ class SectChatRoomInfoAndDisplayGroupMember extends Component {
     }
 
   render () {
-    const { userRecentChat } = this.props;
-    const { name, isTop, groupMembers } = userRecentChat[ this.groupIndex ]
+    const { userRecentChat, userName } = this.props;
+    const { name, isTop, groupMembersEntity, groupMembers, type, owner } = userRecentChat[ this.groupIndex ]
     return (
       <ScrollView>
         {/*渲染群成员*/}
         <GroupMembers
-          data={ groupMembers }
+          data={ groupMembersEntity }
           handleAddFriends={ this.openAddfriendsToGroupMember.bind(this) }
           />
         <View style={styles.utilBar}>
@@ -196,7 +195,7 @@ class SectChatRoomInfoAndDisplayGroupMember extends Component {
 /**
  * groupMembers.affiliations > 1 (群聊) 否则单聊
  */
-                groupMembers.affiliations > 1 ? (
+                type == config.chatgroups && owner == userName  ? (
                     <View style={{marginVertical: 30}}>
                       <Button
                         style={styles.deleteGroup}
@@ -235,24 +234,25 @@ export class GroupMembers extends Component{
     super(props);
   }
   _renderItem ({item}) {
-    console.log(item)
-    if(__DEV__) {
+    if(!__DEV__) {
       if(!item.avatar) throw new Error('群成员头像字段出错');
       if(!item.id) throw new Error('群成员id字段出错');
-      if(!item.userName) throw new Error('群成员id字段出错');
+      if(!item.userName) throw new Error('群成员用户名出错');
     }
     return (
-      <View style={styles.groupMembersItemBox}>
+      <View
+        key={item.id}
+        style={styles.groupMembersItemBox}>
         <CachedImage
-        component={ Image }
-        source={{
-            uri: item.avatar
-        }}
-        style={ styles.groupMemberItemAvatar }
-        resizeMode={ Image.resizeMode.contain }
-        mutable
-        />
-        <Text style={{ marginTop: 8 }}>{ item.userName }</Text>
+          component={ Image }
+          source={{
+            uri: `${config.domain}${item.avatar}`
+          }}
+          style={ styles.groupMemberItemAvatar }
+          resizeMode={ Image.resizeMode.contain }
+          mutable
+          />
+        <Text style={{ marginTop: 8, fontSize: 12 }}>{ item.userName }</Text>
       </View>
     );
   }
@@ -269,7 +269,7 @@ export class GroupMembers extends Component{
             name="ios-add"
             size={20}/>
         </TouchableOpacity>
-        <Text style={{marginTop: 8}}></Text>
+        <Text style={{marginTop: 8}}>添加</Text>
       </View>
     );
   }
@@ -279,7 +279,7 @@ export class GroupMembers extends Component{
       <View style={ styles.groupMembers }>
         {
           data.map( (n, i) => {
-            return this._renderItem({item: n});
+            return this._renderItem({item: n, key: n.id})
           } )
         }
         {
@@ -360,11 +360,11 @@ const styles = EStyleSheet.create({
 });
 
 let mapStateToProps = state => ({
-    userRecentChat: state.userReducer.userRecentChat
+  userRecentChat: state.userReducer.userRecentChat,
+  userName: state.userReducer.userName
 });
 
 let mapDispatchToProps = dispatch => ({
-    getGroupMemberByGroupID: compose( dispatch, getGroupMemberByGroupID),
     switchIsTopChat: compose( dispatch, switchIsTopChat ),
     setGroupName: compose( dispatch, setGroupName),
     setUserNameAsGroupChat: compose( dispatch, setUserNameAsGroupChat),
