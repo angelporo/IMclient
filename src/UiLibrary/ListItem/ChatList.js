@@ -88,6 +88,7 @@ export default class MessageCell extends Component {
       // 图片信息
       return chatMessage(imgMsgComponent({
         uri: `${config.domain}/files/chatImg/${message.from}_TO_${message.to}/${message.ext.other.sendMsgUri}`,
+        info: message,
         onPress: this.props.handleImg
         }));
     }else{
@@ -103,7 +104,8 @@ export default class MessageCell extends Component {
 
 const imgMsgComponent = ({
   uri,
-  onPress
+  onPress,
+  info
 }) => {
   return (
     <TouchableOpacity

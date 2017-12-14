@@ -82,15 +82,15 @@ class SectChatRoomInfoAndDisplayGroupMember extends Component {
     }
                                   );
   }
-    intoSetUserNameAsGroup() {
-        const { userRecentChat } = this.props;
-      const { groupMembers } = userRecentChat[ this.groupIndex ];
-        this.props.navigation.navigate("SetInputComponent", {
-            title: '设置我在群内昵称',
-            value: groupMembers.myUserNameAsGroup,
-            onSubmit: this.handleAmendUserNameAsGroupChat.bind(this)
-        });
-    }
+  intoSetUserNameAsGroup() {
+    const { userRecentChat } = this.props;
+    const { myUserNameAsGroup } = userRecentChat[ this.groupIndex ];
+    this.props.navigation.navigate("SetInputComponent", {
+      title: '设置我在群内昵称',
+      value: myUserNameAsGroup,
+      onSubmit: this.handleAmendUserNameAsGroupChat.bind( this )
+    });
+  }
 
     openAddfriendsToGroupMember () {
         this.setState({
@@ -141,23 +141,30 @@ class SectChatRoomInfoAndDisplayGroupMember extends Component {
 
   render () {
     const { userRecentChat, userName } = this.props;
-    const { name, isTop, groupMembersEntity, groupMembers, type, owner } = userRecentChat[ this.groupIndex ]
+    const { name, isTop, groupMembersEntity, myUserNameAsGroup, groupMembers, type, owner } = userRecentChat[ this.groupIndex ]
     return (
       <ScrollView>
         {/*渲染群成员*/}
         <GroupMembers
           data={ groupMembersEntity }
+          type={type}
           handleAddFriends={ this.openAddfriendsToGroupMember.bind(this) }
           />
         <View style={styles.utilBar}>
-          <View style={ styles.ListItemLableBox }>
-            <ListItem.Label
-              labelText="群聊名称"
-              style={ styles.ListItemLabel }
-              labelStyle={{ fontSize: 16 }}
-              rightComponent={() => ( <Text style={{ color: Color.LightGrey }}>{ name }</Text> )}
-      onPress={ this.intoSetGroupName.bind(this)}/>
-        </View>
+          {
+            type == config.chatgroups ?
+              (
+                <View style={ styles.ListItemLableBox }>
+                  <ListItem.Label
+                    labelText="群聊名称"
+                    style={ styles.ListItemLabel }
+                    labelStyle={{ fontSize: 16 }}
+                    rightComponent={() => ( <Text style={{ color: Color.LightGrey }}>{ name }</Text> )}
+                onPress={ this.intoSetGroupName.bind(this)}/>
+                  </View>
+                ) : null
+            }
+
         <View style={styles.ListItemLableBox}>
         <ListItem.Label
       labelText="顶置聊天"
@@ -173,15 +180,21 @@ class SectChatRoomInfoAndDisplayGroupMember extends Component {
           /> )}
         />
         </View>
-        <View style={ styles.ListItemLableBox }>
-        <ListItem.Label
-      labelText="我在本群的昵称"
-      style={ styles.ListItemLabel }
-      labelStyle={{ fontSize: 16 }}
-      rightComponent={() => ( <Text style={{color: Color.LightGrey}}>{ groupMembers.myUserNameAsGroup }</Text> )}
-      onPress={ this.intoSetUserNameAsGroup.bind(this)}
-        />
-        </View>
+        {
+          type == config.chatgroups ?
+            (
+              <View style={ styles.ListItemLableBox }>
+                <ListItem.Label
+                  labelText="我在本群的昵称"
+                  style={ styles.ListItemLabel }
+                  labelStyle={{ fontSize: 16 }}
+                  rightComponent={() => ( <Text style={{color: Color.LightGrey}}>{ myUserNameAsGroup }</Text> )}
+              onPress={ this.intoSetUserNameAsGroup.bind(this)}
+                />
+                </View>
+            ) : null
+        }
+
         <View style={ styles.ListItemLableBox }>
         <ListItem.Label
       labelText="投诉"
@@ -257,21 +270,24 @@ export class GroupMembers extends Component{
     );
   }
   _addGroupItem () {
-    const { handleAddFriends } = this.props;
-    return (
-      <View style={styles.addGroupMembersItem}>
-        <TouchableOpacity
-          style={ styles.AddGroupMemberItemIcon }
-          onPress={ handleAddFriends }
-          >
-          <Icon
-            color={ Color.LightGrey }
-            name="ios-add"
-            size={20}/>
-        </TouchableOpacity>
-        <Text style={{marginTop: 8}}>添加</Text>
-      </View>
-    );
+    const { handleAddFriends, type } = this.props;
+    if (type == config.chatgroups) {
+      return (
+        <View style={styles.addGroupMembersItem}>
+          <TouchableOpacity
+            style={ styles.AddGroupMemberItemIcon }
+            onPress={ handleAddFriends }
+            >
+            <Icon
+              color={ Color.LightGrey }
+              name="ios-add"
+              size={20}/>
+          </TouchableOpacity>
+          <Text style={{marginTop: 8}}>添加</Text>
+        </View>
+      );
+    }
+    return null;
   }
   render () {
     const { data } = this.props;

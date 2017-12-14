@@ -21,7 +21,7 @@ export default function user(state = inintUserState, action) {
                avatar: action.response.content.user.Avatar,
                friendList: userFriend || [],
                userRecentChat: recentConcat || [],
-               groupMembersEntity: resUser.groupMembersEntity || []
+               groupMembersEntity: resUser.groupMembersEntity || [],
              };
     case types.CLOSE_MUNE:
         return { ...state, isShowMune: action.menuState };
@@ -39,7 +39,6 @@ export default function user(state = inintUserState, action) {
     case types.APEND_MEMBERS_TO_RECENT:
       // 添加群成员列表
       state.userRecentChat[action.idx].groupMembersEntity = action.members
-      console.log("enheng", action.members)
       return Object.assign({}, state);
     case types.SEND_GROUP_CHAT_INFO:
       console.log(action)

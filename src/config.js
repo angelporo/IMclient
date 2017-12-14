@@ -11,7 +11,7 @@ const config = {
     },
     'dev': {
       server: 'http://im-server.plusman.cn',
-      domain: "http://192.168.19.104:8080",
+      domain: "http://192.168.19.100:8080",
       chat: "users",
       chatgroups:"chatgroups",
       defaultGroupsRoomName: "群聊",

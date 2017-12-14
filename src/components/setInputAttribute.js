@@ -40,7 +40,7 @@ class SetInputComponent extends Component {
     }
 
     constructor(props) {
-        super(props);
+      super(props);
         if (__DEV__) {
             if (typeof props.navigation.state.params.value !== 'string') {
                 throw new Error('设置单个字符串属性value必须为 String');
